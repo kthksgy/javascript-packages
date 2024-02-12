@@ -23,14 +23,8 @@
   ],
   "homepage": "https://github.com/kthksgy/packages-node/tree/main/packages/string-template",
   "keywords": [
-    "call",
-    "communication",
-    "interface",
-    "local",
-    "lpc",
-    "procedure",
-    "remote",
-    "rpc"
+    "string",
+    "template"
   ],
   "license": "MIT",
   "main": "./lib/index.umd.cjs",
