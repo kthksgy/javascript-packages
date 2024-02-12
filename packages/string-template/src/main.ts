@@ -44,10 +44,9 @@ export type StringTemplateKeyTuple<T extends string> =
 export function createString<T extends string>(
   template: T,
   parameters: Record<StringTemplateKey<T>, any>,
-  replacer: (
-    parameterName: string,
-    parameters: Record<StringTemplateKey<T>, any>,
-  ) => any = createStringDefaultReplacer,
+  replacer: {
+    (parameterName: string, parameters: Record<StringTemplateKey<T>, any>): any;
+  } = createStringDefaultReplacer,
 ) {
   return template.replace(/%([^%]*)%/g, function (_, g1: string) {
     return g1.length > 0
