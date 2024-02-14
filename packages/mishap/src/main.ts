@@ -124,6 +124,7 @@ export class Mishap extends Error {
       ) {
         codeFragment = Mishap.CODE_FRAGMENT_DELIMITER + code.slice(1);
       }
+      code += codeFragment;
     }
 
     return code;
