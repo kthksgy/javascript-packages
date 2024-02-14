@@ -135,7 +135,7 @@ export class Mishap extends Error {
         code.includes(Mishap.CODE_FRAGMENT_MARKER) &&
         codeFragment.startsWith(Mishap.CODE_FRAGMENT_MARKER)
       ) {
-        codeFragment = Mishap.CODE_FRAGMENT_DELIMITER + code.slice(1);
+        codeFragment = Mishap.CODE_FRAGMENT_DELIMITER + codeFragment.slice(1);
       }
       code += codeFragment;
     }
