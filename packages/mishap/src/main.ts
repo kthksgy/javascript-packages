@@ -45,7 +45,7 @@ export class Mishap extends Error {
   constructor(code: string, message: string, options?: MishapOptions) {
     super(message, options);
 
-    this.code = code || Mishap.defaultCode;
+    this.code = code || Mishap.DEFAULT_CODE;
     this.data = options?.data;
     this.timestamp = options?.timestamp ?? new Date();
 
@@ -55,16 +55,16 @@ export class Mishap extends Error {
 
   /**
    * ベースコード
-   * 接尾辞を除く基本となるコード。
+   * コードフラグメントを除くコードの基幹部分。
    * ベースコード同士を比較する事で、異なるインスタンスのエラーの種類を比較できる。
    * @example
    * ```
-   * const mishap = new Mishap('code#codeSuffix', ...);
+   * const mishap = new Mishap('code#codeFragment', ...);
    * console.log(mishap.baseCode); // => 'code'
    * ```
    */
   get baseCode() {
-    return this.code.split(Mishap.codeDelimiter, 1)[0];
+    return this.code.split(Mishap.CODE_FRAGMENT_MARKER, 1)[0];
   }
 
   /**
@@ -96,10 +96,67 @@ export class Mishap extends Error {
     return this.data?.nativeMessage;
   }
 
-  /** コードの区切り文字 */
-  static readonly codeDelimiter = '#';
+  /** コードフラグメントの区切り文字 */
+  static readonly CODE_FRAGMENT_DELIMITER = '!';
+  /** コードフラグメントの開始文字 */
+  static readonly CODE_FRAGMENT_MARKER = '#';
   /** 既定のコード */
-  static readonly defaultCode = '???';
+  static readonly DEFAULT_CODE = '???';
+
+  /**
+   * コードを作成する。
+   * @param code 基幹となるコード
+   * @param codeFragments コードフラグメント
+   * @returns コード
+   */
+  static buildCode(code: string, ...codeFragments: Array<string>) {
+    if (!code) {
+      console.warn(`コード("${code}")の代わりに既定のコード(${Mishap.DEFAULT_CODE})を使用します。`);
+      code = Mishap.DEFAULT_CODE;
+    }
+
+    if (codeFragments.length > 0) {
+      /** コードフラグメント */
+      let codeFragment = Mishap.buildCodeFragment(...codeFragments);
+      if (
+        code.includes(Mishap.CODE_FRAGMENT_MARKER) &&
+        codeFragment.startsWith(Mishap.CODE_FRAGMENT_MARKER)
+      ) {
+        codeFragment = Mishap.CODE_FRAGMENT_DELIMITER + code.slice(1);
+      }
+    }
+
+    return code;
+  }
+
+  /**
+   * コードフラグメントを作成する。
+   * @param codeFragments コードフラグメント
+   * @returns コードフラグメント
+   */
+  static buildCodeFragment(...codeFragments: Array<string>) {
+    /** コードフラグメント */
+    let codeFragment = '';
+    for (let i = 0; i < codeFragments.length; i++) {
+      /** 部分文字列の接頭辞 */
+      const prefix = i === 0 ? Mishap.CODE_FRAGMENT_MARKER : Mishap.CODE_FRAGMENT_DELIMITER;
+
+      let suffix = codeFragments[i];
+      if (
+        suffix.startsWith(Mishap.CODE_FRAGMENT_DELIMITER) ||
+        suffix.startsWith(Mishap.CODE_FRAGMENT_MARKER)
+      ) {
+        suffix = suffix.slice(1);
+      }
+
+      if (prefix && suffix) {
+        codeFragment += prefix + suffix;
+      } else {
+        console.warn(`コードフラグメント("${prefix}${suffix}")はコードに追加されませんでした。`);
+      }
+    }
+    return codeFragment;
+  }
 
   static fromObject(instance?: Record<string, unknown>) {
     if (
@@ -117,30 +174,15 @@ export class Mishap extends Error {
       });
     } else {
       return new Mishap(
-        Mishap.defaultCode,
+        Mishap.DEFAULT_CODE,
         '`fromObject`がオブジェクト以外に対して実行されました。',
         { cause: instance },
       );
     }
   }
 
-  static of(code: string, codeSuffix: string, options?: MishapOptions & { message?: string }) {
-    if (code.length === 0) {
-      console.warn(`コードが空であるため、'${Mishap.defaultCode}'に修正します。`);
-      code = Mishap.defaultCode;
-    }
-
-    if (codeSuffix.length === 0) {
-      console.warn(`接尾辞が空であるため、'${Mishap.codeDelimiter}?'に修正します。`);
-      codeSuffix = Mishap.codeDelimiter + '?';
-    } else if (!codeSuffix.startsWith(Mishap.codeDelimiter)) {
-      console.warn(
-        `接尾辞の先頭が区切り文字ではないため、'${Mishap.codeDelimiter}${codeSuffix}'に修正します。`,
-      );
-      codeSuffix = Mishap.codeDelimiter + codeSuffix;
-    }
-
-    return new Mishap(code + codeSuffix, options?.message ?? '', options);
+  static of(code: string, codeFragment: string, options?: MishapOptions & { message?: string }) {
+    return new Mishap(Mishap.buildCode(code, codeFragment), options?.message ?? '', options);
   }
 }
 
