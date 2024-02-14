@@ -96,6 +96,19 @@ export class Mishap extends Error {
     return this.data?.nativeMessage;
   }
 
+  /**
+   * コードフラグメントをコードに追加する。
+   * コードのみ異なる新しいインスタンスを返す。
+   * @param codeFragments コードフラグメント
+   */
+  addCodeFragment(...codeFragments: Array<string>) {
+    return new Mishap(Mishap.buildCode(this.code, ...codeFragments), this.message, {
+      cause: this.cause,
+      data: this.data,
+      timestamp: this.timestamp,
+    });
+  }
+
   /** コードフラグメントの区切り文字 */
   static readonly CODE_FRAGMENT_DELIMITER = '!';
   /** コードフラグメントの開始文字 */
