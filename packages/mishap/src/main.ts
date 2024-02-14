@@ -1,4 +1,36 @@
 /**
+ * エラーオブジェクトのスタック文字列を結合する。
+ * @param a エラーオブジェクトA
+ * @param b エラーオブジェクトB
+ * @returns スタック
+ */
+function concatenateStacks(a: unknown, b: unknown) {
+  /** エラーオブジェクトAのスタック文字列 */
+  const aStack = typeof a === 'string' && a.length > 0 ? a : hasStack(a) ? a.stack : undefined;
+  /** エラーオブジェクトBのスタック文字列 */
+  const bStack = typeof b === 'string' && b.length > 0 ? b : hasStack(b) ? b.stack : undefined;
+
+  return aStack && bStack
+    ? aStack + '\n' + bStack.slice(bStack.indexOf('\n') + 1)
+    : aStack ?? bStack;
+}
+
+/**
+ * インスタンスがスタック文字列を持つかどうかを判定する。
+ * @param instance インスタンス
+ * @returns スタック文字列を持つ場合、`true`
+ */
+function hasStack<T>(instance: T): instance is T & { stack: string } {
+  return (
+    instance !== null &&
+    typeof instance === 'object' &&
+    'stack' in instance &&
+    typeof instance.stack === 'string' &&
+    instance.stack.length > 0
+  );
+}
+
+/**
  * ミスハップ
  * 通常の例外と区別するための独自の例外クラス。
  */
@@ -12,9 +44,13 @@ export class Mishap extends Error {
 
   constructor(code: string, message: string, options?: MishapOptions) {
     super(message, options);
+
     this.code = code || Mishap.defaultCode;
     this.data = options?.data;
     this.timestamp = options?.timestamp ?? new Date();
+
+    this.name = Mishap.name + '[' + this.code + ']';
+    this.stack = concatenateStacks(this, options?.cause);
   }
 
   /**
@@ -88,7 +124,7 @@ export class Mishap extends Error {
     }
   }
 
-  static of(code: string, codeSuffix: string, message?: string, options?: MishapOptions) {
+  static of(code: string, codeSuffix: string, options?: MishapOptions & { message?: string }) {
     if (code.length === 0) {
       console.warn(`コードが空であるため、'${Mishap.defaultCode}'に修正します。`);
       code = Mishap.defaultCode;
@@ -104,7 +140,7 @@ export class Mishap extends Error {
       codeSuffix = Mishap.codeDelimiter + codeSuffix;
     }
 
-    return new Mishap(code + codeSuffix, message ?? '', options);
+    return new Mishap(code + codeSuffix, options?.message ?? '', options);
   }
 }
 
