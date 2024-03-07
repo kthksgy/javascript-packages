@@ -44,19 +44,25 @@ export type StringTemplateKeyTuple<T extends string> =
 export function createString<T extends string>(
   template: T,
   parameters: Record<StringTemplateKey<T>, any>,
-  replacer: {
-    (parameterName: string, parameters: Record<StringTemplateKey<T>, any>): any;
-  } = createStringDefaultReplacer,
+  strict = false,
 ) {
   return template.replace(/%([^%]*)%/g, function (_, g1: string) {
-    return g1.length > 0
-      ? String(parameters[g1 as StringTemplateKey<T>] ?? replacer(g1, parameters) ?? `{${g1}}`)
-      : '%';
+    if (g1.length > 0) {
+      let parameter = parameters[g1 as StringTemplateKey<T>];
+      parameter ??= g1.split('.').reduce<any>(createStringReducer, parameters);
+      if (parameter !== undefined) {
+        return String(parameter);
+      } else {
+        if (strict) {
+          throw new Error(`"${g1}" is not defined in parameters.`);
+        } else {
+          return '{' + g1 + '}';
+        }
+      }
+    } else {
+      return '%';
+    }
   });
-}
-
-function createStringDefaultReplacer(parameterName: string, parameters: Record<string, any>) {
-  return parameterName.split('.').reduce<any>(createStringReducer, parameters);
 }
 
 function createStringReducer(parameters: any, key: string) {
