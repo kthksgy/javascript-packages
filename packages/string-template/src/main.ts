@@ -38,7 +38,7 @@ export type StringTemplateKeyTuple<T extends string> =
  * 文字列テンプレートを用いて文字列を作成する。
  * @param template 文字列テンプレート(例: `/users/%userId%/articles/%articleId%`)
  * @param parameters パラメーター(例: `{ articleId: '1234', userId: 'abcd' }`)
- * @param replacer `parameters`に存在しないパラメーターの置換関数
+ * @param strict `parameters`に存在しないキーがある場合に例外を発生させる場合、`true`
  * @returns 文字列(例: `/users/abcd/articles/1234`)
  */
 export function createString<T extends string>(
@@ -67,6 +67,19 @@ export function createString<T extends string>(
 
 function createStringReducer(parameters: any, key: string) {
   return parameters?.[key];
+}
+
+/**
+ * 文字列テンプレートを用いて文字列を厳密に作成する。
+ * @param template 文字列テンプレート(例: `/users/%userId%/articles/%articleId%`)
+ * @param parameters パラメーター(例: `{ articleId: '1234', userId: 'abcd' }`)
+ * @returns 文字列(例: `/users/abcd/articles/1234`)
+ */
+export function createStringStrictly<T extends string>(
+  template: T,
+  parameters: Record<StringTemplateKey<T>, any>,
+) {
+  return createString(template, parameters, true);
 }
 
 /**
