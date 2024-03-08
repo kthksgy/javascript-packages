@@ -3,12 +3,12 @@ import { expect, test } from 'vitest';
 import { procrastinate } from './procrastinate';
 
 test('最初に作成した値を使い回している', function () {
-  function normal() {
+  function target() {
     return {};
   }
-  expect(normal()).not.toBe(normal());
+  expect(target()).not.toBe(target());
 
-  const procrastinated = procrastinate(normal);
+  const procrastinated = procrastinate(target);
   expect(procrastinated()).toBe(procrastinated());
 });
 
