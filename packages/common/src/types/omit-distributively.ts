@@ -1,5 +1,3 @@
-import { KeyOfUnion } from './key-of-union';
-
 /**
  * オブジェクトのユニオン型から指定したキーを除外する。
  * 通常の`Omit`では意図した結果にならない。
@@ -11,4 +9,6 @@ import { KeyOfUnion } from './key-of-union';
  * type Example2 = OmitDistributively<T, 'a'>; // { b: number }
  * ```
  */
-export type OmitDistributively<T, K extends KeyOfUnion<T>> = T extends T ? Omit<T, K> : never;
+export type OmitDistributively<T, K extends string | number | symbol> = T extends T
+  ? Omit<T, K>
+  : never;
