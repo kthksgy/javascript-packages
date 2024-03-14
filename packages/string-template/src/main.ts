@@ -34,6 +34,29 @@ export type StringTemplateKeyTuple<T extends string> =
       : [Key, ...StringTemplateKeyTuple<Suffix>]
     : [];
 
+/** キー(`%key%`)の正規表現 */
+const keyRegularExpression = /%([^%]*)%/g;
+/** 文字列テンプレートに対応するマッチャー */
+const matchers = new Map<string, RegExp>();
+
+/**
+ * 文字列テンプレートに対応するマッチャーを作成する。
+ * @param template 文字列テンプレート(例: `/users/%userId%/articles/%articleId%`)
+ * @returns マッチャー
+ */
+export function createMatcher<T extends string>(template: T) {
+  let matcher = matchers.get(template);
+  if (!matcher) {
+    matcher = new RegExp(
+      `^${template
+        .replace(/[$()*+.?[\\\]^{|}]/g, '\\$&')
+        .replace(keyRegularExpression, parseStringReplacer)}$`,
+    );
+    matchers.set(template, matcher);
+  }
+  return matcher;
+}
+
 /**
  * 文字列テンプレートを用いて文字列を作成する。
  * @param template 文字列テンプレート(例: `/users/%userId%/articles/%articleId%`)
@@ -46,7 +69,7 @@ export function createString<T extends string>(
   parameters: Record<StringTemplateKey<T>, any>,
   strict = false,
 ) {
-  return template.replace(/%([^%]*)%/g, function (_, g1: string) {
+  return template.replace(keyRegularExpression, function (_, g1: string) {
     if (g1.length > 0) {
       let parameter = parameters[g1 as StringTemplateKey<T>];
       parameter ??= g1.split('.').reduce<any>(createStringReducer, parameters);
@@ -99,7 +122,7 @@ export function getLastStringTemplateKey<T extends string>(template: T): LastStr
  */
 export function getStringTemplateKeys<T extends string>(template: T): StringTemplateKeyTuple<T> {
   // TODO: 処理速度を改善する。
-  return Array.from(template.matchAll(/%([^%]*)%/g), function ([, key]) {
+  return Array.from(template.matchAll(keyRegularExpression), function ([, key]) {
     return key;
   }).filter(function (key) {
     return key !== '';
@@ -114,16 +137,10 @@ export function getStringTemplateKeys<T extends string>(template: T): StringTemp
  */
 export function parseString<T extends string>(template: T, s: string) {
   /** 照合配列 */
-  const array = s.match(
-    new RegExp(
-      `^${template
-        .replace(/[$()*+.?[\\\]^{|}]/g, '\\$&')
-        .replace(/%([^%]*)%/g, parseStringReplacer)}$`,
-    ),
-  );
+  const array = s.match(createMatcher(template));
   /** 解析結果 */
   const result = Object.fromEntries(
-    Array.from(template.matchAll(/%([^%]*)%/g), function ([, key]) {
+    Array.from(template.matchAll(keyRegularExpression), function ([, key]) {
       return [key, array?.groups?.[key] ?? null] as const;
     }),
   );
