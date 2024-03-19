@@ -5,11 +5,11 @@
   },
   "description": "Custom Exception Class",
   "devDependencies": {
-    "@types/node": "^20.11.25",
-    "@vitest/coverage-v8": "^1.3.1",
-    "typescript": "^5.4.2",
-    "vite": "^5.1.5",
-    "vitest": "^1.3.1"
+    "@types/node": "^20.11.29",
+    "@vitest/coverage-v8": "^1.4.0",
+    "typescript": "~5.3.3",
+    "vite": "^5.1.6",
+    "vitest": "^1.4.0"
   },
   "exports": {
     ".": {
