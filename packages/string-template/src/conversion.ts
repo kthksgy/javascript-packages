@@ -4,7 +4,7 @@
 export type ConvertPathTemplateIntoStringTemplateOutput<
   T extends string,
   KeyPrefix extends string,
-  KeySuffix extends string,
+  KeySuffix extends string = '',
 > = T extends `${infer Former}/${infer Latter}`
   ? `${ConvertPathTemplateIntoStringTemplateOutput<Former, KeyPrefix, KeySuffix>}/${ConvertPathTemplateIntoStringTemplateOutput<Latter, KeyPrefix, KeySuffix>}`
   : T extends `${KeyPrefix}${infer Key}${KeySuffix}`
