@@ -34,6 +34,25 @@ export type StringTemplateKeyTuple<T extends string> =
       : [Key, ...StringTemplateKeyTuple<Suffix>]
     : [];
 
+/**
+ * 文字列テンプレートパラメーター
+ */
+export type StringTemplateParameters<T extends string, Value = any> = Record<
+  StringTemplateKey<T>,
+  Value
+>;
+
+/**
+ * 文字列テンプレートタイプ
+ * 文字列テンプレートの文字列リテラルをTypeScriptの型に変換する。
+ */
+export type StringTemplateType<T extends string> =
+  T extends `${infer Former}%${infer Key}%${infer Latter}`
+    ? Key extends ''
+      ? `${Former}%%${StringTemplateType<Latter>}`
+      : `${Former}${string}${StringTemplateType<Latter>}`
+    : T;
+
 /** キー(`%key%`)の正規表現 */
 const keyRegularExpression = /%([^%]*)%/g;
 /** 文字列テンプレートに対応するマッチャー */
@@ -66,7 +85,7 @@ export function createMatcher<T extends string>(template: T) {
  */
 export function createString<T extends string>(
   template: T,
-  parameters: Record<StringTemplateKey<T>, any>,
+  parameters: StringTemplateParameters<T>,
   strict = false,
 ) {
   return template.replace(keyRegularExpression, function (_, g1: string) {
@@ -85,7 +104,7 @@ export function createString<T extends string>(
     } else {
       return '%';
     }
-  });
+  }) as StringTemplateType<T>;
 }
 
 function createStringReducer(parameters: any, key: string) {
@@ -100,7 +119,7 @@ function createStringReducer(parameters: any, key: string) {
  */
 export function createStringStrictly<T extends string>(
   template: T,
-  parameters: Record<StringTemplateKey<T>, any>,
+  parameters: StringTemplateParameters<T>,
 ) {
   return createString(template, parameters, true);
 }
@@ -146,7 +165,7 @@ export function parseString<T extends string>(template: T, s: string) {
   );
   // `%%`パターンを削除する。
   delete result[''];
-  return result as Record<StringTemplateKey<T>, string | null>;
+  return result as StringTemplateParameters<T, string | null>;
 }
 
 function parseStringReplacer(_: string, g1: string) {
@@ -168,5 +187,5 @@ export function parseStringStrictly<T extends string>(template: T, s: string) {
       throw new Error(`"${s}" does not match '${template}', because "${key}" is not found.`);
     }
   }
-  return result as Record<StringTemplateKey<T>, string>;
+  return result as StringTemplateParameters<T, string>;
 }
