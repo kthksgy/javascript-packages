@@ -35,36 +35,38 @@ function hasStack<T>(instance: T): instance is T & { stack: string } {
  * 通常の例外と区別するための独自の例外クラス。
  */
 export class Mishap extends Error {
+  /** キャプション */
+  caption?: string;
   /** コード */
   code: string;
-  /** データ */
-  data?: MishapData;
+  /** HTTPレスポンスステータスコード */
+  http?: number;
+  /** ラベル */
+  label?: string;
+  /** パラメーター */
+  parameters?: object;
   /** タイムスタンプ */
   timestamp: Date;
 
-  constructor(code: string, message: string, options?: MishapOptions) {
+  constructor(code: string, options?: MishapOptions) {
+    let message: string = code;
+    if (options?.caption) {
+      message += ' ' + options.caption;
+    }
+    if (options?.parameters) {
+      message += ' ' + JSON.stringify(options.parameters);
+    }
     super(message, options);
 
-    this.code = code || Mishap.DEFAULT_CODE;
-    this.data = options?.data;
+    this.caption = options?.caption;
+    this.code = Mishap.buildCode(code);
+    this.http = options?.http;
+    this.label = Mishap.buildLabel(options?.label);
+    this.parameters = options?.parameters;
     this.timestamp = options?.timestamp ?? new Date();
 
     this.name = Mishap.name + '[' + this.code + ']';
     this.stack = concatenateStacks(this, options?.cause);
-  }
-
-  /**
-   * ベースコード
-   * コードフラグメントを除くコードの基幹部分。
-   * ベースコード同士を比較する事で、異なるインスタンスのエラーの種類を比較できる。
-   * @example
-   * ```
-   * const mishap = new Mishap('code#codeFragment', ...);
-   * console.log(mishap.baseCode); // => 'code'
-   * ```
-   */
-  get baseCode() {
-    return this.code.split(Mishap.CODE_FRAGMENT_MARKER, 1)[0];
   }
 
   /**
@@ -75,148 +77,141 @@ export class Mishap extends Error {
     const causes = [];
     let cause: any = this.cause;
     while (cause) {
-      causes.unshift(cause);
-      cause = 'cause' in cause ? cause.cause : null;
+      if (cause !== null && cause !== undefined) {
+        causes.unshift(cause);
+        if (typeof cause === 'object' && 'cause' in cause) {
+          cause = cause.cause;
+        } else {
+          cause = null;
+        }
+      } else {
+        break;
+      }
     }
     return causes;
   }
 
-  /** HTTPレスポンスステータスコード */
-  get httpStatus() {
-    return this.data?.httpStatus;
-  }
-
-  /** ネイティブのコード */
-  get nativeCode() {
-    return this.data?.nativeCode;
-  }
-
-  /** ネイティブのメッセージ */
-  get nativeMessage() {
-    return this.data?.nativeMessage;
-  }
-
   /**
-   * コードフラグメントをコードに追加する。
-   * コードのみ異なる新しいインスタンスを返す。
-   * @param codeFragments コードフラグメント
+   * ラベルを追加する。ラベルのみ異なる新しいインスタンスを返す。
+   * @param labels ラベル
+   * @returns ラベルのみ異なる新しいインスタンス
    */
-  addCodeFragment(...codeFragments: Array<string>) {
-    return new Mishap(Mishap.buildCode(this.code, ...codeFragments), this.message, {
+  addLabel(...labels: Array<string>) {
+    return new Mishap(Mishap.buildCode(this.code), {
+      caption: this.caption,
       cause: this.cause,
-      data: this.data,
+      http: this.http,
+      label: Mishap.buildLabel(this.label, ...labels),
+      parameters: this.parameters,
       timestamp: this.timestamp,
     });
   }
 
-  /** コードフラグメントの区切り文字 */
-  static readonly CODE_FRAGMENT_DELIMITER = '!';
-  /** コードフラグメントの開始文字 */
-  static readonly CODE_FRAGMENT_MARKER = '#';
+  toObject() {
+    return {
+      caption: this.caption,
+      code: this.code,
+      http: this.http,
+      label: this.label,
+      parameters: this.parameters,
+      timestamp: this.timestamp.getTime(),
+    };
+  }
+
+  /** ラベルの区切り文字 */
+  static readonly LABEL_DELIMITER = '!';
+  /** ラベルの接頭辞 */
+  static readonly LABEL_PREFIX = '#';
   /** 既定のコード */
-  static readonly DEFAULT_CODE = '???';
+  static readonly DEFAULT_CODE = 'MISHAP';
 
   /**
    * コードを作成する。
-   * @param code 基幹となるコード
-   * @param codeFragments コードフラグメント
-   * @returns コード
+   * @param code 使用可能な文字のみで構成されたコード
+   * @returns コード(空文字列の場合は既定のコード)
    */
-  static buildCode(code: string, ...codeFragments: Array<string>) {
-    if (!code) {
-      console.warn(`コード("${code}")の代わりに既定のコード(${Mishap.DEFAULT_CODE})を使用します。`);
-      code = Mishap.DEFAULT_CODE;
+  static buildCode(code: string | undefined) {
+    if (!code || code.includes(Mishap.LABEL_DELIMITER) || code.includes(Mishap.LABEL_PREFIX)) {
+      console.warn(
+        `コード("${code}")は使用不可能であるため既定のコード("${Mishap.DEFAULT_CODE}")を使用します。`,
+      );
+      return Mishap.DEFAULT_CODE;
+    } else {
+      return code;
     }
-
-    if (codeFragments.length > 0) {
-      /** コードフラグメント */
-      let codeFragment = Mishap.buildCodeFragment(...codeFragments);
-      if (
-        code.includes(Mishap.CODE_FRAGMENT_MARKER) &&
-        codeFragment.startsWith(Mishap.CODE_FRAGMENT_MARKER)
-      ) {
-        codeFragment = Mishap.CODE_FRAGMENT_DELIMITER + codeFragment.slice(1);
-      }
-      code += codeFragment;
-    }
-
-    return code;
   }
 
   /**
-   * コードフラグメントを作成する。
-   * @param codeFragments コードフラグメント
-   * @returns コードフラグメント
+   * ラベルを作成する。
+   * @param labels ラベルの配列
+   * @returns ラベル(空文字列の場合は`undefined`)
    */
-  static buildCodeFragment(...codeFragments: Array<string>) {
-    /** コードフラグメント */
-    let codeFragment = '';
-    for (let i = 0; i < codeFragments.length; i++) {
-      /** 部分文字列の接頭辞 */
-      const prefix = i === 0 ? Mishap.CODE_FRAGMENT_MARKER : Mishap.CODE_FRAGMENT_DELIMITER;
-
-      let suffix = codeFragments[i];
-      if (
-        suffix.startsWith(Mishap.CODE_FRAGMENT_DELIMITER) ||
-        suffix.startsWith(Mishap.CODE_FRAGMENT_MARKER)
-      ) {
-        suffix = suffix.slice(1);
-      }
-
-      if (prefix && suffix) {
-        codeFragment += prefix + suffix;
+  static buildLabel(...labels: Array<string | undefined>) {
+    /** ラベル */
+    let label = '';
+    for (let i = 0; i < labels.length; i++) {
+      const l = labels[i];
+      if (!l || l.includes(Mishap.LABEL_DELIMITER)) {
+        console.warn(`${i + 1}つ目のラベル("${l}")は使用不可能であるため省略します。`);
       } else {
-        console.warn(`コードフラグメント("${prefix}${suffix}")はコードに追加されませんでした。`);
+        label += (label.length > 0 ? Mishap.LABEL_DELIMITER : '') + l;
       }
     }
-    return codeFragment;
+    return label || undefined;
   }
 
   static fromObject(instance?: Record<string, unknown>) {
     if (
       instance &&
       typeof instance === 'object' &&
+      (instance.caption === undefined || typeof instance.caption === 'string') &&
       typeof instance.code === 'string' &&
-      typeof instance.message === 'string' &&
-      (instance.data === undefined ||
-        (instance.data !== null && typeof instance.data === 'object')) &&
+      (instance.http === undefined || typeof instance.http === 'number') &&
+      (instance.label === undefined || typeof instance.label === 'string') &&
+      (instance.parameters === undefined ||
+        (instance.parameters !== null && typeof instance.parameters === 'object')) &&
       typeof instance.timestamp === 'number'
     ) {
-      return new Mishap(instance.code, instance.message, {
-        data: instance.data as MishapData | undefined,
+      return new Mishap(instance.code, {
+        caption: instance.caption,
+        http: instance.http,
+        label: instance.label,
+        parameters: instance.parameters,
         timestamp: new Date(instance.timestamp),
       });
     } else {
-      return new Mishap(
-        Mishap.DEFAULT_CODE,
-        '`fromObject`がオブジェクト以外に対して実行されました。',
-        { cause: instance },
-      );
+      return new Mishap(Mishap.DEFAULT_CODE, {
+        caption: '`fromObject`が意図しない形式です。',
+        cause: instance,
+        http: 400,
+      });
     }
   }
-
-  static of(code: string, codeFragment: string, options?: MishapOptions & { message?: string }) {
-    return new Mishap(Mishap.buildCode(code, codeFragment), options?.message ?? '', options);
-  }
-}
-
-export interface MishapData {
-  /** HTTPレスポンスステータスコード */
-  httpStatus?: number | null;
-  /** ネイティブのコード */
-  nativeCode?: string | null;
-  /** ネイティブのメッセージ */
-  nativeMessage?: string | null;
-  /** 任意のデータ */
-  [key: string]: unknown;
 }
 
 /**
  * ミスハップオプション
  */
 export interface MishapOptions extends ErrorOptions {
-  /** データ */
-  data?: MishapData;
+  /**
+   * キャプション
+   * エラーの説明をする短い文字列。
+   * 秘匿情報を含めない。
+   */
+  caption?: string;
+  /** HTTPレスポンスステータスコード */
+  http?: number;
+  /**
+   * パラメーター
+   * エラーのパラメーターオブジェクト。
+   * 秘匿情報は含めない。
+   */
+  parameters?: object;
+  /**
+   * ラベル
+   * エラーの初期化位置を埋め込むためのラベル。
+   */
+  label?: string;
   /** タイムスタンプ */
   timestamp?: Date;
 }
