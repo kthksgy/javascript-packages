@@ -49,6 +49,7 @@ export class Mishap extends Error {
   timestamp: Date;
 
   constructor(code: string, options?: MishapOptions) {
+    code = Mishap.buildCode(code);
     let message: string = code;
     if (options?.caption) {
       message += ' ' + options.caption;
@@ -59,7 +60,7 @@ export class Mishap extends Error {
     super(message, options);
 
     this.caption = options?.caption;
-    this.code = Mishap.buildCode(code);
+    this.code = code;
     this.http = options?.http;
     this.label = Mishap.buildLabel(options?.label);
     this.parameters = options?.parameters;
@@ -118,12 +119,14 @@ export class Mishap extends Error {
     };
   }
 
+  /** 既定のコード */
+  static readonly DEFAULT_CODE = 'MISHAP';
   /** ラベルの区切り文字 */
   static readonly LABEL_DELIMITER = '!';
   /** ラベルの接頭辞 */
   static readonly LABEL_PREFIX = '#';
-  /** 既定のコード */
-  static readonly DEFAULT_CODE = 'MISHAP';
+  /** クラス名 */
+  static readonly name = 'Mishap';
 
   /**
    * コードを作成する。
