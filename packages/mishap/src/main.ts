@@ -134,7 +134,9 @@ export class Mishap extends Error {
    * @returns コード(空文字列の場合は既定のコード)
    */
   static buildCode(code: string | undefined) {
-    if (!code || code.includes(Mishap.LABEL_DELIMITER) || code.includes(Mishap.LABEL_PREFIX)) {
+    if (!code) {
+      return Mishap.DEFAULT_CODE;
+    } else if (code.includes(Mishap.LABEL_DELIMITER) || code.includes(Mishap.LABEL_PREFIX)) {
       console.warn(
         `コード("${code}")は使用不可能であるため既定のコード("${Mishap.DEFAULT_CODE}")を使用します。`,
       );
@@ -154,8 +156,11 @@ export class Mishap extends Error {
     let label = '';
     for (let i = 0; i < labels.length; i++) {
       const l = labels[i];
-      if (!l || l.includes(Mishap.LABEL_DELIMITER)) {
+      if (!l) {
+        continue;
+      } else if (l.includes(Mishap.LABEL_DELIMITER)) {
         console.warn(`${i + 1}つ目のラベル("${l}")は使用不可能であるため省略します。`);
+        continue;
       } else {
         label += (label.length > 0 ? Mishap.LABEL_DELIMITER : '') + l;
       }
