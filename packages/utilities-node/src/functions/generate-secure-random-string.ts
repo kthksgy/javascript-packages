@@ -9,9 +9,9 @@ const MAX_RANDOM_VALUE =
   1;
 
 /**
- * 暗号強度の強い乱数生成器を使用して、英字(大文字／小文字)と数字のみを含む乱文字列を生成する。
+ * 暗号強度の強い乱数生成器を使用して、英字(大文字／小文字)と数字のみを含むランダム文字列を生成する。
  * @param length 文字数
- * @returns {string} 乱文字列
+ * @returns {string} ランダム文字列
  */
 export function generateSecureRandomString(length: number) {
   /** 文字列 */

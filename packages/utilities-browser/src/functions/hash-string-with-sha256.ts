@@ -1,5 +1,5 @@
 /**
- * 文字列をSecure Hash Algorithm 256でハッシュ化する。
+ * 文字列をSecure Hash Algorithm 256(SHA-256)でハッシュ化する。
  * @returns 8ビット符号なし整数配列
  */
 export async function hashStringWithSha256(s: string) {
