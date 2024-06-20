@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 import { ALPHANUMERIC_CHARACTERS } from '@kthksgy/utilities';
 
 /** 乱数の最大有効値 */
@@ -11,12 +13,12 @@ const MAX_RANDOM_VALUE =
  * @param length 文字数
  * @returns {string} 乱文字列
  */
-export function generateSecureRandomString(length: number) {
+export default function generateSecureRandomString(length: number) {
   /** 文字列 */
   let s = '';
   while (s.length < length) {
     /** 乱数値 */
-    const randomValues = window.crypto.getRandomValues(new Uint8Array(length * 2));
+    const randomValues = crypto.randomBytes(length * 2);
     for (const randomValue of randomValues) {
       if (randomValue > MAX_RANDOM_VALUE) {
         continue;
