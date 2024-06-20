@@ -13,7 +13,7 @@ const MAX_RANDOM_VALUE =
  * @param length 文字数
  * @returns {string} 乱文字列
  */
-export default function generateSecureRandomString(length: number) {
+export function generateSecureRandomString(length: number) {
   /** 文字列 */
   let s = '';
   while (s.length < length) {

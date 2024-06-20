@@ -1,0 +1,13 @@
+import * as crypto from 'crypto';
+
+/**
+ * 文字列をSecure Hash Algorithm 256(SHA-256)でハッシュ化する。
+ * @returns 8ビット符号なし整数配列
+ */
+export async function hashStringWithSha256(s: string) {
+  return crypto.webcrypto.subtle
+    .digest('SHA-256', new TextEncoder().encode(s))
+    .then(function (arrayBuffer) {
+      return new Uint8Array(arrayBuffer);
+    });
+}
