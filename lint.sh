@@ -1,6 +1,6 @@
 #!/bin/bash -ue
 # ドライランコンパイル対象のディレクトリ名
-DIRECTORY_NAMES=('mishap' 'string-template')
+DIRECTORY_NAMES=('mishap' 'string-template' 'utilities' 'utilities-browser')
 
 # `packages`ディレクトリを指定された順でドライランコンパイルする。
 for DIRECTORY_NAME in ${DIRECTORY_NAMES[@]};
