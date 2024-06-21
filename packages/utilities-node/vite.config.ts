@@ -16,6 +16,7 @@ export default defineConfig(function () {
       lib: {
         entry: resolve(__dirname, 'src', 'index.ts'),
         fileName: 'index',
+        formats: ['es', 'cjs'], // Node.jsライブラリとしてビルドするために設定する。
         name: getPackageNameSpaceName(packageParameters.name),
       },
       minify: false,
@@ -39,6 +40,7 @@ export default defineConfig(function () {
         },
       },
       sourcemap: true,
+      ssr: true, // Node.jsライブラリとしてビルドするために`true`に設定する。
     },
 
     define: {
