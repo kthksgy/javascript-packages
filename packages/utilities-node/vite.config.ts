@@ -25,6 +25,7 @@ export default defineConfig(function () {
           ...(packageParameters?.peerDependencies
             ? Object.keys(packageParameters.peerDependencies)
             : []),
+          'node:crypto',
         ],
         output: {
           globals: {
@@ -35,6 +36,7 @@ export default defineConfig(function () {
                   }),
                 )
               : {}),
+            'node:crypto': 'crypto',
           },
         },
       },

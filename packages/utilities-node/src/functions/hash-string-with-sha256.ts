@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 
 import { convertLatin1StringIntoBase64String } from './convert-latin1-string-into-base64-string';
 
