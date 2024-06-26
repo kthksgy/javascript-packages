@@ -30,7 +30,7 @@
   "module": "./lib/index.js",
   "name": "@kthksgy/utilities-browser",
   "peerDependencies": {
-    "@kthksgy/utilities": "^0.0.2"
+    "@kthksgy/utilities": "~0.0.2"
   },
   "repository": {
     "directory": "packages/utilities-browser",
@@ -45,5 +45,5 @@
   },
   "type": "module",
   "types": "./lib/index.d.ts",
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
