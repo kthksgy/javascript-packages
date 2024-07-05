@@ -1,11 +1,18 @@
 #!/bin/bash -ue
 # ドライランコンパイル対象のディレクトリ名
-DIRECTORY_NAMES=('mishap' 'string-template' 'utilities' 'utilities-browser')
+DIRECTORY_NAMES=(
+  'common'
+  'mishap'
+  'string-template'
+  'utilities'
+  'utilities-browser'
+  'utilities-node'
+)
 
 # `packages`ディレクトリを指定された順でドライランコンパイルする。
 for DIRECTORY_NAME in ${DIRECTORY_NAMES[@]};
 do
-  echo "\"${DIRECTORY_NAME}\"パッケージのコンパイルを行います。"
+  echo "\"@kthksgy/${DIRECTORY_NAME}\"パッケージのコンパイルを行います。"
   (cd packages/${DIRECTORY_NAME} && tsc --noEmit)
 done
 
