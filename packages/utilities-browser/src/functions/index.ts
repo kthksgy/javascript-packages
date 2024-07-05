@@ -1,4 +1,5 @@
-export * from './convert-latin1-string-into-base64-string';
+export * from './from-base64-to-binary';
+export * from './from-binary-to-base64';
 export * from './generate-random-values';
 export * from './generate-secure-random-string';
 export * from './hash-string-with-sha256';
