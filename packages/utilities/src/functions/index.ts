@@ -1,3 +1,4 @@
+export * from './from-bytes-to-binary-string';
 export * from './generate-random-string';
 export * from './make-base64-string-url-safe';
 export * from './memoize';
