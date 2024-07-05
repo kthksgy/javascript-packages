@@ -1,4 +1,6 @@
-import { convertLatin1StringIntoBase64String } from './convert-latin1-string-into-base64-string';
+import { fromBytesToBinaryString } from '@kthksgy/utilities';
+
+import { fromBinaryToBase64 } from './from-binary-to-base64';
 
 /**
  * 文字列をSecure Hash Algorithm 256(SHA-256)でハッシュ化する。
@@ -8,8 +10,6 @@ export async function hashStringWithSha256(s: string) {
   return window.crypto.subtle
     .digest('SHA-256', new TextEncoder().encode(s))
     .then(function (arrayBuffer) {
-      return convertLatin1StringIntoBase64String(
-        String.fromCharCode(...new Uint8Array(arrayBuffer)),
-      );
+      return fromBinaryToBase64(fromBytesToBinaryString(arrayBuffer));
     });
 }
