@@ -5,10 +5,12 @@
   },
   "description": "Browser Utilities",
   "devDependencies": {
+    "@vitest/browser": "^1.6.0",
     "@vitest/coverage-v8": "^1.6.0",
     "typescript": "~5.4.5",
     "vite": "^5.3.1",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "webdriverio": "^8.39.1"
   },
   "exports": {
     ".": {
@@ -41,7 +43,7 @@
     "build": "vite build && tsc --emitDeclarationOnly --project tsconfig.build.json",
     "clean": "rm -rf coverage && rm -rf lib",
     "coverage": "vitest run --coverage",
-    "test": "vitest"
+    "test": "vitest --browser.headless --browser.name=chrome"
   },
   "type": "module",
   "types": "./lib/index.d.ts",
