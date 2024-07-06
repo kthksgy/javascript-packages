@@ -3,6 +3,8 @@ import { fromBytesToBinaryString } from '@kthksgy/utilities';
 import { fromBinaryToBase64 } from './from-binary-to-base64';
 
 /**
+ * @deprecated 代わりに`computeSha256Hash()`を使用する。
+ *
  * 文字列をSecure Hash Algorithm 256(SHA-256)でハッシュ化する。
  * @returns Base64文字列
  */
