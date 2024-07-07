@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
 import { fromBytesToBinaryString } from './from-bytes-to-binary-string';
+import { range } from './range';
 
 // `Hello World`は`48 65 6c 6c 6f 20 57 6f 72 6c 64`。
 
@@ -38,5 +39,14 @@ describe(`${fromBytesToBinaryString.name}()`, function () {
         new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64]),
       ),
     ).toBe('Hello World');
+  });
+
+  test('10MiBの8ビット符号無し整数配列をバイナリ文字列に変換できる', function () {
+    const input = new Uint8Array(10 * 1024 * 1024);
+    input.fill(0);
+    const expected = Array.from(range(10 * 1024 * 1024))
+      .map((_) => String.fromCharCode(0))
+      .join('');
+    expect(fromBytesToBinaryString(input)).toBe(expected);
   });
 });

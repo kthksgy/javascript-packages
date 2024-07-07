@@ -4,5 +4,16 @@
  * @returns バイナリ文字列
  */
 export function fromBytesToBinaryString(bytes: ArrayBuffer | Uint8Array) {
-  return String.fromCharCode(...(bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes));
+  /** 8ビット符号無し整数配列 */
+  const array = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : bytes;
+  /** チャンクサイズ */
+  const chunkSize = 8192;
+
+  /** バイナリ文字列 */
+  let binaryString = '';
+  for (let i = 0; i < array.length; i += chunkSize) {
+    binaryString += String.fromCharCode(...array.slice(i, i + chunkSize));
+  }
+
+  return binaryString;
 }
