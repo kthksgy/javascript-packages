@@ -1,5 +1,6 @@
 export * from './from-bytes-to-binary-string';
 export * from './from-percent-encoded';
+export * from './from-response-to-plain-object';
 export * from './generate-random-string';
 export * from './make-base64-string-url-safe';
 export * from './memoize';
