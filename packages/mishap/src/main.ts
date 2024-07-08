@@ -159,6 +159,36 @@ export class Mishap extends Error {
       }
     }
   }
+
+  /**
+   * `Response`から生成する。
+   * @param response レスポンス
+   * @param body ボディ(既に読み込み済みの場合)
+   * @returns ミスハップ
+   */
+  static async fromResponse(response: Response, body?: unknown) {
+    const cause = {
+      body: <any>undefined,
+      headers: Array.from(response.headers.entries()),
+      redirected: response.redirected,
+      status: response.status,
+      statusText: response.statusText,
+      type: response.type,
+      url: response.url,
+    };
+
+    // 可能であればボディを読み込む。
+    try {
+      body = response.bodyUsed ? body : await response.text();
+      if (typeof body === 'string' && body.length > 0) {
+        body = JSON.parse(body);
+      }
+    } finally {
+      cause.body = body;
+    }
+
+    return new Mishap(Mishap.DEFAULT_CODE, { cause: new Error(JSON.stringify(cause)) });
+  }
 }
 
 type JsonObject = { [Key in string]: JsonValue } & { [Key in string]?: JsonValue | undefined };
