@@ -1,4 +1,5 @@
 export * from './compute-hmac-sha1-signature';
+export * from './compute-sha256-hash';
 export * from './from-base64-to-binary';
 export * from './from-binary-to-base64';
 export * from './generate-random-values';
