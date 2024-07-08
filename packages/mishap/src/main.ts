@@ -48,7 +48,11 @@ function sanitizeAttributes(attributes: unknown) {
  * 通常の例外と区別するための独自の例外クラス。
  */
 export class Mishap extends Error {
-  /** 属性 */
+  /**
+   * #### 属性
+   * このミスハップ固有の情報を持つためのフィールド。
+   * 一般ユーザーに対しても公開される可能性があるため、秘密情報は含めない。
+   */
   attributes?: MishapAttributes;
   /** コード */
   code: string;
