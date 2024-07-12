@@ -42,7 +42,7 @@
     "build": "vite build && tsc --emitDeclarationOnly --project tsconfig.build.json",
     "clean": "rm -rf coverage && rm -rf lib",
     "coverage": "vitest run --coverage",
-    "test": "vitest"
+    "test": "vitest --typecheck"
   },
   "type": "module",
   "types": "./lib/index.d.ts",
