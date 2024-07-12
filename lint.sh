@@ -1,9 +1,6 @@
 #!/bin/bash -ue
 # ドライランコンパイル対象のディレクトリ名
 DIRECTORY_NAMES=(
-  'common'
-  'mishap'
-  'string-template'
   'utilities'
   'utilities-browser'
   'utilities-node'
