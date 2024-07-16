@@ -5,3 +5,4 @@ export * from './string-template';
 export * from './types';
 
 export * from './create-promise';
+export * from './semaphore';
