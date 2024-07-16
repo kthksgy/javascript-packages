@@ -5,10 +5,10 @@
   },
   "description": "Utilities",
   "devDependencies": {
-    "@vitest/coverage-v8": "^1.6.0",
-    "typescript": "~5.4.5",
-    "vite": "^5.3.1",
-    "vitest": "^1.6.0"
+    "@vitest/coverage-v8": "^2.0.3",
+    "typescript": "~5.5.3",
+    "vite": "^5.3.4",
+    "vitest": "^2.0.3"
   },
   "exports": {
     ".": {
