@@ -9,6 +9,8 @@ export class Semaphore {
   private maxExecutions: number;
   /** 現在の実行数 */
   private numberOfExecutions: number;
+  /** セマフォ全体の実行の終了で解決されるプロミス */
+  private promise: Readonly<{ promise: Promise<void>; resolve: { (): void } }> | null;
   /** 実行キュー */
   private queue: Array<
     Readonly<{
@@ -24,6 +26,7 @@ export class Semaphore {
   constructor(maxExecutions: number) {
     this.maxExecutions = maxExecutions;
     this.numberOfExecutions = 0;
+    this.promise = null;
     this.queue = [];
 
     this.execute = this.execute.bind(this);
@@ -31,6 +34,7 @@ export class Semaphore {
     this.getNumberOfExecutions = this.getNumberOfExecutions.bind(this);
     this.run = this.run.bind(this);
     this.setMaxExecutions = this.setMaxExecutions.bind(this);
+    this.wait = this.wait.bind(this);
   }
 
   /**
@@ -68,6 +72,8 @@ export class Semaphore {
    * 実行サイクルを開始する。
    */
   private async run() {
+    this.promise ??= createPromise<void>();
+
     while (this.queue.length > 0 && this.numberOfExecutions < this.maxExecutions) {
       const { execute, resolve, reject } = this.queue.shift()!;
       try {
@@ -79,6 +85,11 @@ export class Semaphore {
       } finally {
         this.numberOfExecutions--;
       }
+    }
+
+    if (this.numberOfExecutions === 0) {
+      this.promise?.resolve();
+      this.promise = null;
     }
   }
 
@@ -95,5 +106,13 @@ export class Semaphore {
         /* await */ this.run(); // `await`はしない。
       }
     }
+  }
+
+  /**
+   * 全ての実行が終了するまで待つ。
+   * @returns 全ての実行が終了した時に解決されるプロミス
+   */
+  async wait() {
+    return this.promise?.promise ?? Promise.resolve();
   }
 }
