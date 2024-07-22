@@ -12,7 +12,7 @@ function concatenateStacks(a: unknown, b: unknown) {
 
   return aStack && bStack
     ? aStack + '\n' + bStack.slice(bStack.indexOf('\n') + 1)
-    : aStack ?? bStack;
+    : (aStack ?? bStack);
 }
 
 /**
@@ -140,7 +140,7 @@ export class Mishap extends Error {
       }
 
       const timestamp = new Date(instance.timestamp);
-      if (Number.isSafeInteger(timestamp.getTime())) {
+      if (!Number.isSafeInteger(timestamp.getTime())) {
         throw new Mishap(Mishap.DEFAULT_CODE, {
           cause: instance.timestamp,
           message: `${JSON.stringify(instance.timestamp)} is not a valid date.`,
