@@ -10,4 +10,6 @@ export * from './is-every-value-of-iterator';
 export * from './is-iterable';
 export * from './is-some-value-of-iterator';
 export * from './map-iterator';
+export * from './pull-from-and-push-to-map';
+export * from './pull-from-and-push-to-set';
 export * from './semaphore';
