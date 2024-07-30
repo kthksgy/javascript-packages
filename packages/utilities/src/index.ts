@@ -4,8 +4,10 @@ export * from './mishap';
 export * from './string-template';
 export * from './types';
 
+export * from './count-graphemes';
 export * from './create-promise';
 export * from './filter-iterator';
+export * from './get-graphemes';
 export * from './is-every-value-of-iterator';
 export * from './is-iterable';
 export * from './is-some-value-of-iterator';
