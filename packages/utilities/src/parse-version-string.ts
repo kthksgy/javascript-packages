@@ -6,6 +6,12 @@
  * @see https://semver.org/lang/ja/
  */
 export function parseVersionString(versionString: string) {
+  /**
+   * Semantic Versioning 2.0.0の正規表現
+   * @see https://semver.org
+   * > #### Is there a suggested regular expression (RegEx) to check a SemVer string?
+   * > There are two. ……
+   */
   const re =
     /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
