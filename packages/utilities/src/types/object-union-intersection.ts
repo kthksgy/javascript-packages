@@ -12,5 +12,15 @@ import { KeyOfUnion } from './key-of-union';
  * ```
  */
 export type ObjectUnionIntersection<T extends object> = {
-  [K in KeyOfUnion<T>]: T extends infer U ? (K extends keyof U ? T[K] : undefined) : never;
-};
+  [K in KeyOfUnion<T> as K extends keyof T ? K : never]: T extends infer U
+    ? K extends keyof U
+      ? T[K]
+      : never
+    : never;
+} & Partial<{
+  [K in KeyOfUnion<T> as K extends keyof T ? never : K]: T extends infer U
+    ? K extends keyof U
+      ? T[K]
+      : never
+    : never;
+}>;
