@@ -23,15 +23,30 @@ describe(`${toDuosexagesimal.name}()`, function () {
     [218340105584895, 'zzzzzzzz'],
     [218340105584896, '100000000'],
   ])('[%#] `%d`を`%s`に変換できる', function (decimal, duosexagesimal) {
-    expect(toDuosexagesimal(decimal)).toBe(duosexagesimal);
+    const actual1 = toDuosexagesimal(decimal);
+    const actual2 = toDuosexagesimal(BigInt(decimal));
+    expect(actual1).toBe(duosexagesimal);
+    expect(actual2).toBe(duosexagesimal);
+    expect(actual1).toBe(actual2);
   });
 
   test('`Number.MAX_SAFE_INTEGER(9007199254740991)`を入力できる', function () {
     expect(Number.MAX_SAFE_INTEGER).toBe(9007199254740991);
     expect(toDuosexagesimal(Number.MAX_SAFE_INTEGER)).toBe('fFgnDxSe7');
+    expect(toDuosexagesimal(BigInt(Number.MAX_SAFE_INTEGER))).toBe('fFgnDxSe7');
+  });
+
+  test('`BigInt(Number.MAX_SAFE_INTEGER) + 1n`を入力できる', function () {
+    expect(toDuosexagesimal(BigInt(Number.MAX_SAFE_INTEGER) + 1n)).toBe('fFgnDxSe8');
   });
 
   test('0未満の整数を入力できない', function () {
+    expect(function () {
+      toDuosexagesimal(-1);
+    }).toThrowError(TypeError);
+  });
+
+  test('0未満の長整数を入力できない', function () {
     expect(function () {
       toDuosexagesimal(-1);
     }).toThrowError(TypeError);
