@@ -1,7 +1,7 @@
 export * from './constants';
 export * from './functions';
 export * from './mishap';
-export * from './string-template';
+export * from './text-template';
 export * from './types';
 
 export * from './compare-versions';
