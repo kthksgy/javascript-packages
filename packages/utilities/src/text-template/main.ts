@@ -79,7 +79,7 @@ export type TextTemplateType<T extends string> =
 /**
  * @deprecated `TextTemplateType`に置き換えられました。
  */
-export type _StringTemplateType<T extends string> = TextTemplateType<T>;
+export type StringTemplateType<T extends string> = TextTemplateType<T>;
 
 /** キー(`%key%`)の正規表現 */
 const keyRegularExpression = /%([^%]*)%/g;
@@ -87,11 +87,11 @@ const keyRegularExpression = /%([^%]*)%/g;
 const matchers = new Map<string, RegExp>();
 
 /**
- * テキストテンプレートに対応するマッチャーを作成する。
+ * テキストテンプレートに対応する正規表現を作成する。
  * @param textTemplate テキストテンプレート(例: `"/users/%userId%/articles/%articleId%"`)
- * @returns マッチャー
+ * @returns 正規表現
  */
-export function createMatcher(textTemplate: string) {
+export function createTextTemplateRegularExpression(textTemplate: string) {
   let matcher = matchers.get(textTemplate);
   if (!matcher) {
     matcher = new RegExp(
@@ -105,6 +105,11 @@ export function createMatcher(textTemplate: string) {
 }
 
 /**
+ * @deprecated `createTextTemplateRegularExpression`に置き換えられました。
+ */
+export const createMatcher = createTextTemplateRegularExpression;
+
+/**
  * テキストテンプレートを用いて文字列を作成する。
  * @param textTemplate テキストテンプレート(例: `"/users/%userId%/articles/%articleId%"`)
  * @param parameters パラメーター(例: `{ articleId: "1234", userId: "abcd" }`)
@@ -116,17 +121,17 @@ export function createString<T extends string>(
   parameters: TextTemplateParameters<T>,
   strict = false,
 ) {
-  return textTemplate.replace(keyRegularExpression, function (_, g1: string) {
-    if (g1.length > 0) {
-      let parameter = parameters[g1 as TextTemplateKey<T>];
-      parameter ??= g1.split('.').reduce<any>(createStringReducer, parameters);
+  return textTemplate.replace(keyRegularExpression, function (_, key: string) {
+    if (key.length > 0) {
+      let parameter = parameters[key as TextTemplateKey<T>];
+      parameter ??= key.split('.').reduce<any>(createStringReducer, parameters);
       if (parameter !== undefined) {
         return String(parameter);
       } else {
         if (strict) {
-          throw new Error(`"${g1}" is not defined in parameters.`);
+          throw new Error(`"${key}" is not defined in parameters.`);
         } else {
-          return '{' + g1 + '}';
+          return '{' + key + '}';
         }
       }
     } else {
@@ -194,7 +199,7 @@ export const getStringTemplateKeys = getTextTemplateKeys;
  */
 export function parseString<T extends string>(textTemplate: T, target: string) {
   /** 照合配列 */
-  const array = target.match(createMatcher(textTemplate));
+  const array = target.match(createTextTemplateRegularExpression(textTemplate));
   /** 解析結果 */
   const result = Object.fromEntries(
     Array.from(textTemplate.matchAll(keyRegularExpression), function ([, key]) {
@@ -206,8 +211,8 @@ export function parseString<T extends string>(textTemplate: T, target: string) {
   return result as TextTemplateParameters<T, string | null>;
 }
 
-function parseStringReplacer(_: string, g1: string) {
-  return g1.length > 0 ? `(?<${g1}>.*)` : '%';
+function parseStringReplacer(_: string, key: string) {
+  return key.length > 0 ? `(?<${key}>.*)` : '%';
 }
 
 /**
