@@ -1,15 +1,24 @@
 /**
  * `convertPathTemplateIntoStringTemplate`関数のアウトプット
  */
-export type ConvertPathTemplateIntoStringTemplateOutput<
+export type FromPathPatternToStringTemplateOutput<
   T extends string,
   KeyPrefix extends string,
   KeySuffix extends string = '',
 > = T extends `${infer Former}/${infer Latter}`
-  ? `${ConvertPathTemplateIntoStringTemplateOutput<Former, KeyPrefix, KeySuffix>}/${ConvertPathTemplateIntoStringTemplateOutput<Latter, KeyPrefix, KeySuffix>}`
+  ? `${FromPathPatternToStringTemplateOutput<Former, KeyPrefix, KeySuffix>}/${FromPathPatternToStringTemplateOutput<Latter, KeyPrefix, KeySuffix>}`
   : T extends `${KeyPrefix}${infer Key}${KeySuffix}`
     ? `%${Key}%`
     : T;
+
+/**
+ * @deprecated `FromPathPatternToStringTemplateOutput`に置き換えられました。
+ */
+export type ConvertPathTemplateIntoStringTemplateOutput<
+  T extends string,
+  KeyPrefix extends string,
+  KeySuffix extends string = '',
+> = FromPathPatternToStringTemplateOutput<T, KeyPrefix, KeySuffix>;
 
 /** 正規表現の特殊文字の正規表現 */
 const specialCharacterRegularExpression = /[$()*+.?[\\\]^{|}]/g;
@@ -18,12 +27,12 @@ const specialCharacterRegularExpression = /[$()*+.?[\\\]^{|}]/g;
 const pathTemplateKeyRegularExpressions = new Map<`${string} ${string}`, RegExp>();
 
 /**
- * パステンプレートキーの正規表現を作成する。
+ * パスパターンキーの正規表現を作成する。
  * @param keyPrefix キーのプレフィックス
  * @param keySuffix キーのサフィックス
  * @returns 正規表現
  */
-export function createPathTemplateKeyRegularExpression<
+export function createPathPatternKeyRegularExpression<
   KeyPrefix extends string,
   KeySuffix extends string = '',
 >(keyPrefix: KeyPrefix, keySuffix: KeySuffix = <KeySuffix>'') {
@@ -43,11 +52,16 @@ export function createPathTemplateKeyRegularExpression<
 }
 
 /**
- * パステンプレートを文字列テンプレートに変換する。
- * @param template パステンプレート(例: `/a/$b/c/$d`, `/a/:b:/c/:d:`)
+ * @deprecated `createPathPatternKeyRegularExpression`に置き換えられました。
+ */
+export const createPathTemplateKeyRegularExpression = createPathPatternKeyRegularExpression;
+
+/**
+ * パスパターンをテキストテンプレートに変換する。
+ * @param template パスパターン(例: `/a/$b/c/$d`, `/a/:b:/c/:d:`)
  * @param keyPrefix キーのプレフィックス(例: `$`, `:`)
  * @param keySuffix キーのサフィックス(例: 空文字, `:`)
- * @returns 文字列テンプレート(例: `/a/%b%/c/%d%`, `/a/%b%/c/%d%`)
+ * @returns テキストテンプレート(例: `/a/%b%/c/%d%`, `/a/%b%/c/%d%`)
  *
  * @example
  * ```typescript
@@ -65,16 +79,21 @@ export function createPathTemplateKeyRegularExpression<
  * );
  * ```
  */
-export function convertPathTemplateIntoStringTemplate<
+export function fromPathPatternToTextTemplate<
   T extends string,
   KeyPrefix extends string,
   KeySuffix extends string = '',
 >(template: T, keyPrefix: KeyPrefix, keySuffix = <KeySuffix>'') {
   return template.replace(
-    createPathTemplateKeyRegularExpression(keyPrefix, keySuffix),
+    createPathPatternKeyRegularExpression(keyPrefix, keySuffix),
     replacer,
-  ) as ConvertPathTemplateIntoStringTemplateOutput<T, KeyPrefix, KeySuffix>;
+  ) as FromPathPatternToStringTemplateOutput<T, KeyPrefix, KeySuffix>;
 }
+
+/**
+ * @deprecated `fromPathPatternToTextTemplate`に置き換えられました。
+ */
+export const convertPathTemplateIntoStringTemplate = fromPathPatternToTextTemplate;
 
 function replacer(_: any, key: string) {
   return '%' + key + '%';

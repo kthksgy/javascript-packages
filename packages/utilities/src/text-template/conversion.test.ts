@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { convertPathTemplateIntoStringTemplate } from './conversion';
+import { fromPathPatternToTextTemplate } from './conversion';
 
-describe(`${convertPathTemplateIntoStringTemplate.name}()`, () => {
+describe(`${fromPathPatternToTextTemplate.name}()`, () => {
   const cases: Array<[string, string, string, string]> = [
     ['', '$', '', ''],
     ['a', '$', '', 'a'],
@@ -35,25 +35,25 @@ describe(`${convertPathTemplateIntoStringTemplate.name}()`, () => {
   ];
 
   test.each(cases)(
-    `${convertPathTemplateIntoStringTemplate.name}('%s', '%s', '%s') === '%s'`,
+    `${fromPathPatternToTextTemplate.name}('%s', '%s', '%s') === '%s'`,
     function (template, keyPrefix, keySuffix, output) {
-      expect(convertPathTemplateIntoStringTemplate(template, keyPrefix, keySuffix)).toBe(output);
+      expect(fromPathPatternToTextTemplate(template, keyPrefix, keySuffix)).toBe(output);
     },
   );
 
   test.each(cases)(
-    `${convertPathTemplateIntoStringTemplate.name}('/%s', '%s', '%s') === '/%s'`,
+    `${fromPathPatternToTextTemplate.name}('/%s', '%s', '%s') === '/%s'`,
     function (template, keyPrefix, keySuffix, output) {
-      expect(convertPathTemplateIntoStringTemplate('/' + template, keyPrefix, keySuffix)).toBe(
+      expect(fromPathPatternToTextTemplate('/' + template, keyPrefix, keySuffix)).toBe(
         '/' + output,
       );
     },
   );
 
   test.each(cases)(
-    `${convertPathTemplateIntoStringTemplate.name}('%s/', '%s', '%s') === '%s/'`,
+    `${fromPathPatternToTextTemplate.name}('%s/', '%s', '%s') === '%s/'`,
     function (template, keyPrefix, keySuffix, output) {
-      expect(convertPathTemplateIntoStringTemplate(template + '/', keyPrefix, keySuffix)).toBe(
+      expect(fromPathPatternToTextTemplate(template + '/', keyPrefix, keySuffix)).toBe(
         output + '/',
       );
     },
