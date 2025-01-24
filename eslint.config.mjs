@@ -1,6 +1,6 @@
 /**
  * @file ESLintの設定ファイル
- * @version 2.0.0-alpha+1
+ * @version 2.0.0
  *
  * @tutorial VSCodeで使用している場合、変更を行った後は必ず再起動する。
  * @tutorial VSCodeで使用している場合、`eslint.workingDirectories`を設定する。
@@ -26,15 +26,16 @@ import tseslint from "typescript-eslint";
 # 必須のパッケージをインストールする。
 # Yarnを使用する場合は`yarn add`にコマンドを変更する。
 $ npm i -D \
-  '@eslint/js@~9.16.0' \
+  '@eslint/js@~9.18.0' \
   'confusing-browser-globals@~1.0.11' \
-  'eslint-config-prettier@~9.1.0' \
+  'eslint-config-prettier@~10.0.1' \
   'eslint-import-resolver-typescript@~3.7.0' \
-  'eslint-plugin-import-x@~4.5.0' \
-  'eslint-plugin-prettier@~5.2.1' \
-  'eslint-plugin-react@~7.37.2' \
+  'eslint-plugin-import-x@~4.6.1' \
+  'eslint-plugin-prettier@~5.2.3' \
+  'eslint-plugin-react@~7.37.4' \
   'eslint-plugin-react-hooks@~5.1.0' \
-  'globals@15.13.0'
+  'globals@~15.14.0' \
+  'typescript-eslint@~8.21.0'
 ```
 */
 
