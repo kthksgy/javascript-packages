@@ -10,7 +10,7 @@ export function fromBytesToBinaryString(bytes: ArrayBuffer | Uint8Array) {
   const chunkSize = 8192;
 
   /** バイナリ文字列 */
-  let binaryString = '';
+  let binaryString = "";
   for (let i = 0; i < array.length; i += chunkSize) {
     binaryString += String.fromCharCode(...array.slice(i, i + chunkSize));
   }

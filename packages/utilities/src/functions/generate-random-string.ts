@@ -1,4 +1,4 @@
-import { ALPHANUMERIC_CHARACTERS } from '../constants/alphanumeric-characters';
+import { ALPHANUMERIC_CHARACTERS } from "../constants/alphanumeric-characters";
 
 /**
  * 英字(大文字／小文字)と数字のみを含むランダム文字列を生成する。
@@ -7,7 +7,7 @@ import { ALPHANUMERIC_CHARACTERS } from '../constants/alphanumeric-characters';
  * @returns ランダム文字列
  */
 export function generateRandomString(length: number) {
-  let s = '';
+  let s = "";
   for (let i = 0; i < length; i++) {
     s += ALPHANUMERIC_CHARACTERS[Math.floor(Math.random() * ALPHANUMERIC_CHARACTERS.length)];
   }

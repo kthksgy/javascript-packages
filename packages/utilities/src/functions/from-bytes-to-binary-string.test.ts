@@ -1,16 +1,16 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { fromBytesToBinaryString } from './from-bytes-to-binary-string';
-import { range } from './range';
+import { fromBytesToBinaryString } from "./from-bytes-to-binary-string";
+import { range } from "./range";
 
 // `Hello World`は`48 65 6c 6c 6f 20 57 6f 72 6c 64`。
 
 describe(`${fromBytesToBinaryString.name}()`, function () {
-  test('空の配列バッファを入力できる', function () {
-    expect(fromBytesToBinaryString(new ArrayBuffer(0))).toBe('');
+  test("空の配列バッファを入力できる", function () {
+    expect(fromBytesToBinaryString(new ArrayBuffer(0))).toBe("");
   });
 
-  test('配列バッファをバイナリ文字列に変換できる', function () {
+  test("配列バッファをバイナリ文字列に変換できる", function () {
     /** 配列バッファ */
     const arrayBuffer = new ArrayBuffer(11);
     /** 配列バッファのビュー(配列バッファは直接操作出来ないため) */
@@ -26,27 +26,27 @@ describe(`${fromBytesToBinaryString.name}()`, function () {
     arrayBufferView[8] = 0x72;
     arrayBufferView[9] = 0x6c;
     arrayBufferView[10] = 0x64;
-    expect(fromBytesToBinaryString(arrayBuffer)).toBe('Hello World');
+    expect(fromBytesToBinaryString(arrayBuffer)).toBe("Hello World");
   });
 
-  test('空の8ビット符号無し整数配列を入力できる', function () {
-    expect(fromBytesToBinaryString(new Uint8Array(0))).toBe('');
+  test("空の8ビット符号無し整数配列を入力できる", function () {
+    expect(fromBytesToBinaryString(new Uint8Array(0))).toBe("");
   });
 
-  test('8ビット符号無し整数配列をバイナリ文字列に変換できる', function () {
+  test("8ビット符号無し整数配列をバイナリ文字列に変換できる", function () {
     expect(
       fromBytesToBinaryString(
         new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64]),
       ),
-    ).toBe('Hello World');
+    ).toBe("Hello World");
   });
 
-  test('10MiBの8ビット符号無し整数配列をバイナリ文字列に変換できる', function () {
+  test("10MiBの8ビット符号無し整数配列をバイナリ文字列に変換できる", function () {
     const input = new Uint8Array(10 * 1024 * 1024);
     input.fill(0);
     const expected = Array.from(range(10 * 1024 * 1024))
       .map((_) => String.fromCharCode(0))
-      .join('');
+      .join("");
     expect(fromBytesToBinaryString(input)).toBe(expected);
   });
 });

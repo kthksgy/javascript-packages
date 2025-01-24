@@ -1,4 +1,4 @@
-import { KeyOfUnion } from './key-of-union';
+import { KeyOfUnion } from "./key-of-union";
 
 /**
  * オブジェクトのユニオンのインターセクションを作成する。

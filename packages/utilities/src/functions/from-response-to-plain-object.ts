@@ -19,7 +19,7 @@ export async function fromResponseToPlainObject(response: Response, body?: unkno
   // 可能であればボディを読み込む。
   try {
     body = response.bodyUsed ? body : await response.text();
-    if (typeof body === 'string' && body.length > 0) {
+    if (typeof body === "string" && body.length > 0) {
       body = JSON.parse(body);
     }
   } finally {

@@ -1,5 +1,5 @@
-import { Alter } from './alter';
-import { KeyOfUnion } from './key-of-union';
+import { Alter } from "./alter";
+import { KeyOfUnion } from "./key-of-union";
 
 /**
  * オブジェクトのユニオン型から指定したキーの値を変更する。

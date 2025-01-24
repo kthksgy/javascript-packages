@@ -1,4 +1,4 @@
-import type { IsAny } from './is-any';
+import type { IsAny } from "./is-any";
 
 ({}) as IsAny<any> satisfies true;
 

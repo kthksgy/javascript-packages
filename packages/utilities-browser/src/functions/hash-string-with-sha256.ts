@@ -1,6 +1,6 @@
-import { fromBytesToBinaryString } from '@kthksgy/utilities';
+import { fromBytesToBinaryString } from "@kthksgy/utilities";
 
-import { fromBinaryToBase64 } from './from-binary-to-base64';
+import { fromBinaryToBase64 } from "./from-binary-to-base64";
 
 /**
  * @deprecated 代わりに`computeSha256Hash()`を使用する。
@@ -10,7 +10,7 @@ import { fromBinaryToBase64 } from './from-binary-to-base64';
  */
 export async function hashStringWithSha256(s: string) {
   return window.crypto.subtle
-    .digest('SHA-256', new TextEncoder().encode(s))
+    .digest("SHA-256", new TextEncoder().encode(s))
     .then(function (arrayBuffer) {
       return fromBinaryToBase64(fromBytesToBinaryString(arrayBuffer));
     });

@@ -1,4 +1,4 @@
-import { ALPHANUMERIC_CHARACTERS } from '@kthksgy/utilities';
+import { ALPHANUMERIC_CHARACTERS } from "@kthksgy/utilities";
 
 /** 乱数の最大有効値 */
 const MAX_RANDOM_VALUE =
@@ -13,7 +13,7 @@ const MAX_RANDOM_VALUE =
  */
 export function generateSecureRandomString(length: number) {
   /** 文字列 */
-  let s = '';
+  let s = "";
   while (s.length < length) {
     /** 乱数値 */
     const randomValues = window.crypto.getRandomValues(new Uint8Array(length * 2));

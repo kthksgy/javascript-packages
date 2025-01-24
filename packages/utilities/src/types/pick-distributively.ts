@@ -1,4 +1,4 @@
-import { KeyOfUnion } from './key-of-union';
+import { KeyOfUnion } from "./key-of-union";
 
 /**
  * オブジェクトのユニオン型から指定したキー以外を除外する。

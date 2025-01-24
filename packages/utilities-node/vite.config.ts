@@ -1,31 +1,31 @@
-import { existsSync, readFileSync, statSync } from 'fs';
-import { resolve } from 'path';
+import { existsSync, readFileSync, statSync } from "fs";
+import { resolve } from "path";
 
-import { defineConfig } from 'vite';
+import { defineConfig } from "vite";
 
-import type { UserConfig as ViteConfiguration } from 'vite';
-import type { UserConfig as VitestConfiguration } from 'vitest';
+import type { UserConfig as ViteConfiguration } from "vite";
+import type { UserConfig as VitestConfiguration } from "vitest";
 
 export default defineConfig(function () {
   /** パッケージパラメーター */
-  const packageParameters = loadPackageParameters(resolve(__dirname, 'package.json'));
+  const packageParameters = loadPackageParameters(resolve(__dirname, "package.json"));
 
   /** 設定 */
   const configuration: ViteConfiguration & VitestConfiguration = {
     build: {
       lib: {
-        entry: resolve(__dirname, 'src', 'index.ts'),
-        fileName: 'index',
+        entry: resolve(__dirname, "src", "index.ts"),
+        fileName: "index",
         name: getPackageNameSpaceName(packageParameters.name),
       },
       minify: false,
-      outDir: 'lib',
+      outDir: "lib",
       rollupOptions: {
         external: [
           ...(packageParameters?.peerDependencies
             ? Object.keys(packageParameters.peerDependencies)
             : []),
-          'node:crypto',
+          "node:crypto",
         ],
         output: {
           globals: {
@@ -36,7 +36,7 @@ export default defineConfig(function () {
                   }),
                 )
               : {}),
-            'node:crypto': 'crypto',
+            "node:crypto": "crypto",
           },
         },
       },
@@ -47,11 +47,11 @@ export default defineConfig(function () {
       /** バージョン(`package.json` `version`) */
       __version: "'" + process.env.npm_package_version + "'",
       // `if(import.meta.vitest) { ... }`を削除する。
-      'import.meta.vitest': 'undefined',
+      "import.meta.vitest": "undefined",
     },
 
     test: {
-      includeSource: ['src/**/*.{js,ts}'],
+      includeSource: ["src/**/*.{js,ts}"],
     },
   };
 
@@ -73,9 +73,9 @@ function getPackageNameSpaceName(packageIdentifier: string) {
   )?.groups;
   if (groups) {
     const { packageName, scopeName } = groups;
-    return (scopeName ? upperCamelCase(scopeName) : '') + upperCamelCase(packageName);
+    return (scopeName ? upperCamelCase(scopeName) : "") + upperCamelCase(packageName);
   } else {
-    throw new Error('パッケージ名が不正です。');
+    throw new Error("パッケージ名が不正です。");
   }
 }
 
@@ -89,15 +89,15 @@ function getPackageNameSpaceName(packageIdentifier: string) {
 function loadPackageParameters(path: string) {
   if (existsSync(path) && statSync(path).isFile()) {
     const parameters: { name: string; peerDependencies?: Partial<Record<string, string>> } =
-      JSON.parse(readFileSync(path, 'utf8'));
-    if (typeof parameters.name !== 'string' || parameters.name.length === 0) {
-      throw new Error('`name` is required.');
+      JSON.parse(readFileSync(path, "utf8"));
+    if (typeof parameters.name !== "string" || parameters.name.length === 0) {
+      throw new Error("`name` is required.");
     }
     if (
-      (typeof parameters.peerDependencies !== 'object' || parameters.peerDependencies === null) &&
+      (typeof parameters.peerDependencies !== "object" || parameters.peerDependencies === null) &&
       parameters.peerDependencies !== undefined
     ) {
-      throw new Error('`peerDependencies` is invalid.');
+      throw new Error("`peerDependencies` is invalid.");
     }
     return parameters;
   } else {

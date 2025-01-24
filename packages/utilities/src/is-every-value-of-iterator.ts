@@ -1,4 +1,4 @@
-import { isIterable } from './is-iterable';
+import { isIterable } from "./is-iterable";
 
 /**
  * イテレーターの全ての値が条件を満たすか検証する。

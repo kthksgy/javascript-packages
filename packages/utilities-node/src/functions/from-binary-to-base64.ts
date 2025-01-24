@@ -4,5 +4,5 @@
  * @returns Base64文字列
  */
 export function fromBinaryToBase64(binary: string) {
-  return Buffer.from(binary, 'latin1').toString('base64');
+  return Buffer.from(binary, "latin1").toString("base64");
 }

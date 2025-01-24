@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { isIterable } from './is-iterable';
+import { isIterable } from "./is-iterable";
 
 describe(`${isIterable.name}()`, function () {
   test.each([
@@ -16,12 +16,12 @@ describe(`${isIterable.name}()`, function () {
     new Set().keys(),
     new Set().values(),
     new Set().entries(),
-  ])('[%#] `true`を返す', function (value) {
+  ])("[%#] `true`を返す", function (value) {
     expect(isIterable(value)).toBe(true);
   });
 
-  test.each([undefined, null, 1234, 'abcd', true, false, Symbol.iterator])(
-    '[%#] `false`を返す',
+  test.each([undefined, null, 1234, "abcd", true, false, Symbol.iterator])(
+    "[%#] `false`を返す",
     function (value) {
       expect(isIterable(value)).toBe(false);
     },

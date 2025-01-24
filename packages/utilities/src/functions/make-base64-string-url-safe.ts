@@ -4,5 +4,5 @@
  * @returns URL安全なBase64文字列
  */
 export function makeBase64StringUrlSafe(base64String: string) {
-  return base64String.replaceAll('=', '').replaceAll('+', '-').replaceAll('/', '_');
+  return base64String.replaceAll("=", "").replaceAll("+", "-").replaceAll("/", "_");
 }

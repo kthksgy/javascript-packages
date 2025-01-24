@@ -9,5 +9,5 @@ export function isIterable<T>(
   T extends IterableIterator<any> ? T : T extends Iterable<any> ? T : never,
   T
 > {
-  return iterable !== null && typeof iterable === 'object' && Symbol.iterator in iterable;
+  return iterable !== null && typeof iterable === "object" && Symbol.iterator in iterable;
 }

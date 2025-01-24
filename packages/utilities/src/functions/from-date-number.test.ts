@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { fromDateNumber } from './from-date-number';
+import { fromDateNumber } from "./from-date-number";
 
 describe(`${fromDateNumber.name}()`, function () {
   test.each([

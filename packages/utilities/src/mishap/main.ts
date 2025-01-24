@@ -6,12 +6,12 @@
  */
 function concatenateStacks(a: unknown, b: unknown) {
   /** エラーオブジェクトAのスタック文字列 */
-  const aStack = typeof a === 'string' && a.length > 0 ? a : hasStack(a) ? a.stack : undefined;
+  const aStack = typeof a === "string" && a.length > 0 ? a : hasStack(a) ? a.stack : undefined;
   /** エラーオブジェクトBのスタック文字列 */
-  const bStack = typeof b === 'string' && b.length > 0 ? b : hasStack(b) ? b.stack : undefined;
+  const bStack = typeof b === "string" && b.length > 0 ? b : hasStack(b) ? b.stack : undefined;
 
   return aStack && bStack
-    ? aStack + '\n' + bStack.slice(bStack.indexOf('\n') + 1)
+    ? aStack + "\n" + bStack.slice(bStack.indexOf("\n") + 1)
     : (aStack ?? bStack);
 }
 
@@ -23,9 +23,9 @@ function concatenateStacks(a: unknown, b: unknown) {
 function hasStack<T>(instance: T): instance is T & { stack: string } {
   return (
     instance !== null &&
-    typeof instance === 'object' &&
-    'stack' in instance &&
-    typeof instance.stack === 'string' &&
+    typeof instance === "object" &&
+    "stack" in instance &&
+    typeof instance.stack === "string" &&
     instance.stack.length > 0
   );
 }
@@ -36,7 +36,7 @@ function hasStack<T>(instance: T): instance is T & { stack: string } {
  * @returns サニタイズされた属性
  */
 function sanitizeAttributes(attributes: unknown) {
-  if (typeof attributes !== 'object' || attributes === null) {
+  if (typeof attributes !== "object" || attributes === null) {
     return undefined;
   }
 
@@ -66,7 +66,7 @@ export class Mishap extends Error {
     this.code = code;
     this.timestamp = options?.timestamp ?? new Date();
 
-    this.name = 'Mishap[' + this.code + ']';
+    this.name = "Mishap[" + this.code + "]";
     this.stack = concatenateStacks(this, options?.cause);
   }
 
@@ -84,7 +84,7 @@ export class Mishap extends Error {
 
       causes.add(cause);
 
-      if (typeof cause === 'object' && cause !== null && 'cause' in cause) {
+      if (typeof cause === "object" && cause !== null && "cause" in cause) {
         cause = cause.cause;
       } else {
         break;
@@ -110,19 +110,19 @@ export class Mishap extends Error {
   toString() {
     return (
       this.name +
-      (this.message ? ': ' + this.message : '') +
-      (this.attributes ? ' ' + JSON.stringify(this.attributes) : '') +
-      ' @ ' +
+      (this.message ? ": " + this.message : "") +
+      (this.attributes ? " " + JSON.stringify(this.attributes) : "") +
+      " @ " +
       this.timestamp.toISOString()
     );
   }
 
   /** 既定のコード */
-  static readonly DEFAULT_CODE = 'MISHAP';
+  static readonly DEFAULT_CODE = "MISHAP";
 
   static fromObject(instance: any) {
     try {
-      if (typeof instance !== 'object' || instance === null) {
+      if (typeof instance !== "object" || instance === null) {
         throw new Mishap(Mishap.DEFAULT_CODE, {
           cause: instance,
           message: `${JSON.stringify(instance)} is not an object.`,
@@ -132,7 +132,7 @@ export class Mishap extends Error {
       const attributes = sanitizeAttributes(instance.attributes);
 
       const message = instance.message;
-      if (typeof message !== 'string') {
+      if (typeof message !== "string") {
         throw new Mishap(Mishap.DEFAULT_CODE, {
           cause: instance.message,
           message: `${JSON.stringify(message)} is not a string.`,

@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { mapIterator } from './map-iterator';
+import { mapIterator } from "./map-iterator";
 
 describe(`${mapIterator.name}()`, function () {
   test(`配列をマップできる`, function () {
@@ -18,9 +18,9 @@ describe(`${mapIterator.name}()`, function () {
 
   test(`マップをマップできる`, function () {
     const map = new Map<string, number>();
-    map.set('1', 1);
-    map.set('2', 2);
-    map.set('3', 3);
+    map.set("1", 1);
+    map.set("2", 2);
+    map.set("3", 3);
     expect(Array.from(mapIterator(map, ([_, value]) => value * 2))).toEqual([2, 4, 6]);
   });
 

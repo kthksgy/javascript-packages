@@ -1,21 +1,21 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { compareVersions } from './compare-versions';
+import { compareVersions } from "./compare-versions";
 
 describe(`${compareVersions.name}()`, function () {
-  test('組み合わせテスト', function () {
+  test("組み合わせテスト", function () {
     const versions = [
-      '1.0.0-alpha',
-      '1.0.0-alpha.1',
-      '1.0.0-alpha.beta',
-      '1.0.0-beta',
-      '1.0.0-beta.2',
-      '1.0.0-beta.11',
-      '1.0.0-rc.1',
-      '1.0.0',
-      '1.0.1',
-      '1.1.0',
-      '2.0.0',
+      "1.0.0-alpha",
+      "1.0.0-alpha.1",
+      "1.0.0-alpha.beta",
+      "1.0.0-beta",
+      "1.0.0-beta.2",
+      "1.0.0-beta.11",
+      "1.0.0-rc.1",
+      "1.0.0",
+      "1.0.1",
+      "1.1.0",
+      "2.0.0",
     ];
 
     for (let x = 0; x < versions.length; x++) {

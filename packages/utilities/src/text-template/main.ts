@@ -39,7 +39,7 @@ export type StringTemplateKey<S extends string> = TextTemplateKey<S>;
  */
 export type TextTemplateKeyTuple<T extends string> =
   T extends `${string}%${infer Key}%${infer Suffix}`
-    ? Key extends ''
+    ? Key extends ""
       ? TextTemplateKeyTuple<Suffix>
       : [Key, ...TextTemplateKeyTuple<Suffix>]
     : [];
@@ -71,7 +71,7 @@ export type StringTemplateParameters<T extends string, Value = any> = TextTempla
  */
 export type TextTemplateType<T extends string> =
   T extends `${infer Former}%${infer Key}%${infer Latter}`
-    ? Key extends ''
+    ? Key extends ""
       ? `${Former}%%${TextTemplateType<Latter>}`
       : `${Former}${string}${TextTemplateType<Latter>}`
     : T;
@@ -96,7 +96,7 @@ export function createTextTemplateRegularExpression(textTemplate: string) {
   if (!matcher) {
     matcher = new RegExp(
       `^${textTemplate
-        .replace(/[$()*+.?[\\\]^{|}]/g, '\\$&')
+        .replace(/[$()*+.?[\\\]^{|}]/g, "\\$&")
         .replace(keyRegularExpression, parseStringReplacer)}$`,
     );
     matchers.set(textTemplate, matcher);
@@ -124,18 +124,18 @@ export function createString<T extends string>(
   return textTemplate.replace(keyRegularExpression, function (_, key: string) {
     if (key.length > 0) {
       let parameter = parameters[key as TextTemplateKey<T>];
-      parameter ??= key.split('.').reduce<any>(createStringReducer, parameters);
+      parameter ??= key.split(".").reduce<any>(createStringReducer, parameters);
       if (parameter !== undefined) {
         return String(parameter);
       } else {
         if (strict) {
           throw new Error(`"${key}" is not defined in parameters.`);
         } else {
-          return '{' + key + '}';
+          return "{" + key + "}";
         }
       }
     } else {
-      return '%';
+      return "%";
     }
   }) as TextTemplateType<T>;
 }
@@ -182,7 +182,7 @@ export function getTextTemplateKeys<T extends string>(textTemplate: T): TextTemp
   return Array.from(textTemplate.matchAll(keyRegularExpression), function ([, key]) {
     return key;
   }).filter(function (key) {
-    return key !== '';
+    return key !== "";
   }) as TextTemplateKeyTuple<T>;
 }
 
@@ -207,12 +207,12 @@ export function parseString<T extends string>(textTemplate: T, target: string) {
     }),
   );
   // `%%`パターンを削除する。
-  delete result[''];
+  delete result[""];
   return result as TextTemplateParameters<T, string | null>;
 }
 
 function parseStringReplacer(_: string, key: string) {
-  return key.length > 0 ? `(?<${key}>.*)` : '%';
+  return key.length > 0 ? `(?<${key}>.*)` : "%";
 }
 
 /**

@@ -1,4 +1,4 @@
-import { createPromise } from './create-promise';
+import { createPromise } from "./create-promise";
 
 /**
  * # セマフォ

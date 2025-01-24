@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { toTimeNumber } from './to-time-number';
+import { toTimeNumber } from "./to-time-number";
 
 describe(`${toTimeNumber.name}()`, function () {
   test.each([

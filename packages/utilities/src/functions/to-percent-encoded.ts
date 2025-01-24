@@ -8,6 +8,6 @@
  */
 export function toPercentEncoded(s: string) {
   return encodeURIComponent(s).replace(/[!'()*]/g, function (c) {
-    return '%' + c.charCodeAt(0).toString(16);
+    return "%" + c.charCodeAt(0).toString(16);
   });
 }

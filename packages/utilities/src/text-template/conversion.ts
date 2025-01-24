@@ -4,7 +4,7 @@
 export type FromPathPatternToStringTemplateOutput<
   T extends string,
   KeyPrefix extends string,
-  KeySuffix extends string = '',
+  KeySuffix extends string = "",
 > = T extends `${infer Former}/${infer Latter}`
   ? `${FromPathPatternToStringTemplateOutput<Former, KeyPrefix, KeySuffix>}/${FromPathPatternToStringTemplateOutput<Latter, KeyPrefix, KeySuffix>}`
   : T extends `${KeyPrefix}${infer Key}${KeySuffix}`
@@ -17,7 +17,7 @@ export type FromPathPatternToStringTemplateOutput<
 export type ConvertPathTemplateIntoStringTemplateOutput<
   T extends string,
   KeyPrefix extends string,
-  KeySuffix extends string = '',
+  KeySuffix extends string = "",
 > = FromPathPatternToStringTemplateOutput<T, KeyPrefix, KeySuffix>;
 
 /** 正規表現の特殊文字の正規表現 */
@@ -34,17 +34,17 @@ const pathTemplateKeyRegularExpressions = new Map<`${string} ${string}`, RegExp>
  */
 export function createPathPatternKeyRegularExpression<
   KeyPrefix extends string,
-  KeySuffix extends string = '',
->(keyPrefix: KeyPrefix, keySuffix: KeySuffix = <KeySuffix>'') {
+  KeySuffix extends string = "",
+>(keyPrefix: KeyPrefix, keySuffix: KeySuffix = <KeySuffix>"") {
   const key: `${string} ${string}` = `${keyPrefix} ${keySuffix}`;
   let pathTemplateKeyRegularExpression = pathTemplateKeyRegularExpressions.get(key);
   if (!pathTemplateKeyRegularExpression) {
     pathTemplateKeyRegularExpression = new RegExp(
-      '(?<=^|/)' +
-        keyPrefix.replace(specialCharacterRegularExpression, '\\$&') +
-        '([^/]*)' +
-        keySuffix.replace(specialCharacterRegularExpression, '\\$&'),
-      'g',
+      "(?<=^|/)" +
+        keyPrefix.replace(specialCharacterRegularExpression, "\\$&") +
+        "([^/]*)" +
+        keySuffix.replace(specialCharacterRegularExpression, "\\$&"),
+      "g",
     );
     pathTemplateKeyRegularExpressions.set(key, pathTemplateKeyRegularExpression);
   }
@@ -82,8 +82,8 @@ export const createPathTemplateKeyRegularExpression = createPathPatternKeyRegula
 export function fromPathPatternToTextTemplate<
   T extends string,
   KeyPrefix extends string,
-  KeySuffix extends string = '',
->(template: T, keyPrefix: KeyPrefix, keySuffix = <KeySuffix>'') {
+  KeySuffix extends string = "",
+>(template: T, keyPrefix: KeyPrefix, keySuffix = <KeySuffix>"") {
   return template.replace(
     createPathPatternKeyRegularExpression(keyPrefix, keySuffix),
     replacer,
@@ -96,5 +96,5 @@ export function fromPathPatternToTextTemplate<
 export const convertPathTemplateIntoStringTemplate = fromPathPatternToTextTemplate;
 
 function replacer(_: any, key: string) {
-  return '%' + key + '%';
+  return "%" + key + "%";
 }

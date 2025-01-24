@@ -1,6 +1,6 @@
-import { fromBytesToBinaryString } from '@kthksgy/utilities';
+import { fromBytesToBinaryString } from "@kthksgy/utilities";
 
-import { fromBinaryToBase64 } from './from-binary-to-base64';
+import { fromBinaryToBase64 } from "./from-binary-to-base64";
 
 /**
  * HMAC-SHA1署名を計算し、Base64文字列として返す。
@@ -14,16 +14,16 @@ export async function computeHmacSha1Signature(
 ) {
   const textEncoder = new TextEncoder();
 
-  if (typeof key === 'string') {
+  if (typeof key === "string") {
     key = textEncoder.encode(key);
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     value = textEncoder.encode(value);
   }
 
   return window.crypto.subtle
-    .importKey('raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign', 'verify'])
-    .then((key) => window.crypto.subtle.sign('HMAC', key, value))
+    .importKey("raw", key, { name: "HMAC", hash: "SHA-1" }, false, ["sign", "verify"])
+    .then((key) => window.crypto.subtle.sign("HMAC", key, value))
     .then((signature) => fromBinaryToBase64(fromBytesToBinaryString(signature)));
 }

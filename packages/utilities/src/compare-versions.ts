@@ -1,5 +1,5 @@
-import { parseVersionString } from './parse-version-string';
-import { Version } from './types';
+import { parseVersionString } from "./parse-version-string";
+import { Version } from "./types";
 
 /**
  * バージョンを比較する。`build`は無視される。
@@ -11,10 +11,10 @@ import { Version } from './types';
  * - `a`が`b`よりも新しいバージョンの場合、`> 0`
  */
 export function compareVersions(a: string | Version, b: string | Version) {
-  if (typeof a === 'string') {
+  if (typeof a === "string") {
     a = parseVersionString(a);
   }
-  if (typeof b === 'string') {
+  if (typeof b === "string") {
     b = parseVersionString(b);
   }
   return a.major !== b.major
@@ -28,8 +28,8 @@ export function compareVersions(a: string | Version, b: string | Version) {
 
 function comparePrereleases(a: string | undefined, b: string | undefined) {
   if (a && b) {
-    const aIdentifiers = a.split('.');
-    const bIdentifiers = b.split('.');
+    const aIdentifiers = a.split(".");
+    const bIdentifiers = b.split(".");
     for (let i = 0; i < Math.max(aIdentifiers.length, bIdentifiers.length); i++) {
       const aIdentifier = aIdentifiers.at(i);
       const bIdentifier = bIdentifiers.at(i);
