@@ -21,9 +21,8 @@ export type LastStringTemplateKey<T extends string> = LastTextTemplateKey<T>;
 
 /**
  * テキストテンプレートキー
- * テキストに含まれる`%key%`の`key`を抽出する。
- * `%%`は半角パーセント記号(`U+25`, `%`)を表す。
- * `key`は正規表現`[^%]+`にマッチする必要がある。
+ * テキストに含まれる`{key}`の`key`を抽出する。
+ * `key`は正規表現`[^{}]+`にマッチする必要がある。
  */
 export type TextTemplateKey<S extends string> = TextTemplateKeyTuple<S>[number];
 
@@ -34,14 +33,16 @@ export type StringTemplateKey<S extends string> = TextTemplateKey<S>;
 
 /**
  * テキストテンプレートキータプル
- * テキストに含まれる`%key%`の`key`を抽出し、先頭から末尾への出現順でタプルにする。
- * `key`は正規表現`[^%]+`にマッチする必要がある。
+ * テキストに含まれる`{key}`の`key`を抽出し、先頭から末尾への出現順でタプルにする。
+ * `key`は正規表現`[^{}]+`にマッチする必要がある。
  */
 export type TextTemplateKeyTuple<T extends string> =
-  T extends `${string}%${infer Key}%${infer Suffix}`
+  T extends `${string}{${infer Key}}${infer Suffix}`
     ? Key extends ""
       ? TextTemplateKeyTuple<Suffix>
-      : [Key, ...TextTemplateKeyTuple<Suffix>]
+      : Key extends `${string}{${infer Key}`
+        ? [Key, ...TextTemplateKeyTuple<Suffix>]
+        : [Key, ...TextTemplateKeyTuple<Suffix>]
     : [];
 
 /**
@@ -70,10 +71,12 @@ export type StringTemplateParameters<T extends string, Value = any> = TextTempla
  * テキストテンプレートと等価なテンプレートリテラルを作成する。
  */
 export type TextTemplateType<T extends string> =
-  T extends `${infer Former}%${infer Key}%${infer Latter}`
+  T extends `${infer Former}{${infer Key}}${infer Latter}`
     ? Key extends ""
-      ? `${Former}%%${TextTemplateType<Latter>}`
-      : `${Former}${string}${TextTemplateType<Latter>}`
+      ? `${Former}${TextTemplateType<Latter>}`
+      : Key extends `${infer Prefix}{${string}`
+        ? `${Former}{${Prefix}${string}${TextTemplateType<Latter>}`
+        : `${Former}${string}${TextTemplateType<Latter>}`
     : T;
 
 /**
@@ -81,14 +84,14 @@ export type TextTemplateType<T extends string> =
  */
 export type StringTemplateType<T extends string> = TextTemplateType<T>;
 
-/** キー(`%key%`)の正規表現 */
-const keyRegularExpression = /%([^%]*)%/g;
+/** キー(`{key}`)の正規表現 */
+const keyRegularExpression = /\{([^{}]*)\}/g;
 /** テキストテンプレートに対応するマッチャー */
 const matchers = new Map<string, RegExp>();
 
 /**
  * テキストテンプレートに対応する正規表現を作成する。
- * @param textTemplate テキストテンプレート(例: `"/users/%userId%/articles/%articleId%"`)
+ * @param textTemplate テキストテンプレート(例: `"/users/{userId}/articles/{articleId}"`)
  * @returns 正規表現
  */
 export function createTextTemplateRegularExpression(textTemplate: string) {
@@ -96,7 +99,7 @@ export function createTextTemplateRegularExpression(textTemplate: string) {
   if (!matcher) {
     matcher = new RegExp(
       `^${textTemplate
-        .replace(/[$()*+.?[\\\]^{|}]/g, "\\$&")
+        .replace(/[$()*+.?[\\\]^|]/g, "\\$&")
         .replace(keyRegularExpression, parseStringReplacer)}$`,
     );
     matchers.set(textTemplate, matcher);
@@ -111,7 +114,7 @@ export const createMatcher = createTextTemplateRegularExpression;
 
 /**
  * テキストテンプレートを用いて文字列を作成する。
- * @param textTemplate テキストテンプレート(例: `"/users/%userId%/articles/%articleId%"`)
+ * @param textTemplate テキストテンプレート(例: `"/users/{userId}/articles/{articleId}"`)
  * @param parameters パラメーター(例: `{ articleId: "1234", userId: "abcd" }`)
  * @param strict `parameters`に存在しないキーがある場合に例外を発生させる場合、`true`
  * @returns 文字列(例: `"/users/abcd/articles/1234"`)
@@ -135,7 +138,7 @@ export function createString<T extends string>(
         }
       }
     } else {
-      return "%";
+      return "";
     }
   }) as TextTemplateType<T>;
 }
@@ -212,12 +215,12 @@ export function parseString<T extends string>(textTemplate: T, target: string) {
 }
 
 function parseStringReplacer(_: string, key: string) {
-  return key.length > 0 ? `(?<${key}>.*)` : "%";
+  return key.length > 0 ? `(?<${key}>.*)` : "";
 }
 
 /**
  * テキストテンプレートを用いて文字列を厳密に解析する。
- * @param textTemplate テキストテンプレート(例: `"/users/%userId%/articles/%articleId%"`)
+ * @param textTemplate テキストテンプレート(例: `"/users/{userId}/articles/%articleId%"`)
  * @param target 対象の文字列(例: `"/users/abcd/articles/1234"`)
  * @returns パラメーター(例: `{ articleId: "1234", userId: "abcd" }`)
  *

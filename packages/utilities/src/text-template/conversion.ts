@@ -1,5 +1,5 @@
 /**
- * `convertPathTemplateIntoStringTemplate`関数のアウトプット
+ * `fromPathPatternToTextTemplate`関数のアウトプット
  */
 export type FromPathPatternToStringTemplateOutput<
   T extends string,
@@ -8,7 +8,7 @@ export type FromPathPatternToStringTemplateOutput<
 > = T extends `${infer Former}/${infer Latter}`
   ? `${FromPathPatternToStringTemplateOutput<Former, KeyPrefix, KeySuffix>}/${FromPathPatternToStringTemplateOutput<Latter, KeyPrefix, KeySuffix>}`
   : T extends `${KeyPrefix}${infer Key}${KeySuffix}`
-    ? `%${Key}%`
+    ? `{${Key}}`
     : T;
 
 /**
@@ -61,11 +61,11 @@ export const createPathTemplateKeyRegularExpression = createPathPatternKeyRegula
  * @param pathPattern パスパターン(例: `/a/$b/c/$d`, `/a/:b:/c/:d:`)
  * @param keyPrefix キーのプレフィックス(例: `$`, `:`)
  * @param keySuffix キーのサフィックス(例: 空文字, `:`)
- * @returns テキストテンプレート(例: `/a/%b%/c/%d%`, `/a/%b%/c/%d%`)
+ * @returns テキストテンプレート(例: `/a/{b}/c/{d}`, `/a/{b}/c/{d}`)
  *
  * @example
  * ```typescript
- * // `"/users/%userId%/articles/%articleId%""`
+ * // `"/users/{userId}/articles/{articleId}""`
  * convertPathTemplateIntoStringTemplate(
  *   '/users/$userId/articles/$articleId', '$',
  * );
@@ -73,7 +73,7 @@ export const createPathTemplateKeyRegularExpression = createPathPatternKeyRegula
  *
  * @example
  * ```typescript
- * // `"/users/%userId%/articles/%articleId%""`
+ * // `"/users/{userId}/articles/{articleId}""`
  * convertPathTemplateIntoStringTemplate(
  *   '/users/:userId:/articles/:articleId:', ':', ':',
  * );
@@ -96,5 +96,5 @@ export function fromPathPatternToTextTemplate<
 export const convertPathTemplateIntoStringTemplate = fromPathPatternToTextTemplate;
 
 function replacer(_: any, key: string) {
-  return "%" + key + "%";
+  return "{" + key + "}";
 }
