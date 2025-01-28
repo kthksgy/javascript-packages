@@ -1,6 +1,6 @@
 /**
  * @file ESLintの設定ファイル
- * @version 2.0.0
+ * @version 2.0.1
  *
  * @tutorial VSCodeで使用している場合、変更を行った後は必ず再起動する。
  * @tutorial VSCodeで使用している場合、`eslint.workingDirectories`を設定する。
@@ -46,7 +46,7 @@ const WARN = 1;
 export default tseslint.config(
   { files: ["**/*.{cjs,js,jsx,mjs,ts,tsx}"] },
   { languageOptions: { ecmaVersion: 2024, globals: { ...globals.browser, ...globals.node } } },
-  { ignores: ["**/{build,coverage,dist,lib}/**/*.{cjs,js,mjs}"] },
+  { ignores: ["**/{build,coverage,dist,lib,styled-system}/**/*.{cjs,js,mjs,ts}"] },
   js.configs.recommended,
   tseslint.configs.recommended,
   importPlugin.flatConfigs.recommended,
