@@ -1,6 +1,7 @@
 export * from "./constants";
 export * from "./functions";
 export * from "./mishap";
+export * from "./naming-convention";
 export * from "./text-template";
 export * from "./types";
 
