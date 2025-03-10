@@ -1,6 +1,6 @@
 /**
  * @file ESLintの設定ファイル
- * @version 2.0.1
+ * @version 2.0.3
  *
  * @tutorial VSCodeで使用している場合、変更を行った後は必ず再起動する。
  * @tutorial VSCodeで使用している場合、`eslint.workingDirectories`を設定する。
@@ -26,16 +26,16 @@ import tseslint from "typescript-eslint";
 # 必須のパッケージをインストールする。
 # Yarnを使用する場合は`yarn add`にコマンドを変更する。
 $ npm i -D \
-  '@eslint/js@~9.18.0' \
+  '@eslint/js@~9.22.0' \
   'confusing-browser-globals@~1.0.11' \
-  'eslint-config-prettier@~10.0.1' \
-  'eslint-import-resolver-typescript@~3.7.0' \
+  'eslint-config-prettier@~10.1.1' \
+  'eslint-import-resolver-typescript@~3.8.3' \
   'eslint-plugin-import-x@~4.6.1' \
   'eslint-plugin-prettier@~5.2.3' \
   'eslint-plugin-react@~7.37.4' \
-  'eslint-plugin-react-hooks@~5.1.0' \
-  'globals@~15.14.0' \
-  'typescript-eslint@~8.21.0'
+  'eslint-plugin-react-hooks@~5.2.0' \
+  'globals@~16.0.0' \
+  'typescript-eslint@~8.26.0'
 ```
 */
 
@@ -44,16 +44,21 @@ const OFF = 0;
 const WARN = 1;
 
 export default tseslint.config(
-  { files: ["**/*.{cjs,js,jsx,mjs,ts,tsx}"] },
+  { files: ["**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}"] },
   { languageOptions: { ecmaVersion: 2024, globals: { ...globals.browser, ...globals.node } } },
-  { ignores: ["**/{build,coverage,dist,lib,styled-system}/**/*.{cjs,js,mjs,ts}"] },
+  {
+    ignores: [
+      "**/{build,coverage,dist,distributions,lib,styled-system}/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}",
+    ],
+  },
   js.configs.recommended,
   tseslint.configs.recommended,
   importPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.typescript,
   react.configs.flat.recommended,
+  reactHooks.configs["recommended-latest"],
 
-  /** TypeScriptの基本設定 */
+  /** TypeScript */
   {
     files: ["**/*.{cts,mts,ts,tsx}"],
     settings: {
@@ -66,14 +71,9 @@ export default tseslint.config(
       ],
     },
   },
-  /** Reactの基本設定 */
-  {
-    files: ["**/*.{jsx,tsx}"],
-    // TODO: React HooksのプラグインがFlat Configsに対応したら`plugins`と`rules`を変更する。
-    plugins: { "react-hooks": reactHooks },
-    rules: reactHooks.configs.recommended.rules,
-    settings: { react: { version: "detect" } },
-  },
+
+  /** React */
+  { settings: { react: { defaultVersion: "19.0", version: "detect" } } },
 
   {
     rules: {
@@ -293,7 +293,7 @@ export default tseslint.config(
       /** 値から推論可能な型を宣言しない。 */
       "@typescript-eslint/no-inferrable-types": OFF,
       /** `namespace`の宣言をしない。 */
-      "@typescript-eslint/no-namespace": OFF,
+      "@typescript-eslint/no-namespace": WARN,
       /** `require()`を使用しない。 */
       "@typescript-eslint/no-require-imports": OFF,
       /** 未使用の変数を禁止する。 */
