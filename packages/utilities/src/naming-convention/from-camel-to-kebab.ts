@@ -1,13 +1,16 @@
 /**
  * キャメルケースをケバブケースに変換する。
- * ロウワーキャメルケースでもアッパーキャメルケースでも変換できる。
- * @param camel キャメルケースの文字列(`lowerCamel`や`UpperCamel`など)
- * @returns ケバブケースの文字列(`lower-camel`や`upper-camel`など)
+ * @param camel 次に示すケースの文字列
+ * - キャメルケース (`camelCase`)
+ * - パスカルケース (`PascalCase`)
+ * @returns ケバブケースの文字列
+ * - `camel-case`
+ * - `pascal-case`
  *
  * @example
  * ```typescript
- * fromCamelToKebab("lowerCamel"); // "lower-camel"
- * fromCamelToKebab("UpperCamel"); // "upper-camel"
+ * fromCamelToKebab("userName"); // "user-name"
+ * fromCamelToKebab("UserName"); // "user-name"
  * fromCamelToKebab("targetUrl"); // "target-url"
  * fromCamelToKebab("targetURL"); // "target-u-r-l"
  * ```

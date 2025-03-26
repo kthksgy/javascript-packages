@@ -21,7 +21,7 @@ describe(`${fromCamelToKebab.name}()`, function () {
     ["JSONResponseData", "j-s-o-n-response-data"],
     ["Person20Address", "person20-address"],
     ["UserAPI20Endpoint", "user-a-p-i20-endpoint"],
-  ])(`[%#] %s => %s `, function (dateNumber, expected) {
-    expect(fromCamelToKebab(dateNumber)).toStrictEqual(expected);
+  ])(`[%#] %s => %s `, function (camel, kebab) {
+    expect(fromCamelToKebab(camel)).toStrictEqual(kebab);
   });
 });
