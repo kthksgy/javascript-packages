@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { type SignalConstants } from "node:os";
 import { Stream } from "node:stream";
 
-import { createPromise, isArray } from "@kthksgy/utilities";
+import { isArray } from "@kthksgy/utilities";
 
 /**
  * コマンドを実行する。
@@ -47,6 +47,7 @@ export async function execute(
     userIdentity?: number;
   },
 ) {
+  const encoding = options?.encoding ?? "utf8";
   const logging = options?.logging ?? false;
 
   const command = isArray(target) ? target.at(0) : target;
@@ -68,38 +69,17 @@ export async function execute(
   });
 
   const handlers = [
-    {
-      ...createPromise<string>(),
-      buffers: [] as Array<Uint8Array>,
-      logger: process.stdout,
-      stream: subprocess.stdin,
-    },
-    {
-      ...createPromise<string>(),
-      buffers: [] as Array<Uint8Array>,
-      logger: process.stdout,
-      stream: subprocess.stdout,
-    },
-    {
-      ...createPromise<string>(),
-      buffers: [] as Array<Uint8Array>,
-      logger: process.stderr,
-      stream: subprocess.stderr,
-    },
+    { buffers: [] as Array<Uint8Array>, logger: process.stdout, stream: subprocess.stdin },
+    { buffers: [] as Array<Uint8Array>, logger: process.stdout, stream: subprocess.stdout },
+    { buffers: [] as Array<Uint8Array>, logger: process.stderr, stream: subprocess.stderr },
   ] as const;
 
-  for (const { buffers, logger, reject, resolve, stream } of handlers) {
+  for (const { buffers, logger, stream } of handlers) {
     stream.on("data", function (chunk) {
       buffers.push(Buffer.from(chunk));
       if (logging) {
         logger.write(chunk);
       }
-    });
-    stream.on("end", function () {
-      resolve(Buffer.concat(buffers).toString(options?.encoding ?? "utf8"));
-    });
-    stream.on("error", function (error) {
-      reject(error);
     });
   }
 
@@ -107,15 +87,18 @@ export async function execute(
     options.callback(subprocess.stdio);
   }
 
-  return await Promise.all([
-    handlers[0].promise.then(function (value) {
-      return value || null;
-    }),
-    handlers[1].promise.then(function (value) {
-      return value || null;
-    }),
-    handlers[2].promise.then(function (value) {
-      return value || null;
-    }),
-  ]);
+  await new Promise(function (resolve, reject) {
+    subprocess.on("close", function (code) {
+      resolve(code);
+    });
+    subprocess.on("error", function (error) {
+      reject(error);
+    });
+  });
+
+  return [
+    Buffer.concat(handlers[0].buffers).toString(encoding) || null,
+    Buffer.concat(handlers[1].buffers).toString(encoding) || null,
+    Buffer.concat(handlers[2].buffers).toString(encoding) || null,
+  ];
 }
