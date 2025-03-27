@@ -2,16 +2,16 @@ import { spawn } from "node:child_process";
 import { type SignalConstants } from "node:os";
 import { Stream } from "node:stream";
 
-import { createPromise } from "@kthksgy/utilities";
+import { createPromise, isArray } from "@kthksgy/utilities";
 
 /**
  * コマンドを実行する。
- * @param command コマンド
+ * @param target コマンドまたはコマンドライン引数の配列
  * @param options オプション
  * @returns `[標準入力(0), 標準出力(1), 標準エラー出力(2)]`
  */
 export async function execute(
-  command: string,
+  target: string | Array<string>,
   options?: {
     /** 中断シグナル */
     abortSignal?: AbortSignal;
@@ -49,7 +49,12 @@ export async function execute(
 ) {
   const logging = options?.logging ?? false;
 
-  const subprocess = spawn(command, {
+  const command = isArray(target) ? target.at(0) : target;
+  if (!command) {
+    return [null, null, null];
+  }
+
+  const subprocess = spawn(command, isArray(target) ? target.slice(1) : [], {
     cwd: options?.currentWorkingDirectoryPath,
     env: options?.environmentVariables,
     gid: options?.groupIdentity,
