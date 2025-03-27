@@ -1,10 +1,8 @@
-import { exec } from "node:child_process";
+import { spawn } from "node:child_process";
 import { type SignalConstants } from "node:os";
-import Stream from "node:stream";
+import { Stream } from "node:stream";
 
 import { createPromise } from "@kthksgy/utilities";
-
-import { fromStreamToString } from "./from-stream-to-string";
 
 /**
  * コマンドを実行する。
@@ -17,28 +15,30 @@ export async function execute(
   options?: {
     /** 中断シグナル */
     abortSignal?: AbortSignal;
-    /** カレントワーキングディレクトリのパス(既定値: `process.cwd()`) */
-    currentWorkingDirectoryPath?: string;
-    /** 環境変数(既定値: `process.env`) */
-    environmentVariables?: Partial<Record<string, string>>;
-    /** グループの識別子 */
-    groupIdentity?: number;
-    /** ストリームのハンドラー */
-    handleStreams?: {
+    /** サブプロセスのストリームを参照するためのコールバック */
+    callback?: {
       (
-        streams: [
+        streams: readonly [
           Stream.Writable | null,
           Stream.Readable | null,
           Stream.Readable | null,
           Stream.Writable | Stream.Readable | null | undefined,
           Stream.Writable | Stream.Readable | null | undefined,
         ],
-      ): Promise<void>;
+      ): void;
     };
+    /** カレントワーキングディレクトリのパス(既定値: `process.cwd()`) */
+    currentWorkingDirectoryPath?: string;
+    /** 文字コード(既定値: `"utf8"`) */
+    encoding?: BufferEncoding;
+    /** 環境変数(既定値: `process.env`) */
+    environmentVariables?: Partial<Record<string, string>>;
+    /** グループの識別子 */
+    groupIdentity?: number;
     /** キルシグナル(既定値: `"SIGTERM"`) */
     killSignal?: SignalConstants[keyof SignalConstants];
-    /** バッファサイズ(既定値: `1024 * 1024`) */
-    maxBuffer?: number;
+    /** ログ出力を行う時は`true`にする。 */
+    logging?: boolean;
     /** シェル(既定値: `"/bin/sh"`(Unix), `process.env.ComSpec`(Windows)) */
     shell?: string;
     /** タイムアウト(ミリ秒) */
@@ -47,38 +47,70 @@ export async function execute(
     userIdentity?: number;
   },
 ) {
-  const { promise: promise1, reject, resolve } = createPromise<readonly [string, string]>();
+  const logging = options?.logging ?? false;
 
-  const subprocess = exec(
-    command,
+  const subprocess = spawn(command, {
+    cwd: options?.currentWorkingDirectoryPath,
+    env: options?.environmentVariables,
+    gid: options?.groupIdentity,
+    killSignal: options?.killSignal,
+    shell: options?.shell,
+    signal: options?.abortSignal,
+    stdio: "pipe", // `["pipe", "pipe", "pipe"]`と同じ。
+    timeout: options?.timeOut,
+    uid: options?.userIdentity,
+    windowsHide: true,
+  });
+
+  const handlers = [
     {
-      cwd: options?.currentWorkingDirectoryPath,
-      env: options?.environmentVariables,
-      gid: options?.groupIdentity,
-      killSignal: options?.killSignal,
-      maxBuffer: options?.maxBuffer,
-      shell: options?.shell,
-      signal: options?.abortSignal,
-      timeout: options?.timeOut,
-      uid: options?.userIdentity,
-      windowsHide: true,
+      ...createPromise<string>(),
+      buffers: [] as Array<Uint8Array>,
+      logger: process.stdout,
+      stream: subprocess.stdin,
     },
-    function (error, stdout, stderr) {
-      if (error) {
-        reject(error);
-      } else if (!stdout && stderr) {
-        reject(new Error(stderr));
-      } else {
-        resolve([stdout, stderr]);
+    {
+      ...createPromise<string>(),
+      buffers: [] as Array<Uint8Array>,
+      logger: process.stdout,
+      stream: subprocess.stdout,
+    },
+    {
+      ...createPromise<string>(),
+      buffers: [] as Array<Uint8Array>,
+      logger: process.stderr,
+      stream: subprocess.stderr,
+    },
+  ] as const;
+
+  for (const { buffers, logger, reject, resolve, stream } of handlers) {
+    stream.on("data", function (chunk) {
+      buffers.push(Buffer.from(chunk));
+      if (logging) {
+        logger.write(chunk);
       }
-    },
-  );
+    });
+    stream.on("end", function () {
+      resolve(Buffer.concat(buffers).toString(options?.encoding ?? "utf8"));
+    });
+    stream.on("error", function (error) {
+      reject(error);
+    });
+  }
 
-  const promise2 = fromStreamToString(subprocess.stdin);
+  if (options?.callback) {
+    options.callback(subprocess.stdio);
+  }
 
-  const promise3 = options?.handleStreams?.(subprocess.stdio);
-
-  const [[fd1, fd2], fd0] = await Promise.all([promise1, promise2, promise3]);
-
-  return [fd0 || null, fd1 || null, fd2 || null];
+  return await Promise.all([
+    handlers[0].promise.then(function (value) {
+      return value || null;
+    }),
+    handlers[1].promise.then(function (value) {
+      return value || null;
+    }),
+    handlers[2].promise.then(function (value) {
+      return value || null;
+    }),
+  ]);
 }
