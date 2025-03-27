@@ -25,7 +25,9 @@ export default defineConfig(function () {
           ...(packageParameters?.peerDependencies
             ? Object.keys(packageParameters.peerDependencies)
             : []),
+          "node:child_process",
           "node:crypto",
+          "node:stream",
         ],
         output: {
           globals: {
