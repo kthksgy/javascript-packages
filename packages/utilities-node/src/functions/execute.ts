@@ -10,7 +10,7 @@ import { fromStreamToString } from "./from-stream-to-string";
  * コマンドを実行する。
  * @param command コマンド
  * @param options オプション
- * @returns 標準出力及び標準エラー出力
+ * @returns `[標準入力(0), 標準出力(1), 標準エラー出力(2)]`
  */
 export async function execute(
   command: string,
