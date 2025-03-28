@@ -1,3 +1,4 @@
+export * from "./application-error";
 export * from "./constants";
 export * from "./functions";
 export * from "./mishap";
