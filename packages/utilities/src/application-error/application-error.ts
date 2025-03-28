@@ -1,3 +1,5 @@
+import { Temporal } from "temporal-polyfill";
+
 /**
  * エラーオブジェクトのスタック文字列を結合する。
  * @param a エラーオブジェクトA
@@ -57,14 +59,14 @@ export class ApplicationError extends Error {
   /** コード */
   code: string;
   /** タイムスタンプ */
-  timestamp: Date;
+  timestamp: Temporal.ZonedDateTime;
 
   constructor(code: string, options?: ApplicationErrorOptions) {
     super(options?.message, options);
 
     this.attributes = sanitizeAttributes(options?.attributes);
     this.code = code;
-    this.timestamp = options?.timestamp ?? new Date();
+    this.timestamp = options?.timestamp ?? Temporal.Now.zonedDateTimeISO();
 
     this.name = "ApplicationError[" + this.code + "]";
     this.stack = concatenateStacks(this, options?.cause);
@@ -99,7 +101,7 @@ export class ApplicationError extends Error {
       attributes: this.attributes,
       code: this.code,
       message: this.message,
-      timestamp: this.timestamp.toISOString(),
+      timestamp: this.timestamp, // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
     };
   }
 
@@ -113,7 +115,7 @@ export class ApplicationError extends Error {
       (this.message ? ": " + this.message : "") +
       (this.attributes ? " " + JSON.stringify(this.attributes) : "") +
       " @ " +
-      this.timestamp.toISOString()
+      this.timestamp.toString()
     );
   }
 
@@ -122,7 +124,7 @@ export class ApplicationError extends Error {
 
   static fromObject(instance: any) {
     try {
-      if (typeof instance !== "object" || instance === null) {
+      if (instance === null || typeof instance !== "object") {
         throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
           cause: instance,
           message: `${JSON.stringify(instance)} is not an object.`,
@@ -139,10 +141,12 @@ export class ApplicationError extends Error {
         });
       }
 
-      const timestamp = new Date(instance.timestamp);
-      if (!Number.isSafeInteger(timestamp.getTime())) {
+      let timestamp;
+      try {
+        timestamp = Temporal.ZonedDateTime.from(instance.timestamp);
+      } catch (error) {
         throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
-          cause: instance.timestamp,
+          cause: error,
           message: `${JSON.stringify(instance.timestamp)} is not a valid date.`,
         });
       }
@@ -177,5 +181,5 @@ export interface ApplicationErrorOptions extends ErrorOptions {
   /** メッセージ */
   message?: string;
   /** タイムスタンプ */
-  timestamp?: Date;
+  timestamp?: Temporal.ZonedDateTime;
 }
