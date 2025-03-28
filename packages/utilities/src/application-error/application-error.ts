@@ -18,38 +18,25 @@ function concatenateStacks(a: unknown, b: unknown) {
 }
 
 /**
- * インスタンスがスタック文字列を持つかどうかを判定する。
- * @param instance インスタンス
- * @returns スタック文字列を持つ場合、`true`
+ * 対象がスタックを持つかどうかを判定する。
+ * @param target 対象
+ * @returns `target.stack`が1文字以上の`string`型の時、`true`
  */
-function doesHaveStack<T>(instance: T): instance is T & { stack: string } {
+function doesHaveStack<T>(target: T): target is T & { stack: string } {
   return (
-    instance !== null &&
-    typeof instance === "object" &&
-    "stack" in instance &&
-    typeof instance.stack === "string" &&
-    instance.stack.length > 0
+    target !== null &&
+    typeof target === "object" &&
+    "stack" in target &&
+    typeof target.stack === "string" &&
+    target.stack.length > 0
   );
-}
-
-/**
- * 属性をサニタイズして、JSONオブジェクトである事を保証する。
- * @param attributes 属性
- * @returns サニタイズされた属性
- */
-function sanitizeAttributes(attributes: unknown) {
-  if (typeof attributes !== "object" || attributes === null) {
-    return undefined;
-  }
-
-  return JSON.parse(JSON.stringify(attributes));
 }
 
 /**
  * アプリケーションエラー
  * `Error`に情報を追加した独自のエラークラス。
  */
-export class ApplicationError extends Error {
+export class ApplicationError<Code extends string = string> extends Error {
   /**
    * #### 属性
    * このアプリケーションエラー固有の情報を持つためのフィールド。
@@ -57,16 +44,16 @@ export class ApplicationError extends Error {
    */
   attributes?: ApplicationErrorAttributes;
   /** コード */
-  code: string;
+  code: Code;
   /** タイムスタンプ */
-  timestamp: Temporal.ZonedDateTime;
+  timeStamp: Temporal.ZonedDateTime;
 
-  constructor(code: string, options?: ApplicationErrorOptions) {
+  constructor(code: Code, options?: ApplicationErrorOptions) {
     super(options?.message, options);
 
-    this.attributes = sanitizeAttributes(options?.attributes);
+    this.attributes = options?.attributes;
     this.code = code;
-    this.timestamp = options?.timestamp ?? Temporal.Now.zonedDateTimeISO();
+    this.timeStamp = options?.timeStamp ?? Temporal.Now.zonedDateTimeISO();
 
     this.name = "ApplicationError[" + this.code + "]";
     this.stack = concatenateStacks(this, options?.cause);
@@ -101,7 +88,7 @@ export class ApplicationError extends Error {
       attributes: this.attributes,
       code: this.code,
       message: this.message,
-      timestamp: this.timestamp, // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
+      timeStamp: this.timeStamp.toString(), // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
     };
   }
 
@@ -115,62 +102,65 @@ export class ApplicationError extends Error {
       (this.message ? ": " + this.message : "") +
       (this.attributes ? " " + JSON.stringify(this.attributes) : "") +
       " @ " +
-      this.timestamp.toString()
+      this.timeStamp.toString()
     );
   }
 
   /** 既定のコード */
   static readonly DEFAULT_CODE = "APPLICATION_ERROR";
 
-  static fromObject(instance: any) {
-    try {
-      if (instance === null || typeof instance !== "object") {
-        throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
-          cause: instance,
-          message: `${JSON.stringify(instance)} is not an object.`,
-        });
-      }
-
-      const attributes = sanitizeAttributes(instance.attributes);
-
-      const message = instance.message;
-      if (typeof message !== "string") {
-        throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
-          cause: instance.message,
-          message: `${JSON.stringify(message)} is not a string.`,
-        });
-      }
-
-      let timestamp;
-      try {
-        timestamp = Temporal.ZonedDateTime.from(instance.timestamp);
-      } catch (error) {
-        throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
-          cause: error,
-          message: `${JSON.stringify(instance.timestamp)} is not a valid date.`,
-        });
-      }
-
-      return new ApplicationError(instance.code, { attributes, message, timestamp });
-    } catch (error) {
-      if (error instanceof ApplicationError) {
-        return error;
-      } else {
-        return new ApplicationError(ApplicationError.DEFAULT_CODE, {
-          cause: error,
-          message: `ApplicationError.fromObject(${JSON.stringify(instance)}) failed.`,
-        });
-      }
+  static fromObject(target: ReturnType<ApplicationError["toObject"]>) {
+    if (target === null || typeof target !== "object") {
+      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+        cause: target,
+        message: `${JSON.stringify(target)} is not an object.`,
+      });
     }
+
+    let attributes;
+    try {
+      attributes = JSON.parse(JSON.stringify(target.attributes));
+    } catch (error) {
+      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+        cause: error,
+        message: `${JSON.stringify(target.attributes)} is not a valid JSON.`,
+      });
+    }
+    if (attributes === null || typeof attributes !== "object") {
+      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+        cause: target.attributes,
+        message: `${JSON.stringify(target.attributes)} is not an object.`,
+      });
+    }
+
+    const message = target.message;
+    if (typeof message !== "string") {
+      throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
+        cause: target.message,
+        message: `${JSON.stringify(target.message)} is not a string.`,
+      });
+    }
+
+    let timeStamp;
+    try {
+      timeStamp = Temporal.ZonedDateTime.from(target.timeStamp);
+    } catch (error) {
+      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+        cause: error,
+        message: `${JSON.stringify(target.timeStamp)} is not a valid date.`,
+      });
+    }
+
+    return new ApplicationError(target.code, { attributes, message, timeStamp });
   }
 }
 
-type JsonObject = { [Key in string]: JsonValue } & { [Key in string]?: JsonValue | undefined };
-type JsonArray = JsonValue[] | readonly JsonValue[];
-type JsonValue = string | number | boolean | JsonObject | JsonArray | null;
+type O = Partial<{ [K in string]: V }>;
+type A = Array<V> | ReadonlyArray<V>;
+type V = string | number | boolean | A | O | null;
 
 /** アプリケーションエラー属性 */
-export type ApplicationErrorAttributes = Partial<Record<string, JsonValue>>;
+export type ApplicationErrorAttributes = Partial<Record<string, V>>;
 
 /**
  * アプリケーションエラーオプション
@@ -181,5 +171,5 @@ export interface ApplicationErrorOptions extends ErrorOptions {
   /** メッセージ */
   message?: string;
   /** タイムスタンプ */
-  timestamp?: Temporal.ZonedDateTime;
+  timeStamp?: Temporal.ZonedDateTime;
 }
