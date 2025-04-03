@@ -13,7 +13,7 @@ function concatenateStacks(a: unknown, b: unknown) {
   const bStack = typeof b === "string" && b.length > 0 ? b : doesHaveStack(b) ? b.stack : undefined;
 
   return aStack && bStack
-    ? aStack + "\n" + bStack.slice(bStack.indexOf("\n") + 1)
+    ? aStack + "\n\n" + bStack.slice(bStack.indexOf("\n") + 1)
     : (aStack ?? bStack);
 }
 
@@ -45,15 +45,15 @@ export class ApplicationError<Code extends string = string> extends Error {
   attributes?: ApplicationErrorAttributes;
   /** コード */
   code: Code;
-  /** タイムスタンプ */
-  timeStamp: Temporal.ZonedDateTime;
+  /** 日時 */
+  dateTime: Temporal.ZonedDateTime;
 
   constructor(code: Code, options?: ApplicationErrorOptions) {
     super(options?.message, options);
 
     this.attributes = options?.attributes;
     this.code = code;
-    this.timeStamp = options?.timeStamp ?? Temporal.Now.zonedDateTimeISO();
+    this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
 
     this.name = "ApplicationError[" + this.code + "]";
     this.stack = concatenateStacks(this, options?.cause);
@@ -87,8 +87,8 @@ export class ApplicationError<Code extends string = string> extends Error {
     return {
       attributes: this.attributes,
       code: this.code,
+      dateTime: this.dateTime.toString(), // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
       message: this.message,
-      timeStamp: this.timeStamp.toString(), // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
     };
   }
 
@@ -102,7 +102,7 @@ export class ApplicationError<Code extends string = string> extends Error {
       (this.message ? ": " + this.message : "") +
       (this.attributes ? " " + JSON.stringify(this.attributes) : "") +
       " @ " +
-      this.timeStamp.toString()
+      this.dateTime.toString()
     );
   }
 
@@ -141,17 +141,17 @@ export class ApplicationError<Code extends string = string> extends Error {
       });
     }
 
-    let timeStamp;
+    let dateTime;
     try {
-      timeStamp = Temporal.ZonedDateTime.from(target.timeStamp);
+      dateTime = Temporal.ZonedDateTime.from(target.dateTime);
     } catch (error) {
       return new ApplicationError(ApplicationError.DEFAULT_CODE, {
         cause: error,
-        message: `${JSON.stringify(target.timeStamp)} is not a valid date.`,
+        message: `${JSON.stringify(target.dateTime)} is not a valid date.`,
       });
     }
 
-    return new ApplicationError(target.code, { attributes, message, timeStamp });
+    return new ApplicationError(target.code, { attributes, dateTime, message });
   }
 }
 
@@ -168,8 +168,8 @@ export type ApplicationErrorAttributes = Partial<Record<string, V>>;
 export interface ApplicationErrorOptions extends ErrorOptions {
   /** 属性 */
   attributes?: ApplicationErrorAttributes;
+  /** 日時 */
+  dateTime?: Temporal.ZonedDateTime;
   /** メッセージ */
   message?: string;
-  /** タイムスタンプ */
-  timeStamp?: Temporal.ZonedDateTime;
 }
