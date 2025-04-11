@@ -10,7 +10,7 @@ import {
   runTransaction,
   setDoc,
   updateDoc,
-} from 'firebase/firestore';
+} from "firebase/firestore";
 
 export function addDocument<T extends object>(reference: CollectionReference, data: T) {
   return addDoc(reference, data);
@@ -38,7 +38,7 @@ export async function fetchDocument(reference: DocumentReference, transaction?: 
 }
 
 export function getDocumentData<T extends DocumentSnapshot>(documentSnapshot: T) {
-  return documentSnapshot.data({ serverTimestamps: 'estimate' });
+  return documentSnapshot.data({ serverTimestamps: "estimate" });
 }
 
 export function listenDocument(

@@ -1,3 +1,4 @@
+import * as fs from "node:fs";
 import * as path from "node:path";
 
 import { Command } from "commander";
@@ -11,52 +12,92 @@ const command = new Command();
 command
   .name(import.meta.filename)
   .description("ビルドします。")
+  .option("--clean", "既に作成されたファイルを削除します。")
   .option("--watch", "監視する場合、指定します。")
   .action(async function (options) {
-    const EXTERNAL_PACKAGE_NAMES = ["firebase-admin", "firebase-functions"];
-    const DISTRIBUTION_DIRECTORY_NAME = "distribution";
+    const DISTRIBUTIONS_DIRECTORY_NAME = "distributions";
     const SOURCE_CODE_DIRECTORY_NAME = "source-code";
 
-    const optionsSchema = v.object({
-      watch: v.optional(v.boolean()),
-    });
+    const { clean, watch } = v.parse(
+      v.object({ clean: v.optional(v.boolean()), watch: v.optional(v.boolean()) }),
+      options,
+    );
 
-    const { watch } = v.parse(optionsSchema, options);
+    const packageInformation = v.parse(
+      v.object({ peerDependencies: v.record(v.string(), v.string()) }),
+      JSON.parse(fs.readFileSync("package.json", "utf8")),
+    );
+
+    const externalPackageNames = Array.from(Object.keys(packageInformation.peerDependencies));
 
     const buildOptions = {
       bundle: true,
-      entryPoints: {
-        in: path.join(SOURCE_CODE_DIRECTORY_NAME, "firestore", "index.ts"),
-        out: "firestore.js",
-      },
-      external: EXTERNAL_PACKAGE_NAMES,
+      entryPoints: [
+        {
+          in: path.join(SOURCE_CODE_DIRECTORY_NAME, "index.ts"),
+          out: "index",
+        },
+        {
+          in: path.join(SOURCE_CODE_DIRECTORY_NAME, "firestore", "index.ts"),
+          out: "firestore",
+        },
+        {
+          in: path.join(SOURCE_CODE_DIRECTORY_NAME, "storage", "index.ts"),
+          out: "storage",
+        },
+      ],
+      external: externalPackageNames,
       logLevel: "verbose",
       minify: true,
-      outdir: DISTRIBUTION_DIRECTORY_NAME,
-      platform: "node",
       preserveSymlinks: true,
       sourcemap: true,
-      target: "node22",
       treeShaking: true,
     } satisfies esbuild.BuildOptions;
 
+    const targets = [
+      {
+        format: "cjs",
+        outdir: path.join(DISTRIBUTIONS_DIRECTORY_NAME, "node"),
+        platform: "node",
+        target: "node22",
+      },
+      {
+        format: "esm",
+        outdir: path.join(DISTRIBUTIONS_DIRECTORY_NAME, "browser"),
+        platform: "browser",
+        target: "es2024",
+      },
+    ] satisfies Array<esbuild.BuildOptions>;
+
+    if (clean) {
+      fs.rmSync(DISTRIBUTIONS_DIRECTORY_NAME, { recursive: true });
+    }
+
     if (watch) {
+      const contexts: Array<esbuild.BuildContext> = [];
       const { promise, resolve } = Promise.withResolvers();
-      const context = await esbuild.context(buildOptions);
 
       async function unsubscribe() {
-        await context.dispose();
+        for (const context of contexts) {
+          await context.dispose();
+        }
         resolve(undefined);
       }
 
       process.on("SIGINT", unsubscribe).on("SIGTERM", unsubscribe);
 
-      await context.watch();
+      for (const target of targets) {
+        const context = await esbuild.context({ ...buildOptions, ...target });
+        contexts.push(context);
+        await context.watch();
+      }
 
       // 終了を待つ。
       await promise;
     } else {
-      await esbuild.build(buildOptions);
+      for (const target of targets) {
+        await esbuild.build({ ...buildOptions, ...target });
+      }
     }
   });
 

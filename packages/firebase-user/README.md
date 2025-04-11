@@ -1,1 +1,1 @@
-# @kthksgy/firebase-common
+# @kthksgy/firebase-user

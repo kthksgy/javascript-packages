@@ -3,7 +3,7 @@ import type {
   GetCollectionPath,
   PropertyPathDotNotation,
   PropertyPathSegmentTuple,
-} from '../shared-files';
+} from "@kthksgy/firebase-common/firestore";
 import type {
   DocumentData,
   DocumentReference,
@@ -11,7 +11,7 @@ import type {
   TransactionOptions,
   UpdateData,
   WriteBatch,
-} from 'firebase/firestore';
+} from "firebase/firestore";
 
 export type {
   GetCollectionGroupPath,

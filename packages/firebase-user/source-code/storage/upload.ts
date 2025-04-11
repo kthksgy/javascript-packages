@@ -1,3 +1,3 @@
-import { uploadBytes } from 'firebase/storage';
+import { uploadBytes } from "firebase/storage";
 
 export { uploadBytes };

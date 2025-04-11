@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "declaration": true,
-    "declarationDir": "lib",
+    "declarationDir": "distributions/types",
     "declarationMap": true,
     "erasableSyntaxOnly": true,
     "isolatedModules": true,

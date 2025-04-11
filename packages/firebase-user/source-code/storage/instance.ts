@@ -1,4 +1,3 @@
-import { FirebaseStorage as Storage, getStorage } from 'firebase/storage';
+import { type FirebaseStorage as Storage, getStorage } from "firebase/storage";
 
-export { getStorage };
-export type { Storage };
+export { type Storage, getStorage };

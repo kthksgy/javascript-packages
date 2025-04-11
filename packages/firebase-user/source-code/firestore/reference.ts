@@ -5,7 +5,7 @@ import {
   collection,
   collectionGroup,
   doc,
-} from 'firebase/firestore';
+} from "firebase/firestore";
 
 /**
  * コレクショングループリファレンスを生成する。
