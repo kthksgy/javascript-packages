@@ -23,6 +23,7 @@ export default defineConfig(function () {
             "firestore",
             "index.ts",
           ),
+          index: path.resolve(import.meta.dirname, SOURCE_CODE_DIRECTORY_NAME, "index.ts"),
         },
         name: getPackageNameSpaceName(packageParameters.name),
       },
