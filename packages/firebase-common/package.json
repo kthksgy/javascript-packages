@@ -3,7 +3,7 @@
     "name": "kthksgy",
     "url": "https://github.com/kthksgy"
   },
-  "description": "Utilities",
+  "description": "Firebase Common",
   "devDependencies": {
     "@vitest/coverage-v8": "^3.0.8",
     "typescript": "~5.8.2",
@@ -20,7 +20,7 @@
   "files": [
     "lib"
   ],
-  "homepage": "https://github.com/kthksgy/packages-node/tree/main/packages/utilities",
+  "homepage": "https://github.com/kthksgy/packages-node/tree/main/packages/firebase-common",
   "keywords": [
     "utilities",
     "utils"
@@ -28,7 +28,7 @@
   "license": "MIT",
   "main": "./lib/index.umd.cjs",
   "module": "./lib/index.js",
-  "name": "@kthksgy/utilities",
+  "name": "@kthksgy/firebase-common",
   "peerDependencies": {
     "temporal-polyfill": "~0.3.0"
   },
@@ -45,5 +45,5 @@
   },
   "type": "module",
   "types": "./lib/index.d.ts",
-  "version": "0.1.5"
+  "version": "0.0.0"
 }

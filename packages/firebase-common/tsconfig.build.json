@@ -1,0 +1,4 @@
+{
+  "exclude": ["**/*.test.ts", "**/*.test-d.ts", "vite.config.ts"],
+  "extends": "./tsconfig.json"
+}
