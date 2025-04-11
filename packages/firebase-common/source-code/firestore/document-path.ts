@@ -29,5 +29,5 @@ export function getCollectionGroupPath<T extends string>(
  * @returns コレクションパス
  */
 export function getCollectionPath<T extends string>(documentPath: T): GetCollectionPath<T> {
-  return documentPath.replace(/\/[^/]*$/, '') as GetCollectionPath<T>;
+  return documentPath.replace(/\/[^/]*$/, "") as GetCollectionPath<T>;
 }

@@ -1,12 +1,14 @@
 import { existsSync, readFileSync, statSync } from "fs";
+import * as path from "node:path";
 import { resolve } from "path";
 
 import { defineConfig } from "vite";
-
-import type { UserConfig as ViteConfiguration } from "vite";
-import type { UserConfig as VitestConfiguration } from "vitest";
+import { type UserConfig as ViteConfiguration } from "vite";
+import { type UserConfig as VitestConfiguration } from "vitest/node";
 
 export default defineConfig(function () {
+  const SOURCE_CODE_DIRECTORY_NAME = "source-code";
+
   /** パッケージパラメーター */
   const packageParameters = loadPackageParameters(resolve(__dirname, "package.json"));
 
@@ -14,8 +16,14 @@ export default defineConfig(function () {
   const configuration: ViteConfiguration & VitestConfiguration = {
     build: {
       lib: {
-        entry: resolve(__dirname, "src", "index.ts"),
-        fileName: "index",
+        entry: {
+          firestore: path.resolve(
+            import.meta.dirname,
+            SOURCE_CODE_DIRECTORY_NAME,
+            "firestore",
+            "index.ts",
+          ),
+        },
         name: getPackageNameSpaceName(packageParameters.name),
       },
       minify: false,

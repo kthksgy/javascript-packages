@@ -7,8 +7,8 @@ import { KeyOfUnion } from "./key-of-union";
  * @example
  * ```typescript
  * type T = { a: string } | { b: number };
- * type Example1 = Pick<T, 'a'>; // {}
- * type Example2 = PickDistributively<T, 'a'>; // { b: number }
+ * type Example1 = Pick<T, 'b'>; // {}
+ * type Example2 = PickDistributively<T, 'b'>; // { b: number }
  * ```
  */
 export type PickDistributively<T, K extends KeyOfUnion<T>> = T extends T ? Pick<T, K> : never;

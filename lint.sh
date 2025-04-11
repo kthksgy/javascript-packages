@@ -4,6 +4,7 @@ DIRECTORY_NAMES=(
   'utilities'
   'utilities-browser'
   'utilities-node'
+  'firebase-common'
 )
 
 # `packages`ディレクトリを指定された順でドライランコンパイルする。

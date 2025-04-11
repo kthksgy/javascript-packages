@@ -1,6 +1,6 @@
 /**
  * @file ESLintの設定ファイル
- * @version 2.0.3
+ * @version 2.0.5.0
  *
  * @tutorial VSCodeで使用している場合、変更を行った後は必ず再起動する。
  * @tutorial VSCodeで使用している場合、`eslint.workingDirectories`を設定する。
@@ -26,16 +26,16 @@ import tseslint from "typescript-eslint";
 # 必須のパッケージをインストールする。
 # Yarnを使用する場合は`yarn add`にコマンドを変更する。
 $ npm i -D \
-  '@eslint/js@~9.22.0' \
+  '@eslint/js@~9.23.0' \
   'confusing-browser-globals@~1.0.11' \
   'eslint-config-prettier@~10.1.1' \
-  'eslint-import-resolver-typescript@~3.8.3' \
-  'eslint-plugin-import-x@~4.6.1' \
-  'eslint-plugin-prettier@~5.2.3' \
-  'eslint-plugin-react@~7.37.4' \
+  'eslint-import-resolver-typescript@~4.3.1' \
+  'eslint-plugin-import-x@~4.10.0' \
+  'eslint-plugin-prettier@~5.2.6' \
+  'eslint-plugin-react@~7.37.5' \
   'eslint-plugin-react-hooks@~5.2.0' \
   'globals@~16.0.0' \
-  'typescript-eslint@~8.26.0'
+  'typescript-eslint@~8.29.0'
 ```
 */
 
@@ -48,7 +48,7 @@ export default tseslint.config(
   { languageOptions: { ecmaVersion: 2024, globals: { ...globals.browser, ...globals.node } } },
   {
     ignores: [
-      "**/{build,coverage,dist,distributions,lib,styled-system}/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}",
+      "**/{build,coverage,dist,distribution,distributions,lib,styled-system}/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}",
     ],
   },
   js.configs.recommended,

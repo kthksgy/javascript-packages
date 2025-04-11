@@ -4,7 +4,7 @@
  * @param T オブジェクト
  * @param P プロパティのパス(セグメントタプルまたはドット表記)
  */
-export type Access<T, P> = P extends '__name__'
+export type Access<T, P> = P extends "__name__"
   ? string
   : P extends keyof T
     ? T[P]
@@ -99,7 +99,7 @@ type PropertyPathSegmentTupleDistributor<
  */
 type PrimitiveType = string | number | bigint | boolean | symbol | null | undefined;
 
-export type SpecialPropertyPath = '__name__';
+export type SpecialPropertyPath = "__name__";
 
 /**
  * タプルをドット表記に変換する。
@@ -107,7 +107,7 @@ export type SpecialPropertyPath = '__name__';
 type TupleDotNotation<
   T extends Array<string | number | bigint | boolean | symbol | null | undefined>,
 > = T extends []
-  ? ''
+  ? ""
   : T extends [infer F]
     ? F
     : T extends [infer F, ...infer R]
@@ -115,7 +115,7 @@ type TupleDotNotation<
         ? R extends Array<string | number | bigint | boolean | null | undefined>
           ? `${F}.${TupleDotNotation<R>}`
           : `${F}`
-        : ''
-      : '';
+        : ""
+      : "";
 
 type UnionTupleUnion<T1, T2 = T1> = T1 extends T2 ? ([T1] extends [T2] ? [T1] : never) : never;

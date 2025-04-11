@@ -1,5 +1,6 @@
 coverage/
 lib/
+/distribution
 
 # `vitest`の`--typecheck`指定時の一時的なファイル
 tsconfig.vitest-temp.json
