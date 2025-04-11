@@ -1,1 +1,6 @@
+/.gitignore
+/README.md
+/scripts
 /source-code
+/tsconfig.build.json
+/tsconfig.json
