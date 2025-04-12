@@ -47,7 +47,7 @@
     "url": "git+https://github.com/kthksgy/packages-node.git"
   },
   "scripts": {
-    "build": "node --experimental-strip-types scripts/build.ts --clean && tsc --emitDeclarationOnly --project tsconfig.build.json",
+    "build": "node --experimental-strip-types scripts/build.ts --clean && tsc --project tsconfig.build.json",
     "clean": "rm -rf coverage && rm -rf lib",
     "coverage": "vitest run --coverage",
     "test": "vitest --typecheck"
