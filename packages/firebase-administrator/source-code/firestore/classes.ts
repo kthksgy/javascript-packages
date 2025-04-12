@@ -10,9 +10,7 @@ import {
   Timestamp,
   Transaction,
   WriteBatch,
-} from 'firebase-admin/firestore';
-
-import { ServerDateTimeFieldValue } from '../shared-files';
+} from "firebase-admin/firestore";
 
 export {
   CollectionReference,
@@ -23,7 +21,6 @@ export {
   Firestore,
   Query,
   QuerySnapshot,
-  ServerDateTimeFieldValue,
   Timestamp,
   Transaction,
   WriteBatch,

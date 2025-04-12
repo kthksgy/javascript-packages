@@ -1,12 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill';
-import {
-  AggregateField,
-  DocumentSnapshot,
-  Filter,
-  Timestamp,
-  Transaction,
-} from 'firebase-admin/firestore';
-
 import {
   AreLimitedTo,
   AreOrderedBy,
@@ -20,7 +11,7 @@ import {
   AreSelectedFromNotBefore,
   Contains,
   ContainsAnyOf,
-  FilterProviso,
+  FilterQueryParameter,
   FulfillsAllOf,
   FulfillsAnyOf,
   IsEqualTo,
@@ -31,50 +22,58 @@ import {
   IsNotEqualTo,
   IsNotOneOf,
   IsOneOf,
-  LimitProviso,
-  PaginationProviso,
-  RangeProviso,
-  SortProviso,
-} from '../shared-files';
+  LimitQueryParameter,
+  PaginationQueryParameter,
+  RangeQueryParameter,
+  SortQueryParameter,
+} from "@kthksgy/firebase-common/firestore";
+import {
+  AggregateField,
+  DocumentSnapshot,
+  Filter,
+  Timestamp,
+  Transaction,
+} from "firebase-admin/firestore";
+import { Temporal } from "temporal-polyfill";
 
-import { FieldPath, Query, QuerySnapshot } from './classes';
-import { createCollectionGroupReference, createCollectionReference } from './reference';
+import { FieldPath, Query, QuerySnapshot } from "./classes";
+import { createCollectionGroupReference, createCollectionReference } from "./reference";
 
-function getFilterConstraints(filters: ReadonlyArray<FilterProviso>) {
+function getFilterConstraints(filters: ReadonlyArray<FilterQueryParameter>) {
   const constraints: Array<
     ReturnType<typeof Filter.and> | ReturnType<typeof Filter.or> | ReturnType<typeof Filter.where>
   > = [];
   for (const filter of filters) {
     if (filter instanceof ContainsAnyOf) {
       constraints.push(
-        Filter.where(regulatePath(filter.path), 'array-contains-any', regulateValue(filter.values)),
+        Filter.where(regulatePath(filter.path), "array-contains-any", regulateValue(filter.values)),
       );
     } else if (filter instanceof Contains) {
       constraints.push(
-        Filter.where(regulatePath(filter.path), 'array-contains', regulateValue(filter.value)),
+        Filter.where(regulatePath(filter.path), "array-contains", regulateValue(filter.value)),
       );
     } else if (filter instanceof FulfillsAllOf) {
       constraints.push(Filter.and(...getFilterConstraints(filter.filters)));
     } else if (filter instanceof FulfillsAnyOf) {
       constraints.push(Filter.or(...getFilterConstraints(filter.filters)));
     } else if (filter instanceof IsEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), '==', regulateValue(filter.value)));
+      constraints.push(Filter.where(regulatePath(filter.path), "==", regulateValue(filter.value)));
     } else if (filter instanceof IsGreaterThanOrEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), '>=', regulateValue(filter.value)));
+      constraints.push(Filter.where(regulatePath(filter.path), ">=", regulateValue(filter.value)));
     } else if (filter instanceof IsGreaterThan) {
-      constraints.push(Filter.where(regulatePath(filter.path), '>', regulateValue(filter.value)));
+      constraints.push(Filter.where(regulatePath(filter.path), ">", regulateValue(filter.value)));
     } else if (filter instanceof IsLessThanOrEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), '<=', regulateValue(filter.value)));
+      constraints.push(Filter.where(regulatePath(filter.path), "<=", regulateValue(filter.value)));
     } else if (filter instanceof IsLessThan) {
-      constraints.push(Filter.where(regulatePath(filter.path), '<', regulateValue(filter.value)));
+      constraints.push(Filter.where(regulatePath(filter.path), "<", regulateValue(filter.value)));
     } else if (filter instanceof IsNotEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), '!=', regulateValue(filter.value)));
+      constraints.push(Filter.where(regulatePath(filter.path), "!=", regulateValue(filter.value)));
     } else if (filter instanceof IsNotOneOf) {
       constraints.push(
-        Filter.where(regulatePath(filter.path), 'not-in', regulateValue(filter.values)),
+        Filter.where(regulatePath(filter.path), "not-in", regulateValue(filter.values)),
       );
     } else if (filter instanceof IsOneOf) {
-      constraints.push(Filter.where(regulatePath(filter.path), 'in', regulateValue(filter.values)));
+      constraints.push(Filter.where(regulatePath(filter.path), "in", regulateValue(filter.values)));
     }
   }
   return constraints;
@@ -86,11 +85,11 @@ export function buildQuery(
     | ReturnType<typeof createCollectionGroupReference>
     | ReturnType<typeof createCollectionReference>,
   parameters: {
-    filters: Array<FilterProviso>;
-    limits: Array<LimitProviso>;
-    paginations: Array<PaginationProviso>;
-    ranges: Array<RangeProviso>;
-    sorts: Array<SortProviso>;
+    filters: Array<FilterQueryParameter>;
+    limits: Array<LimitQueryParameter>;
+    paginations: Array<PaginationQueryParameter>;
+    ranges: Array<RangeQueryParameter>;
+    sorts: Array<SortQueryParameter>;
   },
 ) {
   let query: Query = reference;
@@ -101,7 +100,7 @@ export function buildQuery(
     if (sort instanceof AreOrderedBy) {
       query = query.orderBy(
         regulatePath(sort.path),
-        sort.direction === 'descending' ? 'desc' : 'asc',
+        sort.direction === "descending" ? "desc" : "asc",
       );
     }
   }
@@ -184,19 +183,19 @@ export function listenQuery(
  * @returns パス
  */
 function regulatePath(path: any) {
-  if (path === '__name__') {
+  if (path === "__name__") {
     return FieldPath.documentId();
-  } else if (typeof path === 'string') {
+  } else if (typeof path === "string") {
     return path;
   } else if (
     Array.isArray(path) &&
     path.every(function (segment) {
-      return typeof segment === 'string';
+      return typeof segment === "string";
     })
   ) {
     return new FieldPath(...path);
   } else {
-    throw new Error('Invalid path');
+    throw new Error("Invalid path");
   }
 }
 
@@ -215,7 +214,7 @@ function regulateValue<T>(value: T): any {
     );
   } else if (Array.isArray(value)) {
     return value.map(regulateValue);
-  } else if (value !== null && typeof value === 'object') {
+  } else if (value !== null && typeof value === "object") {
     return Object.fromEntries(
       Object.entries(value).map(function ([key, value]) {
         return [key, regulateValue(value)];

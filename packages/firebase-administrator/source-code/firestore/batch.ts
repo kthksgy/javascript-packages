@@ -1,6 +1,6 @@
-import { Firestore, Transaction } from 'firebase-admin/firestore';
+import { Firestore, Transaction } from "firebase-admin/firestore";
 
-import { TransactionOptions } from './types';
+import { TransactionOptions } from "./types";
 
 /**
  * `firebase/firestore`の`runTransaction`の互換関数

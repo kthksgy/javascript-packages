@@ -3,7 +3,7 @@ import type {
   GetCollectionPath,
   PropertyPathDotNotation,
   PropertyPathSegmentTuple,
-} from '../shared-files';
+} from "@kthksgy/firebase-common/firestore";
 import type {
   DocumentData,
   DocumentReference,
@@ -12,7 +12,7 @@ import type {
   Transaction,
   UpdateData,
   WriteBatch,
-} from 'firebase-admin/firestore';
+} from "firebase-admin/firestore";
 
 export type {
   GetCollectionGroupPath,
@@ -21,10 +21,10 @@ export type {
   PropertyPathSegmentTuple,
 };
 
-export type GenericTransaction = Omit<Transaction, 'create' | 'getAll'> &
-  Partial<Pick<Transaction, 'create' | 'getAll'>>;
+export type GenericTransaction = Omit<Transaction, "create" | "getAll"> &
+  Partial<Pick<Transaction, "create" | "getAll">>;
 
-export type GenericWriteBatch = Omit<WriteBatch, 'create'> & Partial<Pick<WriteBatch, 'create'>>;
+export type GenericWriteBatch = Omit<WriteBatch, "create"> & Partial<Pick<WriteBatch, "create">>;
 
 /**
  * TransactionやWriteBatchなどの`update()`メソッドを持つオブジェクト

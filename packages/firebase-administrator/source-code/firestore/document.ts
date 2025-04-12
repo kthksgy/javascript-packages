@@ -4,7 +4,7 @@ import {
   DocumentSnapshot,
   SetOptions,
   Transaction,
-} from 'firebase-admin/firestore';
+} from "firebase-admin/firestore";
 
 export async function addDocument<T extends object>(
   collectionReference: CollectionReference,

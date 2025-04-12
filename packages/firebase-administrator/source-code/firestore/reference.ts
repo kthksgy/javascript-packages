@@ -1,4 +1,4 @@
-import { CollectionReference, DocumentReference, Firestore } from 'firebase-admin/firestore';
+import { CollectionReference, DocumentReference, Firestore } from "firebase-admin/firestore";
 
 /**
  * コレクショングループリファレンスを生成する。

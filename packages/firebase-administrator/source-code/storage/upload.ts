@@ -1,4 +1,4 @@
-import { File } from '@google-cloud/storage';
+import { File } from "@google-cloud/storage";
 
 /**
  * `firebase/storage`の`uploadBytes`の互換関数

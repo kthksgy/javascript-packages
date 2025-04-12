@@ -1,4 +1,4 @@
-import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
 
 export { getFirestore };
 
