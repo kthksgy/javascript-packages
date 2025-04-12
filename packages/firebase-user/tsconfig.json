@@ -20,6 +20,5 @@
     "types": ["vitest/importMeta"],
     "useDefineForClassFields": true
   },
-  "exclude": ["vite.config.ts"],
-  "include": ["scripts", "source-code", "vite.config.ts"]
+  "include": ["scripts", "source-code"]
 }

@@ -20,9 +20,7 @@
   "type": "module",
   "volta": {
     "node": "22.14.0",
-    "npm": "11.2.0"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+    "npm": "11.3.0",
+    "pnpm": "10.8.0"
+  }
 }
