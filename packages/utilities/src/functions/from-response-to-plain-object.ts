@@ -7,12 +7,12 @@
  */
 export async function fromResponseToPlainObject(response: Response, body?: unknown) {
   const output = {
-    body: <unknown>undefined,
+    body: undefined as unknown,
     headers: Array.from(response.headers.entries()),
     redirected: response.redirected,
     status: response.status,
     statusText: response.statusText,
-    type: response.type,
+    type: response.type as string,
     url: response.url,
   };
 

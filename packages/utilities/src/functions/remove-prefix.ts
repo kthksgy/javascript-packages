@@ -16,7 +16,8 @@ export function removePrefix<TInput extends string, TPrefix extends string>(
   input: TInput,
   prefix: TPrefix,
 ) {
-  return <RemovePrefixOutput<TInput, TPrefix>>(
-    (input.startsWith(prefix) ? input.slice(prefix.length) : input)
-  );
+  return (input.startsWith(prefix) ? input.slice(prefix.length) : input) as RemovePrefixOutput<
+    TInput,
+    TPrefix
+  >;
 }

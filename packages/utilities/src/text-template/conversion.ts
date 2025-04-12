@@ -35,7 +35,7 @@ const pathTemplateKeyRegularExpressions = new Map<`${string} ${string}`, RegExp>
 export function createPathPatternKeyRegularExpression<
   KeyPrefix extends string,
   KeySuffix extends string = "",
->(keyPrefix: KeyPrefix, keySuffix: KeySuffix = <KeySuffix>"") {
+>(keyPrefix: KeyPrefix, keySuffix = "" as KeySuffix) {
   const key: `${string} ${string}` = `${keyPrefix} ${keySuffix}`;
   let pathTemplateKeyRegularExpression = pathTemplateKeyRegularExpressions.get(key);
   if (!pathTemplateKeyRegularExpression) {
@@ -83,7 +83,7 @@ export function fromPathPatternToTextTemplate<
   T extends string,
   KeyPrefix extends string,
   KeySuffix extends string = "",
->(pathPattern: T, keyPrefix: KeyPrefix, keySuffix = <KeySuffix>"") {
+>(pathPattern: T, keyPrefix: KeyPrefix, keySuffix = "" as KeySuffix) {
   return pathPattern.replace(
     createPathPatternKeyRegularExpression(keyPrefix, keySuffix),
     replacer,

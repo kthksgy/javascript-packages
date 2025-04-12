@@ -69,7 +69,7 @@ command
       },
     ] satisfies Array<esbuild.BuildOptions>;
 
-    if (clean) {
+    if (clean && fs.existsSync(DISTRIBUTIONS_DIRECTORY_NAME)) {
       fs.rmSync(DISTRIBUTIONS_DIRECTORY_NAME, { recursive: true });
     }
 

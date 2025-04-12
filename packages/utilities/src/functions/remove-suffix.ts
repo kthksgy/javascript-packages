@@ -16,7 +16,8 @@ export function removeSuffix<TInput extends string, TSuffix extends string>(
   input: TInput,
   suffix: TSuffix,
 ) {
-  return <RemoveSuffixOutput<TInput, TSuffix>>(
-    (input.endsWith(suffix) ? input.slice(suffix.length) : input)
-  );
+  return (input.endsWith(suffix) ? input.slice(suffix.length) : input) as RemoveSuffixOutput<
+    TInput,
+    TSuffix
+  >;
 }
