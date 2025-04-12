@@ -1,5 +1,16 @@
 # Node.jsパッケージ
 
+## Visual Studio Codeの拡張機能がpnpmでインストールしたESLintおよびPrettierを利用できない件について (2025/04/12)
+
+`.npmrc`ファイルを作成し、次の内容を記載すると解決します。
+
+```plaintext
+public-hoist-pattern[]=*eslint*
+public-hoist-pattern[]=*prettier*
+```
+
+- [Remove the default option `*eslint*` and `*prettier*` from `public-hoist-pattern` option in next major version #8378](https://github.com/pnpm/pnpm/issues/8378)
+
 ## ビルドする
 
 ```bash
