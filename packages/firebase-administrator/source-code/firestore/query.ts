@@ -102,11 +102,11 @@ export function buildQuery(
     | ReturnType<typeof createCollectionGroupReference>
     | ReturnType<typeof createCollectionReference>,
   parameters: {
-    filters: Array<FilterQueryParameter>;
-    limit?: LimitQueryParameter;
-    orders: Array<OrderQueryParameter>;
-    page?: PageQueryParameter;
-    ranges: Array<RangeQueryParameter>;
+    filters: ReadonlyArray<FilterQueryParameter>;
+    limits: ReadonlyArray<LimitQueryParameter>;
+    orders: ReadonlyArray<OrderQueryParameter>;
+    pages: ReadonlyArray<PageQueryParameter>;
+    ranges: ReadonlyArray<RangeQueryParameter>;
   },
 ) {
   let query: Query = reference;
@@ -145,8 +145,7 @@ export function buildQuery(
     }
   }
 
-  const page = parameters.page;
-  if (page) {
+  for (const page of parameters.pages) {
     switch (page.type1) {
       case "exclusive":
         switch (page.type2) {
@@ -171,13 +170,17 @@ export function buildQuery(
     }
   }
 
-  const limit = parameters.limit;
-  if (limit) {
-    query = query.limit(limit.limit);
+  {
+    const limit = parameters.limits.at(-1);
+    if (limit) {
+      query = query.limit(limit.limit);
+    }
   }
 
   return query;
 }
+
+export const query = buildQuery;
 
 export async function fetchDocumentCount(query: Query, transaction?: Transaction) {
   if (transaction) {
