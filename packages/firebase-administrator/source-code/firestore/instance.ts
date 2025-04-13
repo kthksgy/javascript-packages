@@ -1,6 +1,10 @@
-import { FieldValue, getFirestore } from "firebase-admin/firestore";
+import {
+  FieldValue,
+  type ReadOnlyTransactionOptions,
+  type ReadWriteTransactionOptions,
+} from "firebase-admin/firestore";
 
-export { getFirestore };
+export type TransactionOptions = ReadOnlyTransactionOptions | ReadWriteTransactionOptions;
 
 /** @returns フィールドを削除する`FieldValue`センチネル。 */
 export const createDeleteMarkFieldValue = FieldValue.delete;

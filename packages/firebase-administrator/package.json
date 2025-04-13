@@ -22,6 +22,16 @@
       "require": "./distributions/node/firestore.cjs",
       "types": "./distributions/types/firestore/index.d.ts"
     },
+    "./native/firestore": {
+      "import": "./distributions/browser/native/firestore.js",
+      "require": "./distributions/node/native/firestore.cjs",
+      "types": "./distributions/types/native/firestore.d.ts"
+    },
+    "./native/storage": {
+      "import": "./distributions/browser/native/storage.js",
+      "require": "./distributions/node/native/storage.cjs",
+      "types": "./distributions/types/native/storage.d.ts"
+    },
     "./storage": {
       "import": "./distributions/browser/storage.js",
       "require": "./distributions/node/storage.cjs",
@@ -54,5 +64,5 @@
     "test": "vitest --typecheck"
   },
   "type": "module",
-  "version": "0.0.0"
+  "version": "0.0.1-alpha+0"
 }

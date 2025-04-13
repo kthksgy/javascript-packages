@@ -1,31 +1,11 @@
 import {
-  AreLimitedTo,
-  AreOrderedBy,
-  ArePaginatedAfter,
-  ArePaginatedBefore,
-  ArePaginatedNotAfter,
-  ArePaginatedNotBefore,
-  AreSelectedFromAfter,
-  AreSelectedFromBefore,
-  AreSelectedFromNotAfter,
-  AreSelectedFromNotBefore,
-  Contains,
-  ContainsAnyOf,
+  CompositeFilterQueryParameter,
+  FieldFilterQueryParameter,
   FilterQueryParameter,
-  FulfillsAllOf,
-  FulfillsAnyOf,
-  IsEqualTo,
-  IsGreaterThan,
-  IsGreaterThanOrEqualTo,
-  IsLessThan,
-  IsLessThanOrEqualTo,
-  IsNotEqualTo,
-  IsNotOneOf,
-  IsOneOf,
   LimitQueryParameter,
-  PaginationQueryParameter,
+  OrderQueryParameter,
+  PageQueryParameter,
   RangeQueryParameter,
-  SortQueryParameter,
 } from "@kthksgy/firebase-common/firestore";
 import {
   AggregateField,
@@ -36,7 +16,7 @@ import {
 } from "firebase-admin/firestore";
 import { Temporal } from "temporal-polyfill";
 
-import { FieldPath, Query, QuerySnapshot } from "./classes";
+import { FieldPath, Query, QuerySnapshot } from "./reexports";
 import { createCollectionGroupReference, createCollectionReference } from "./reference";
 
 function getFilterConstraints(filters: ReadonlyArray<FilterQueryParameter>) {
@@ -44,36 +24,73 @@ function getFilterConstraints(filters: ReadonlyArray<FilterQueryParameter>) {
     ReturnType<typeof Filter.and> | ReturnType<typeof Filter.or> | ReturnType<typeof Filter.where>
   > = [];
   for (const filter of filters) {
-    if (filter instanceof ContainsAnyOf) {
-      constraints.push(
-        Filter.where(regulatePath(filter.path), "array-contains-any", regulateValue(filter.values)),
-      );
-    } else if (filter instanceof Contains) {
-      constraints.push(
-        Filter.where(regulatePath(filter.path), "array-contains", regulateValue(filter.value)),
-      );
-    } else if (filter instanceof FulfillsAllOf) {
-      constraints.push(Filter.and(...getFilterConstraints(filter.filters)));
-    } else if (filter instanceof FulfillsAnyOf) {
-      constraints.push(Filter.or(...getFilterConstraints(filter.filters)));
-    } else if (filter instanceof IsEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), "==", regulateValue(filter.value)));
-    } else if (filter instanceof IsGreaterThanOrEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), ">=", regulateValue(filter.value)));
-    } else if (filter instanceof IsGreaterThan) {
-      constraints.push(Filter.where(regulatePath(filter.path), ">", regulateValue(filter.value)));
-    } else if (filter instanceof IsLessThanOrEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), "<=", regulateValue(filter.value)));
-    } else if (filter instanceof IsLessThan) {
-      constraints.push(Filter.where(regulatePath(filter.path), "<", regulateValue(filter.value)));
-    } else if (filter instanceof IsNotEqualTo) {
-      constraints.push(Filter.where(regulatePath(filter.path), "!=", regulateValue(filter.value)));
-    } else if (filter instanceof IsNotOneOf) {
-      constraints.push(
-        Filter.where(regulatePath(filter.path), "not-in", regulateValue(filter.values)),
-      );
-    } else if (filter instanceof IsOneOf) {
-      constraints.push(Filter.where(regulatePath(filter.path), "in", regulateValue(filter.values)));
+    if (filter instanceof FieldFilterQueryParameter) {
+      switch (filter.type) {
+        case "!=":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), "!=", regulateValue(filter.value)),
+          );
+          break;
+        case "<":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), "<", regulateValue(filter.value)),
+          );
+          break;
+        case "<=":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), "<=", regulateValue(filter.value)),
+          );
+          break;
+        case "==":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), "==", regulateValue(filter.value)),
+          );
+          break;
+        case ">":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), ">", regulateValue(filter.value)),
+          );
+          break;
+        case ">=":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), ">=", regulateValue(filter.value)),
+          );
+          break;
+        case "array-contains-any":
+          constraints.push(
+            Filter.where(
+              regulatePath(filter.path),
+              "array-contains-any",
+              regulateValue(filter.value),
+            ),
+          );
+          break;
+        case "array-contains":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), "array-contains", regulateValue(filter.value)),
+          );
+          break;
+          break;
+        case "in":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), "in", regulateValue(filter.value)),
+          );
+          break;
+        case "not-in":
+          constraints.push(
+            Filter.where(regulatePath(filter.path), "not-in", regulateValue(filter.value)),
+          );
+          break;
+      }
+    } else if (filter instanceof CompositeFilterQueryParameter) {
+      switch (filter.type) {
+        case "and":
+          constraints.push(Filter.and(...getFilterConstraints(filter.filters)));
+          break;
+        case "or":
+          constraints.push(Filter.or(...getFilterConstraints(filter.filters)));
+          break;
+      }
     }
   }
   return constraints;
@@ -86,65 +103,64 @@ export function buildQuery(
     | ReturnType<typeof createCollectionReference>,
   parameters: {
     filters: Array<FilterQueryParameter>;
-    limits: Array<LimitQueryParameter>;
-    paginations: Array<PaginationQueryParameter>;
+    limit?: LimitQueryParameter;
+    orders: Array<OrderQueryParameter>;
+    page?: PageQueryParameter;
     ranges: Array<RangeQueryParameter>;
-    sorts: Array<SortQueryParameter>;
   },
 ) {
   let query: Query = reference;
 
   query = query.where(Filter.and(...getFilterConstraints(parameters.filters)));
 
-  for (const sort of parameters.sorts) {
-    if (sort instanceof AreOrderedBy) {
-      query = query.orderBy(
-        regulatePath(sort.path),
-        sort.direction === "descending" ? "desc" : "asc",
-      );
-    }
+  for (const order of parameters.orders) {
+    query = query.orderBy(
+      regulatePath(order.path),
+      order.direction === "descending" ? "desc" : "asc",
+    );
   }
 
   for (const range of parameters.ranges) {
-    if (range instanceof AreSelectedFromAfter) {
-      query = query.startAfter(regulateValue(range.value));
-    } else if (range instanceof AreSelectedFromBefore) {
-      query = query.endBefore(regulateValue(range.value));
-    } else if (range instanceof AreSelectedFromNotAfter) {
-      query = query.endAt(regulateValue(range.value));
-    } else if (range instanceof AreSelectedFromNotBefore) {
-      query = query.startAt(regulateValue(range.value));
+    switch (range.type) {
+      case "endBefore":
+        query = query.endBefore(regulateValue(range.value));
+        break;
+      case "endAt":
+        query = query.endAt(regulateValue(range.value));
+        break;
+      case "startAfter":
+        query = query.startAfter(regulateValue(range.value));
+        break;
+      case "startAt":
+        query = query.startAt(regulateValue(range.value));
+        break;
     }
   }
 
-  for (const pagination of parameters.paginations) {
-    if (pagination instanceof ArePaginatedAfter) {
-      query = query.startAfter(pagination.cursor);
-    } else if (pagination instanceof ArePaginatedBefore) {
-      query = query.endBefore(pagination.cursor);
-    } else if (pagination instanceof ArePaginatedNotAfter) {
-      query = query.endAt(pagination.cursor);
-    } else if (pagination instanceof ArePaginatedNotBefore) {
-      query = query.startAt(pagination.cursor);
+  const page = parameters.page;
+  if (page) {
+    switch (page.type) {
+      case "endBefore":
+        query = query.endBefore(page.cursor);
+        break;
+      case "endAt":
+        query = query.endAt(page.cursor);
+        break;
+      case "startAfter":
+        query = query.startAfter(page.cursor);
+        break;
+      case "startAt":
+        query = query.startAt(page.cursor);
+        break;
     }
   }
 
-  {
-    const limit = parameters.limits.at(-1);
-    if (limit instanceof AreLimitedTo) {
-      query = query.limit(limit.count);
-    }
+  const limit = parameters.limit;
+  if (limit) {
+    query = query.limit(limit.limit);
   }
 
   return query;
-}
-
-export async function executeQuery(query: Query, transaction?: Transaction) {
-  if (transaction) {
-    return transaction.get(query);
-  } else {
-    return query.get();
-  }
 }
 
 export async function fetchDocumentCount(query: Query, transaction?: Transaction) {
@@ -152,6 +168,14 @@ export async function fetchDocumentCount(query: Query, transaction?: Transaction
     return (await transaction.get(query.aggregate({ count: AggregateField.count() }))).data().count;
   } else {
     return (await query.aggregate({ count: AggregateField.count() }).get()).data().count;
+  }
+}
+
+export async function fetchDocuments(query: Query, transaction?: Transaction) {
+  if (transaction) {
+    return transaction.get(query);
+  } else {
+    return query.get();
   }
 }
 
@@ -169,7 +193,7 @@ export function getLastDocumentSnapshot<T extends QuerySnapshot>(querySnapshot: 
   return querySnapshot.docs.at(-1) ?? null;
 }
 
-export function listenQuery(
+export function watchDocuments(
   query: Query,
   onNext: { (snapshot: QuerySnapshot): void },
   onError?: { (error: Error): void },

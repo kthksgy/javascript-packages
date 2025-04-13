@@ -71,7 +71,6 @@ function getFilterConstraints(filters: ReadonlyArray<FilterQueryParameter>) {
             _where(regulatePath(filter.path), "array-contains", regulateValue(filter.value)),
           );
           break;
-          break;
         case "in":
           constraints.push(_where(regulatePath(filter.path), "in", regulateValue(filter.value)));
           break;
@@ -102,18 +101,18 @@ export function buildQuery(
     | ReturnType<typeof createCollectionReference>,
   parameters: {
     filters: Array<FilterQueryParameter>;
-    limits: Array<LimitQueryParameter>;
+    limit?: LimitQueryParameter;
     orders: Array<OrderQueryParameter>;
-    paginations: Array<PageQueryParameter>;
+    page?: PageQueryParameter;
     ranges: Array<RangeQueryParameter>;
   },
 ) {
   const constraints = [];
   const filter = _and(...getFilterConstraints(parameters.filters));
 
-  for (const sort of parameters.orders) {
+  for (const order of parameters.orders) {
     constraints.push(
-      _orderBy(regulatePath(sort.path), sort.direction === "descending" ? "desc" : "asc"),
+      _orderBy(regulatePath(order.path), order.direction === "descending" ? "desc" : "asc"),
     );
   }
 
@@ -134,28 +133,27 @@ export function buildQuery(
     }
   }
 
-  for (const pagination of parameters.paginations) {
-    switch (pagination.type) {
+  const page = parameters.page;
+  if (page) {
+    switch (page.type) {
       case "endBefore":
-        constraints.push(_endBefore(pagination.cursor));
+        constraints.push(_endBefore(page.cursor));
         break;
       case "endAt":
-        constraints.push(_endAt(pagination.cursor));
+        constraints.push(_endAt(page.cursor));
         break;
       case "startAfter":
-        constraints.push(_startAfter(pagination.cursor));
+        constraints.push(_startAfter(page.cursor));
         break;
       case "startAt":
-        constraints.push(_startAt(pagination.cursor));
+        constraints.push(_startAt(page.cursor));
         break;
     }
   }
 
-  {
-    const limit = parameters.limits.at(-1);
-    if (limit !== undefined) {
-      constraints.push(_limit(limit.limit));
-    }
+  const limit = parameters.limit;
+  if (limit) {
+    constraints.push(_limit(limit.limit));
   }
 
   return _query(reference, filter, ...constraints);

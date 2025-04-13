@@ -10,7 +10,10 @@ import {
   Timestamp,
   Transaction,
   WriteBatch,
+  getFirestore,
 } from "firebase-admin/firestore";
+
+export * from "@kthksgy/firebase-common/firestore";
 
 export {
   CollectionReference,
@@ -23,5 +26,6 @@ export {
   QuerySnapshot,
   Timestamp,
   Transaction,
-  WriteBatch,
+  WriteBatch as Batch,
+  getFirestore,
 };
