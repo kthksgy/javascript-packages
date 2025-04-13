@@ -7,11 +7,10 @@ import {
   PageQueryParameter,
   RangeQueryParameter,
 } from "@kthksgy/firebase-common/firestore";
-import { Mishap } from "@kthksgy/utilities";
+import { ApplicationError } from "@kthksgy/utilities";
 import {
   DocumentSnapshot,
   FieldPath,
-  FirestoreError,
   Timestamp,
   Transaction,
   and as _and,
@@ -27,12 +26,15 @@ import {
   documentId,
   getCountFromServer,
   getDocs,
-  onSnapshot,
 } from "firebase/firestore";
 import { Temporal } from "temporal-polyfill";
 
-import { Query, QuerySnapshot } from "./classes";
-import { createCollectionGroupReference, createCollectionReference } from "./reference";
+import {
+  Query,
+  QuerySnapshot,
+  createCollectionGroupReference,
+  createCollectionReference,
+} from "./reexports";
 
 function getFilterConstraints(filters: ReadonlyArray<FilterQueryParameter>) {
   const constraints: Array<
@@ -101,73 +103,81 @@ export function buildQuery(
   parameters: {
     filters: Array<FilterQueryParameter>;
     limits: Array<LimitQueryParameter>;
+    orders: Array<OrderQueryParameter>;
     paginations: Array<PageQueryParameter>;
     ranges: Array<RangeQueryParameter>;
-    orders: Array<OrderQueryParameter>;
   },
 ) {
   const constraints = [];
   const filter = _and(...getFilterConstraints(parameters.filters));
 
-  for (const sort of parameters.sorts) {
-    if (sort instanceof AreOrderedBy) {
-      constraints.push(
-        _orderBy(regulatePath(sort.path), sort.direction === "descending" ? "desc" : "asc"),
-      );
-    }
+  for (const sort of parameters.orders) {
+    constraints.push(
+      _orderBy(regulatePath(sort.path), sort.direction === "descending" ? "desc" : "asc"),
+    );
   }
 
   for (const range of parameters.ranges) {
-    if (range instanceof AreSelectedFromAfter) {
-      constraints.push(_startAfter(regulateValue(range.value)));
-    } else if (range instanceof AreSelectedFromBefore) {
-      constraints.push(_endBefore(regulateValue(range.value)));
-    } else if (range instanceof AreSelectedFromNotAfter) {
-      constraints.push(_endAt(regulateValue(range.value)));
-    } else if (range instanceof AreSelectedFromNotBefore) {
-      constraints.push(_startAt(regulateValue(range.value)));
+    switch (range.type) {
+      case "endBefore":
+        constraints.push(_endBefore(regulateValue(range.value)));
+        break;
+      case "endAt":
+        constraints.push(_endAt(regulateValue(range.value)));
+        break;
+      case "startAfter":
+        constraints.push(_startAfter(regulateValue(range.value)));
+        break;
+      case "startAt":
+        constraints.push(_startAt(regulateValue(range.value)));
+        break;
     }
   }
 
   for (const pagination of parameters.paginations) {
-    if (pagination instanceof ArePaginatedAfter) {
-      constraints.push(_startAfter(pagination.cursor));
-    } else if (pagination instanceof ArePaginatedBefore) {
-      constraints.push(_endBefore(pagination.cursor));
-    } else if (pagination instanceof ArePaginatedNotAfter) {
-      constraints.push(_endAt(pagination.cursor));
-    } else if (pagination instanceof ArePaginatedNotBefore) {
-      constraints.push(_startAt(pagination.cursor));
+    switch (pagination.type) {
+      case "endBefore":
+        constraints.push(_endBefore(pagination.cursor));
+        break;
+      case "endAt":
+        constraints.push(_endAt(pagination.cursor));
+        break;
+      case "startAfter":
+        constraints.push(_startAfter(pagination.cursor));
+        break;
+      case "startAt":
+        constraints.push(_startAt(pagination.cursor));
+        break;
     }
   }
 
   {
     const limit = parameters.limits.at(-1);
-    if (limit instanceof AreLimitedTo) {
-      constraints.push(_limit(limit.count));
+    if (limit !== undefined) {
+      constraints.push(_limit(limit.limit));
     }
   }
 
   return _query(reference, filter, ...constraints);
 }
 
-export async function executeQuery(query: Query, transaction?: Transaction) {
-  if (transaction) {
-    throw new Mishap(Mishap.DEFAULT_CODE, {
-      message: "この機能は`firebase`パッケージでは利用できません。",
-    });
-  } else {
-    return getDocs(query);
-  }
-}
-
 export async function fetchDocumentCount(query: Query, transaction?: Transaction) {
   if (transaction) {
-    throw new Mishap(Mishap.DEFAULT_CODE, {
+    throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
       message: "この機能は`firebase`パッケージでは利用できません。",
     });
   } else {
     return (await getCountFromServer(query)).data().count;
+  }
+}
+
+export async function fetchDocuments(query: Query, transaction?: Transaction) {
+  if (transaction) {
+    throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
+      message: "この機能は`firebase`パッケージでは利用できません。",
+    });
+  } else {
+    return getDocs(query);
   }
 }
 
@@ -183,14 +193,6 @@ export function getFirstDocumentSnapshot<T extends QuerySnapshot>(querySnapshot:
 
 export function getLastDocumentSnapshot<T extends QuerySnapshot>(querySnapshot: T) {
   return querySnapshot.docs.at(-1) ?? null;
-}
-
-export function listenQuery(
-  query: Query,
-  onNext: { (snapshot: QuerySnapshot): void },
-  onError?: { (error: FirestoreError): void },
-) {
-  return onSnapshot(query, onNext, onError);
 }
 
 /**

@@ -1,20 +1,11 @@
 import {
-  CollectionReference,
   DocumentReference,
   DocumentSnapshot,
   SetOptions,
   Transaction,
-  addDoc,
   getDoc,
-  onSnapshot,
   runTransaction,
-  setDoc,
-  updateDoc,
 } from "firebase/firestore";
-
-export function addDocument<T extends object>(reference: CollectionReference, data: T) {
-  return addDoc(reference, data);
-}
 
 export function createDocument<T extends object>(reference: DocumentReference, data: T) {
   return runTransaction(reference.firestore, async function (transaction) {
@@ -24,6 +15,13 @@ export function createDocument<T extends object>(reference: DocumentReference, d
     }
   });
 }
+
+export type AbstractQueue = {
+  create: { (reference: DocumentReference, data: any): AbstractQueue };
+  delete: { (reference: DocumentReference): AbstractQueue };
+  set: { (reference: DocumentReference, data: any, options?: SetOptions): AbstractQueue };
+  update: { (reference: DocumentReference, data: any): AbstractQueue };
+};
 
 export function doesDocumentExist(documentSnapshot: DocumentSnapshot) {
   return documentSnapshot.exists();
@@ -41,22 +39,34 @@ export function getDocumentData<T extends DocumentSnapshot>(documentSnapshot: T)
   return documentSnapshot.data({ serverTimestamps: "estimate" });
 }
 
-export function listenDocument(
+export function queueDocumentToCreate<Queue extends Pick<AbstractQueue, "create">>(
+  queue: Queue,
   reference: DocumentReference,
-  onNext: { (snapshot: DocumentSnapshot): void },
-  onError?: { (error: Error): void },
-) {
-  return onSnapshot(reference, onNext, onError);
+  data: any,
+): Queue {
+  return queue.create(reference, data) as unknown as Queue;
 }
 
-export function setDocument(reference: DocumentReference, data: any, options?: SetOptions) {
-  if (options) {
-    return setDoc(reference, data, options);
-  } else {
-    return setDoc(reference, data);
-  }
+export function queueDocumentToDelete<Queue extends Pick<AbstractQueue, "delete">>(
+  queue: Queue,
+  reference: DocumentReference,
+): Queue {
+  return queue.delete(reference) as unknown as Queue;
 }
 
-export function updateDocument(reference: DocumentReference, data: any) {
-  return updateDoc(reference, data);
+export function queueDocumentToSet<Queue extends Pick<AbstractQueue, "set">>(
+  queue: Queue,
+  reference: DocumentReference,
+  data: any,
+  options?: SetOptions,
+): Queue {
+  return queue.set(reference, data, options) as unknown as Queue;
+}
+
+export function queueDocumentToUpdate<Queue extends Pick<AbstractQueue, "update">>(
+  queue: Queue,
+  reference: DocumentReference,
+  data: any,
+): Queue {
+  return queue.update(reference, data) as unknown as Queue;
 }

@@ -42,6 +42,14 @@ command
           out: "firestore",
         },
         {
+          in: path.join(SOURCE_CODE_DIRECTORY_NAME, "native", "firestore.ts"),
+          out: "native/firestore",
+        },
+        {
+          in: path.join(SOURCE_CODE_DIRECTORY_NAME, "native", "storage.ts"),
+          out: "native/storage",
+        },
+        {
           in: path.join(SOURCE_CODE_DIRECTORY_NAME, "storage", "index.ts"),
           out: "storage",
         },

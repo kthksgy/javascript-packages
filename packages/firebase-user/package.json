@@ -22,6 +22,16 @@
       "require": "./distributions/node/firestore.cjs",
       "types": "./distributions/types/firestore/index.d.ts"
     },
+    "./native/firestore": {
+      "import": "./distributions/browser/native/firestore.js",
+      "require": "./distributions/node/native/firestore.cjs",
+      "types": "./distributions/types/native/firestore.d.ts"
+    },
+    "./native/storage": {
+      "import": "./distributions/browser/native/storage.js",
+      "require": "./distributions/node/native/storage.cjs",
+      "types": "./distributions/types/native/storage.d.ts"
+    },
     "./storage": {
       "import": "./distributions/browser/storage.js",
       "require": "./distributions/node/storage.cjs",
@@ -35,7 +45,7 @@
   "license": "MIT",
   "name": "@kthksgy/firebase-user",
   "peerDependencies": {
-    "@kthksgy/firebase-common": "^0.0.1",
+    "@kthksgy/firebase-common": "^0.0.2",
     "@kthksgy/utilities": "~0.1.3",
     "@standard-schema/spec": "^1.0.0",
     "firebase": "^11.6.0",
@@ -53,5 +63,5 @@
     "test": "vitest --typecheck"
   },
   "type": "module",
-  "version": "0.0.1"
+  "version": "0.0.2-alpha+0"
 }
