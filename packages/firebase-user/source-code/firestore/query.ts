@@ -117,36 +117,52 @@ export function buildQuery(
   }
 
   for (const range of parameters.ranges) {
-    switch (range.type) {
-      case "endBefore":
-        constraints.push(_endBefore(regulateValue(range.value)));
+    switch (range.type1) {
+      case "exclusive":
+        switch (range.type2) {
+          case "after":
+            constraints.push(_startAfter(regulateValue(range.value)));
+            break;
+          case "before":
+            constraints.push(_endBefore(regulateValue(range.value)));
+            break;
+        }
         break;
-      case "endAt":
-        constraints.push(_endAt(regulateValue(range.value)));
-        break;
-      case "startAfter":
-        constraints.push(_startAfter(regulateValue(range.value)));
-        break;
-      case "startAt":
-        constraints.push(_startAt(regulateValue(range.value)));
+      case "inclusive":
+        switch (range.type2) {
+          case "after":
+            constraints.push(_startAt(regulateValue(range.value)));
+            break;
+          case "before":
+            constraints.push(_endAt(regulateValue(range.value)));
+            break;
+        }
         break;
     }
   }
 
   const page = parameters.page;
   if (page) {
-    switch (page.type) {
-      case "endBefore":
-        constraints.push(_endBefore(page.cursor));
+    switch (page.type1) {
+      case "exclusive":
+        switch (page.type2) {
+          case "after":
+            constraints.push(_startAfter(regulateValue(page.cursor)));
+            break;
+          case "before":
+            constraints.push(_endBefore(regulateValue(page.cursor)));
+            break;
+        }
         break;
-      case "endAt":
-        constraints.push(_endAt(page.cursor));
-        break;
-      case "startAfter":
-        constraints.push(_startAfter(page.cursor));
-        break;
-      case "startAt":
-        constraints.push(_startAt(page.cursor));
+      case "inclusive":
+        switch (page.type2) {
+          case "after":
+            constraints.push(_startAt(regulateValue(page.cursor)));
+            break;
+          case "before":
+            constraints.push(_endAt(regulateValue(page.cursor)));
+            break;
+        }
         break;
     }
   }
@@ -158,6 +174,8 @@ export function buildQuery(
 
   return _query(reference, filter, ...constraints);
 }
+
+export const query = buildQuery;
 
 export async function fetchDocumentCount(query: Query, transaction?: Transaction) {
   if (transaction) {

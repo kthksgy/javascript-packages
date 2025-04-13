@@ -121,36 +121,52 @@ export function buildQuery(
   }
 
   for (const range of parameters.ranges) {
-    switch (range.type) {
-      case "endBefore":
-        query = query.endBefore(regulateValue(range.value));
+    switch (range.type1) {
+      case "exclusive":
+        switch (range.type2) {
+          case "after":
+            query = query.startAfter(regulateValue(range.value));
+            break;
+          case "before":
+            query = query.endBefore(regulateValue(range.value));
+            break;
+        }
         break;
-      case "endAt":
-        query = query.endAt(regulateValue(range.value));
-        break;
-      case "startAfter":
-        query = query.startAfter(regulateValue(range.value));
-        break;
-      case "startAt":
-        query = query.startAt(regulateValue(range.value));
+      case "inclusive":
+        switch (range.type2) {
+          case "after":
+            query = query.startAt(regulateValue(range.value));
+            break;
+          case "before":
+            query = query.endAt(regulateValue(range.value));
+            break;
+        }
         break;
     }
   }
 
   const page = parameters.page;
   if (page) {
-    switch (page.type) {
-      case "endBefore":
-        query = query.endBefore(page.cursor);
+    switch (page.type1) {
+      case "exclusive":
+        switch (page.type2) {
+          case "after":
+            query = query.startAfter(regulateValue(page.cursor));
+            break;
+          case "before":
+            query = query.endBefore(regulateValue(page.cursor));
+            break;
+        }
         break;
-      case "endAt":
-        query = query.endAt(page.cursor);
-        break;
-      case "startAfter":
-        query = query.startAfter(page.cursor);
-        break;
-      case "startAt":
-        query = query.startAt(page.cursor);
+      case "inclusive":
+        switch (page.type2) {
+          case "after":
+            query = query.startAt(regulateValue(page.cursor));
+            break;
+          case "before":
+            query = query.endAt(regulateValue(page.cursor));
+            break;
+        }
         break;
     }
   }
