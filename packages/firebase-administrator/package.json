@@ -36,7 +36,7 @@
   "name": "@kthksgy/firebase-administrator",
   "peerDependencies": {
     "@google-cloud/storage": "^7.16.0",
-    "@kthksgy/firebase-common": "^0.0.0",
+    "@kthksgy/firebase-common": "^0.0.1",
     "@kthksgy/utilities": "~0.1.3",
     "@standard-schema/spec": "^1.0.0",
     "firebase-admin": "^13.2.0",
