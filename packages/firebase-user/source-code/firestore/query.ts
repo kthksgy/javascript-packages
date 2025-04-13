@@ -1,31 +1,11 @@
 import {
-  AreLimitedTo,
-  AreOrderedBy,
-  ArePaginatedAfter,
-  ArePaginatedBefore,
-  ArePaginatedNotAfter,
-  ArePaginatedNotBefore,
-  AreSelectedFromAfter,
-  AreSelectedFromBefore,
-  AreSelectedFromNotAfter,
-  AreSelectedFromNotBefore,
-  Contains,
-  ContainsAnyOf,
+  CompositeFilterQueryParameter,
+  FieldFilterQueryParameter,
   FilterQueryParameter,
-  FulfillsAllOf,
-  FulfillsAnyOf,
-  IsEqualTo,
-  IsGreaterThan,
-  IsGreaterThanOrEqualTo,
-  IsLessThan,
-  IsLessThanOrEqualTo,
-  IsNotEqualTo,
-  IsNotOneOf,
-  IsOneOf,
   LimitQueryParameter,
-  PaginationQueryParameter,
+  OrderQueryParameter,
+  PageQueryParameter,
   RangeQueryParameter,
-  SortQueryParameter,
 } from "@kthksgy/firebase-common/firestore";
 import { Mishap } from "@kthksgy/utilities";
 import {
@@ -59,34 +39,55 @@ function getFilterConstraints(filters: ReadonlyArray<FilterQueryParameter>) {
     ReturnType<typeof _and> | ReturnType<typeof _or> | ReturnType<typeof _where>
   > = [];
   for (const filter of filters) {
-    if (filter instanceof ContainsAnyOf) {
-      constraints.push(
-        _where(regulatePath(filter.path), "array-contains-any", regulateValue(filter.values)),
-      );
-    } else if (filter instanceof Contains) {
-      constraints.push(
-        _where(regulatePath(filter.path), "array-contains", regulateValue(filter.value)),
-      );
-    } else if (filter instanceof FulfillsAllOf) {
-      constraints.push(_and(...getFilterConstraints(filter.filters)));
-    } else if (filter instanceof FulfillsAnyOf) {
-      constraints.push(_or(...getFilterConstraints(filter.filters)));
-    } else if (filter instanceof IsEqualTo) {
-      constraints.push(_where(regulatePath(filter.path), "==", regulateValue(filter.value)));
-    } else if (filter instanceof IsGreaterThanOrEqualTo) {
-      constraints.push(_where(regulatePath(filter.path), ">=", regulateValue(filter.value)));
-    } else if (filter instanceof IsGreaterThan) {
-      constraints.push(_where(regulatePath(filter.path), ">", regulateValue(filter.value)));
-    } else if (filter instanceof IsLessThanOrEqualTo) {
-      constraints.push(_where(regulatePath(filter.path), "<=", regulateValue(filter.value)));
-    } else if (filter instanceof IsLessThan) {
-      constraints.push(_where(regulatePath(filter.path), "<", regulateValue(filter.value)));
-    } else if (filter instanceof IsNotEqualTo) {
-      constraints.push(_where(regulatePath(filter.path), "!=", regulateValue(filter.value)));
-    } else if (filter instanceof IsNotOneOf) {
-      constraints.push(_where(regulatePath(filter.path), "not-in", regulateValue(filter.values)));
-    } else if (filter instanceof IsOneOf) {
-      constraints.push(_where(regulatePath(filter.path), "in", regulateValue(filter.values)));
+    if (filter instanceof FieldFilterQueryParameter) {
+      switch (filter.type) {
+        case "!=":
+          constraints.push(_where(regulatePath(filter.path), "!=", regulateValue(filter.value)));
+          break;
+        case "<":
+          constraints.push(_where(regulatePath(filter.path), "<", regulateValue(filter.value)));
+          break;
+        case "<=":
+          constraints.push(_where(regulatePath(filter.path), "<=", regulateValue(filter.value)));
+          break;
+        case "==":
+          constraints.push(_where(regulatePath(filter.path), "==", regulateValue(filter.value)));
+          break;
+        case ">":
+          constraints.push(_where(regulatePath(filter.path), ">", regulateValue(filter.value)));
+          break;
+        case ">=":
+          constraints.push(_where(regulatePath(filter.path), ">=", regulateValue(filter.value)));
+          break;
+        case "array-contains-any":
+          constraints.push(
+            _where(regulatePath(filter.path), "array-contains-any", regulateValue(filter.value)),
+          );
+          break;
+        case "array-contains":
+          constraints.push(
+            _where(regulatePath(filter.path), "array-contains", regulateValue(filter.value)),
+          );
+          break;
+          break;
+        case "in":
+          constraints.push(_where(regulatePath(filter.path), "in", regulateValue(filter.value)));
+          break;
+        case "not-in":
+          constraints.push(
+            _where(regulatePath(filter.path), "not-in", regulateValue(filter.value)),
+          );
+          break;
+      }
+    } else if (filter instanceof CompositeFilterQueryParameter) {
+      switch (filter.type) {
+        case "and":
+          constraints.push(_and(...getFilterConstraints(filter.filters)));
+          break;
+        case "or":
+          constraints.push(_or(...getFilterConstraints(filter.filters)));
+          break;
+      }
     }
   }
   return constraints;
@@ -100,9 +101,9 @@ export function buildQuery(
   parameters: {
     filters: Array<FilterQueryParameter>;
     limits: Array<LimitQueryParameter>;
-    paginations: Array<PaginationQueryParameter>;
+    paginations: Array<PageQueryParameter>;
     ranges: Array<RangeQueryParameter>;
-    sorts: Array<SortQueryParameter>;
+    orders: Array<OrderQueryParameter>;
   },
 ) {
   const constraints = [];
