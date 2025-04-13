@@ -7,7 +7,10 @@ type AbstractDocumentSnapshot = { ref: any };
 
 export type RangeQueryParameterType = "startAfter" | "startAt" | "endBefore" | "endAt";
 
-export class RangeQueryParameter<Type extends RangeQueryParameterType, V> extends QueryParameter {
+export class RangeQueryParameter<
+  Type extends RangeQueryParameterType = RangeQueryParameterType,
+  V = any,
+> extends QueryParameter {
   value: V;
   readonly type: RangeQueryParameterType;
 
@@ -21,7 +24,9 @@ export class RangeQueryParameter<Type extends RangeQueryParameterType, V> extend
 /**
  * #### ページクエリパラメータ
  */
-export class PageQueryParameter<Type extends RangeQueryParameterType> extends QueryParameter {
+export class PageQueryParameter<
+  Type extends RangeQueryParameterType = RangeQueryParameterType,
+> extends QueryParameter {
   /** カーソル */
   cursor: AbstractDocumentSnapshot;
   /** タイプ */

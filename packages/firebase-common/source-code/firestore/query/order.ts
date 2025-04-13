@@ -4,8 +4,8 @@ import { type DocumentData, type DocumentDataSchema, type Path } from "./types";
 type Direction = "ascending" | "descending";
 
 export class OrderQueryParameter<
-  P extends Path = any,
-  D extends Direction = any,
+  P extends Path = Path,
+  D extends Direction = Direction,
 > extends QueryParameter {
   /** 方向 */
   direction: Direction;

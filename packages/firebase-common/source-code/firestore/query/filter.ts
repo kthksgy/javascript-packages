@@ -25,9 +25,9 @@ export class FilterQueryParameter extends QueryParameter {}
  * ネイティブの`where()`に相当する。
  */
 export class FieldFilterQueryParameter<
-  P extends Path,
-  Type extends FieldFilterQueryParameterType,
-  V,
+  P extends Path = Path,
+  Type extends FieldFilterQueryParameterType = FieldFilterQueryParameterType,
+  V = any,
 > extends FilterQueryParameter {
   /** パス */
   readonly path: P;
@@ -50,8 +50,8 @@ export class FieldFilterQueryParameter<
  * ネイティブの`and()`または`or()`に相当する。
  */
 export class CompositeFilterQueryParameter<
-  Type extends CompositeFilterQueryParameterType,
-  Filters extends ReadonlyArray<FilterQueryParameter>,
+  Type extends CompositeFilterQueryParameterType = CompositeFilterQueryParameterType,
+  Filters extends ReadonlyArray<FilterQueryParameter> = ReadonlyArray<FilterQueryParameter>,
 > extends FilterQueryParameter {
   /** フィルター */
   readonly filters: Filters;
