@@ -65,6 +65,23 @@ export class CompositeFilterQueryParameter<
   }
 }
 
+export function createCompositeFilterQueryParameter<
+  Filters extends ReadonlyArray<FilterQueryParameter>,
+>(type: CompositeFilterQueryParameterType, ...filters: Filters) {
+  return new CompositeFilterQueryParameter(type, ...filters);
+}
+
+export function createFieldFilterQueryParameter<
+  S extends DocumentDataSchema,
+  P extends Path<DocumentData<S>>,
+  Type extends FieldFilterQueryParameterType,
+  V extends Type extends "array-contains-any" | "in" | "not-in"
+    ? ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>
+    : Value<ObjectUnionIntersection<DocumentData<S>>, P>,
+>(_: S | { (..._: Array<any>): S }, path: P, type: Type, value: V) {
+  return new FieldFilterQueryParameter(path, type, value);
+}
+
 export function and<Filters extends ReadonlyArray<FilterQueryParameter>>(...filters: Filters) {
   return new CompositeFilterQueryParameter("and", ...filters);
 }
@@ -73,13 +90,10 @@ export function or<Filters extends ReadonlyArray<FilterQueryParameter>>(...filte
   return new CompositeFilterQueryParameter("or", ...filters);
 }
 
-export function where<
-  S extends DocumentDataSchema,
-  P extends Path<DocumentData<S>>,
-  Type extends FieldFilterQueryParameterType,
-  V extends Type extends "array-contains-any" | "in" | "not-in"
-    ? ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>
-    : Value<ObjectUnionIntersection<DocumentData<S>>, P>,
->(_: S | { (..._: Array<any>): S }, path: P, type: Type, value: V) {
+export function where<Type extends FieldFilterQueryParameterType>(
+  path: string | ReadonlyArray<string>,
+  type: FieldFilterQueryParameterType,
+  value: Type extends "array-contains-any" | "in" | "not-in" ? ReadonlyArray<any> : any,
+) {
   return new FieldFilterQueryParameter(path, type, value);
 }

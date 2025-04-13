@@ -10,6 +10,8 @@ export class LimitQueryParameter<Limit extends number = number> extends QueryPar
   }
 }
 
-export function limit<Limit extends number>(limit: Limit) {
+export function createLimitQueryParameter<Limit extends number>(limit: Limit) {
   return new LimitQueryParameter(limit);
 }
+
+export const limit = createLimitQueryParameter;

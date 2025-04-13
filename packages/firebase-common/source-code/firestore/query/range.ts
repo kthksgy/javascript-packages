@@ -46,24 +46,34 @@ export class PageQueryParameter<
   }
 }
 
-export function endBefore<
+export function createRangeQueryParameter<
   S extends DocumentDataSchema,
   P extends Path<DocumentData<S>>,
-  V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
->(_: S | { (..._: Array<any>): S }, __: P, value: V): RangeQueryParameter<"exclusive", "before", V>;
+  Type1 extends BoundType1,
+  Type2 extends BoundType2,
+  V = any,
+>(_: S | { (..._: Array<any>): S }, __: P, type1: Type1, type2: Type2, value: V) {
+  return new RangeQueryParameter(type1, type2, value);
+}
+
+export function createPageQueryParameter<Type1 extends BoundType1, Type2 extends BoundType2>(
+  type1: Type1,
+  type2: Type2,
+  value: AbstractDocumentSnapshot,
+) {
+  return new PageQueryParameter(type1, type2, value);
+}
+
+export function endBefore(value: unknown): RangeQueryParameter<"exclusive", "before">;
 export function endBefore(
-  documentSnapshot: AbstractDocumentSnapshot,
+  snapshot: AbstractDocumentSnapshot,
 ): PageQueryParameter<"exclusive", "before">;
 
-export function endBefore(
-  ...parameters:
-    | [AbstractDocumentSnapshot]
-    | [DocumentDataSchema | { (..._: ReadonlyArray<any>): DocumentDataSchema }, Path, any]
-) {
-  if (parameters.length === 1) {
-    return new PageQueryParameter("exclusive", "before", parameters[0]);
+export function endBefore(value: any) {
+  if (Object.hasOwn(value, "ref")) {
+    return new PageQueryParameter("exclusive", "before", value);
   } else {
-    return new RangeQueryParameter("exclusive", "before", parameters[2]);
+    return new RangeQueryParameter("exclusive", "before", value);
   }
 }
 

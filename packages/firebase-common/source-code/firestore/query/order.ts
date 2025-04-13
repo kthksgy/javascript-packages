@@ -19,10 +19,17 @@ export class OrderQueryParameter<
   }
 }
 
-export function orderBy<
+export function createOrderQueryParameter<
   S extends DocumentDataSchema,
   P extends Path<DocumentData<S>>,
   D extends Direction,
->(_: S | { (..._: Array<any>): S }, path: P, direction = "ascending" as D) {
+>(_: S | { (..._: Array<any>): S }, path: P, direction: D) {
+  return new OrderQueryParameter(path, direction);
+}
+
+export function orderBy(
+  path: string | ReadonlyArray<string>,
+  direction = "ascending" as Direction,
+) {
   return new OrderQueryParameter(path, direction);
 }
