@@ -1,18 +1,15 @@
 import { QueryParameter } from "./base";
 
-export class LimitQueryParameter extends QueryParameter {}
-
-/** `limit` */
-export class AreLimitedTo<N extends number> extends LimitQueryParameter {
+export class LimitQueryParameter<Limit extends number> extends QueryParameter {
   /** 数 */
-  readonly count: N;
+  readonly limit: Limit;
 
-  constructor(count: N) {
+  constructor(limit: Limit) {
     super();
-    this.count = count;
+    this.limit = limit;
   }
+}
 
-  static n<N extends number>(count: N) {
-    return new AreLimitedTo(count);
-  }
+export function limit<Limit extends number>(limit: Limit) {
+  return new LimitQueryParameter(limit);
 }

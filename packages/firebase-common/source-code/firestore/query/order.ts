@@ -3,7 +3,7 @@ import { type DocumentData, type DocumentDataSchema, type Path } from "./types";
 
 type Direction = "ascending" | "descending";
 
-export class SortQueryParameter<
+export class OrderQueryParameter<
   P extends Path = any,
   D extends Direction = any,
 > extends QueryParameter {
@@ -19,13 +19,10 @@ export class SortQueryParameter<
   }
 }
 
-/** `orderBy` */
-export class AreOrderedBy<P extends Path, D extends Direction> extends SortQueryParameter<P, D> {
-  static create<S extends DocumentDataSchema, P extends Path<DocumentData<S>>, D extends Direction>(
-    _: S | { (..._: Array<any>): S },
-    path: P,
-    direction: D,
-  ) {
-    return new this(path, direction);
-  }
+export function orderBy<
+  S extends DocumentDataSchema,
+  P extends Path<DocumentData<S>>,
+  D extends Direction,
+>(_: S | { (..._: Array<any>): S }, path: P, direction = "ascending" as D) {
+  return new OrderQueryParameter(path, direction);
 }

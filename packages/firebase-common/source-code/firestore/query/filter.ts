@@ -3,173 +3,83 @@ import { ObjectUnionIntersection } from "@kthksgy/utilities";
 import { QueryParameter } from "./base";
 import { type DocumentData, type DocumentDataSchema, type Path, type Value } from "./types";
 
+export type FieldFilterQueryParameterType =
+  | "!="
+  | "<"
+  | "<="
+  | "=="
+  | ">"
+  | ">="
+  | "array-contains-any"
+  | "array-contains"
+  | "in"
+  | "not-in";
+
+export type CompositeFilterQueryParameterType = "and" | "or";
+
 export class FilterQueryParameter extends QueryParameter {}
 
-class ArrayQueryParameter<
+/**
+ * #### フィールドフィルタークエリパラメータ
+ * フィールドに対するフィルターを表すクエリパラメータ。
+ * ネイティブの`where()`に相当する。
+ */
+export class FieldFilterQueryParameter<
   P extends Path,
-  Vs extends ReadonlyArray<any>,
+  Type extends FieldFilterQueryParameterType,
+  V,
 > extends FilterQueryParameter {
   /** パス */
   readonly path: P;
-  /** 値 */
-  readonly values: Vs;
-
-  constructor(path: P, values: Vs) {
-    super();
-    this.path = path;
-    this.values = values;
-  }
-}
-class ValueQueryParameter<P extends Path, V> extends FilterQueryParameter {
-  /** パス */
-  readonly path: P;
+  /** タイプ */
+  readonly type: Type;
   /** 値 */
   readonly value: V;
 
-  constructor(path: P, value: V) {
+  constructor(path: P, type: Type, value: V) {
     super();
     this.path = path;
+    this.type = type;
     this.value = value;
   }
 }
 
-/** `where 'array-contains-any'` */
-export class ContainsAnyOf<
-  P extends Path,
-  Vs extends ReadonlyArray<any>,
-> extends ArrayQueryParameter<P, Vs> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    Vs extends ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>,
-  >(_: S | { (..._: Array<any>): S }, path: P, values: Vs) {
-    return new this(path, values);
-  }
-}
-
-/** `where 'array-contains'` */
-export class Contains<P extends Path, V> extends ValueQueryParameter<P, V> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
-  >(_: S | { (..._: Array<any>): S }, path: P, value: V) {
-    return new this(path, value);
-  }
-}
-
-/** `where '=='` */
-export class IsEqualTo<P extends Path, V> extends ValueQueryParameter<P, V> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
-  >(_: S | { (..._: Array<any>): S }, path: P, value: V) {
-    return new this(path, value);
-  }
-}
-
-/** `where '>='` */
-export class IsGreaterThanOrEqualTo<P extends Path, V> extends ValueQueryParameter<P, V> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
-  >(_: S | { (..._: Array<any>): S }, path: P, value: V) {
-    return new this(path, value);
-  }
-}
-
-/** `where '>'` */
-export class IsGreaterThan<P extends Path, V> extends ValueQueryParameter<P, V> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
-  >(_: S | { (..._: Array<any>): S }, path: P, value: V) {
-    return new this(path, value);
-  }
-}
-
-/** `where '<='` */
-export class IsLessThanOrEqualTo<P extends Path, V> extends ValueQueryParameter<P, V> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
-  >(_: S | { (..._: Array<any>): S }, path: P, value: V) {
-    return new this(path, value);
-  }
-}
-
-/** `where '<'` */
-export class IsLessThan<P extends Path, V> extends ValueQueryParameter<P, V> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
-  >(_: S | { (..._: Array<any>): S }, path: P, value: V) {
-    return new this(path, value);
-  }
-}
-
-/** `where '!='` */
-export class IsNotEqualTo<P extends Path, V> extends ValueQueryParameter<P, V> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    V extends Value<ObjectUnionIntersection<DocumentData<S>>, P>,
-  >(_: S | { (..._: Array<any>): S }, path: P, value: V) {
-    return new this(path, value);
-  }
-}
-
-/** `where 'not-in'` */
-export class IsNotOneOf<P extends Path, Vs extends ReadonlyArray<any>> extends ArrayQueryParameter<
-  P,
-  Vs
-> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    Vs extends ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>,
-  >(_: S | { (..._: Array<any>): S }, path: P, values: Vs) {
-    return new this(path, values);
-  }
-}
-
-/** `where 'in'` */
-export class IsOneOf<P extends Path, Vs extends ReadonlyArray<any>> extends ArrayQueryParameter<
-  P,
-  Vs
-> {
-  static create<
-    S extends DocumentDataSchema,
-    P extends Path<DocumentData<S>>,
-    Vs extends ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>,
-  >(_: S | { (..._: Array<any>): S }, path: P, values: Vs) {
-    return new this(path, values);
-  }
-}
-
-/** `and` */
-export class FulfillsAllOf<T extends Array<FilterQueryParameter>> extends FilterQueryParameter {
+/**
+ * #### コンポジットフィルタークエリパラメータ
+ * フィルターを組み合わせるためのクエリパラメータ。
+ * ネイティブの`and()`または`or()`に相当する。
+ */
+export class CompositeFilterQueryParameter<
+  Type extends CompositeFilterQueryParameterType,
+  Filters extends ReadonlyArray<FilterQueryParameter>,
+> extends FilterQueryParameter {
   /** フィルター */
-  filters: T;
+  readonly filters: Filters;
+  /** タイプ */
+  readonly type: CompositeFilterQueryParameterType;
 
-  constructor(...filters: T) {
+  constructor(type: Type, ...filters: Filters) {
     super();
     this.filters = filters;
+    this.type = type;
   }
 }
 
-/** `or` */
-export class FulfillsAnyOf<T extends Array<FilterQueryParameter>> extends FilterQueryParameter {
-  /** フィルター */
-  filters: T;
+export function and<Filters extends ReadonlyArray<FilterQueryParameter>>(...filters: Filters) {
+  return new CompositeFilterQueryParameter("and", ...filters);
+}
 
-  constructor(...filters: T) {
-    super();
-    this.filters = filters;
-  }
+export function or<Filters extends ReadonlyArray<FilterQueryParameter>>(...filters: Filters) {
+  return new CompositeFilterQueryParameter("or", ...filters);
+}
+
+export function where<
+  S extends DocumentDataSchema,
+  P extends Path<DocumentData<S>>,
+  Type extends FieldFilterQueryParameterType,
+  V extends Type extends "array-contains-any" | "in" | "not-in"
+    ? ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>
+    : Value<ObjectUnionIntersection<DocumentData<S>>, P>,
+>(_: S | { (..._: Array<any>): S }, path: P, type: Type, value: V) {
+  return new FieldFilterQueryParameter(path, type, value);
 }
