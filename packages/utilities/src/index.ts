@@ -1,5 +1,6 @@
 export * from "./application-error";
 export * from "./constants";
+export * from "./fetcher";
 export * from "./functions";
 export * from "./mishap";
 export * from "./naming-convention";
