@@ -29,14 +29,14 @@ export class DocumentsFetcher<
   filters: Array<FilterQueryParameter>;
   /** リミット制約 */
   limits: Array<LimitQueryParameter>;
+  /** 順序制約 */
+  orders: Array<OrderQueryParameter>;
   /** ページネーション制約 */
-  paginations: Array<PageQueryParameter>;
+  pages: Array<PageQueryParameter>;
   /** 範囲制約 */
   ranges: Array<RangeQueryParameter>;
   /** クエリを実行する対象のリファレンス */
   reference: CollectionReference | Query;
-  /** ソート制約 */
-  sorts: Array<OrderQueryParameter>;
   /** トランザクション */
   transaction?: Transaction;
 
@@ -46,10 +46,10 @@ export class DocumentsFetcher<
       errorHandler?: DocumentsFetcher<Data, Properties>["errorHandler"];
       filters?: DocumentsFetcher<Data, Properties>["filters"];
       limits?: DocumentsFetcher<Data, Properties>["limits"];
-      paginations?: DocumentsFetcher<Data, Properties>["paginations"];
+      orders?: DocumentsFetcher<Data, Properties>["orders"];
+      pages?: DocumentsFetcher<Data, Properties>["pages"];
       ranges?: DocumentsFetcher<Data, Properties>["ranges"];
       reference: DocumentsFetcher<Data, Properties>["reference"];
-      sorts?: DocumentsFetcher<Data, Properties>["sorts"];
       transaction?: DocumentsFetcher<Data, Properties>["transaction"];
     } & ConstructorParameters<typeof ListFetcher<Data, Properties>>[0],
   ) {
@@ -59,10 +59,10 @@ export class DocumentsFetcher<
     this.errorHandler = parameters.errorHandler;
     this.filters = parameters.filters ?? [];
     this.limits = parameters.limits ?? [];
-    this.paginations = parameters.paginations ?? [];
+    this.orders = parameters.orders ?? [];
+    this.pages = parameters.pages ?? [];
     this.ranges = parameters.ranges ?? [];
     this.reference = parameters.reference;
-    this.sorts = parameters.sorts ?? [];
     this.transaction = parameters.transaction;
 
     this.setTransaction = this.setTransaction.bind(this);
@@ -83,9 +83,9 @@ export class DocumentsFetcher<
           typeof this.limit === "number" && Number.isFinite(this.limit) && this.limit >= 1
             ? [createLimitQueryParameter(Math.floor(this.limit))]
             : this.limits,
-        pages: this.paginations,
+        pages: this.pages,
         ranges: this.ranges,
-        orders: this.sorts,
+        orders: this.orders,
       }),
       this.transaction,
     ).catch(this.errorHandler);
@@ -124,7 +124,7 @@ export class DocumentsFetcher<
         this.limit > 0 &&
         querySnapshot.size >= this.limit && {
           next: this.copy({
-            paginations: [
+            pages: [
               createPageQueryParameter(
                 "exclusive",
                 "after",
