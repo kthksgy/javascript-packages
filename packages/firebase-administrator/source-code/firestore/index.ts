@@ -4,4 +4,3 @@ export * from "./instance";
 export * from "./query";
 export * from "./reexports";
 export * from "./reference";
-export * from "./utilities";
