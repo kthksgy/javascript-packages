@@ -4,6 +4,7 @@ export * from "./from-percent-encoded";
 export * from "./from-response-to-plain-object";
 export * from "./from-time-number";
 export * from "./generate-random-string";
+export * from "./generate-unique-string";
 export * from "./is-array";
 export * from "./is-plain-object";
 export * from "./map-entries";
