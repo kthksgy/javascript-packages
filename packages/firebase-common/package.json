@@ -34,7 +34,7 @@
   "license": "MIT",
   "name": "@kthksgy/firebase-common",
   "peerDependencies": {
-    "@kthksgy/utilities": "^0.1.8",
+    "@kthksgy/utilities": "^0.1.9",
     "@standard-schema/spec": "^1.0.0",
     "temporal-polyfill": "~0.3.0"
   },
