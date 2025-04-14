@@ -45,7 +45,7 @@
   "license": "MIT",
   "name": "@kthksgy/firebase-user",
   "peerDependencies": {
-    "@kthksgy/firebase-common": "^0.0.4",
+    "@kthksgy/firebase-common": "^0.1.0",
     "@kthksgy/utilities": "^0.1.7",
     "@standard-schema/spec": "^1.0.0",
     "firebase": "^11.6.0",
