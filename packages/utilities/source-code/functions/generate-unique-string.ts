@@ -1,11 +1,9 @@
 import { Temporal } from "temporal-polyfill";
 
-import {
-  generateRandomString,
-  toDateNumber,
-  toDuosexagesimal,
-  toTimeNumber,
-} from "@kthksgy/utilities";
+import { generateRandomString } from "./generate-random-string";
+import { toDateNumber } from "./to-date-number";
+import { toDuosexagesimal } from "./to-duosexagesimal";
+import { toTimeNumber } from "./to-time-number";
 
 /**
  * 確率的にユニークな全ての文字が英数字からなる文字列を生成する。

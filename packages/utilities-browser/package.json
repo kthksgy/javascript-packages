@@ -43,7 +43,7 @@
   },
   "scripts": {
     "build": "node --experimental-strip-types scripts/build.ts --clean && tsc --project tsconfig.build.json",
-    "clean": "rm -rf coverage && rm -rf lib",
+    "clean": "rm -rf coverage && rm -rf distributions",
     "coverage": "vitest run --coverage",
     "test": "vitest --browser.headless --browser.name=chrome --typecheck"
   },
