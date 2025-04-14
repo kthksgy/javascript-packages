@@ -162,12 +162,18 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.0.8
         version: 3.1.1(@vitest/browser@3.1.1)(vitest@3.1.1)
+      commander:
+        specifier: ^13.1.0
+        version: 13.1.0
+      esbuild:
+        specifier: 0.25.2
+        version: 0.25.2
       typescript:
         specifier: ~5.8.2
         version: 5.8.3
-      vite:
-        specifier: ^6.2.1
-        version: 6.2.6(@types/node@22.14.1)
+      valibot:
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@5.8.3)
       vitest:
         specifier: ^3.0.8
         version: 3.1.1(@types/node@22.14.1)(@vitest/browser@3.1.1)

@@ -1,26 +1,24 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": false,
     "declaration": true,
-    "declarationDir": "lib",
+    "declarationDir": "distributions/types",
     "declarationMap": true,
+    "emitDeclarationOnly": true,
     "erasableSyntaxOnly": true,
     "isolatedModules": true,
-    "lib": ["ES2023"],
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "rootDir": "src",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2022",
+    "target": "ES2024",
     "types": ["vitest/importMeta"],
     "useDefineForClassFields": true
   },
-  "exclude": ["vite.config.ts"],
-  "include": ["src", "vite.config.ts"]
+  "include": ["scripts", "source-code"]
 }
