@@ -6,12 +6,11 @@ import { SimpleFetcher } from "./simple-fetcher";
  * コンストラクタで指定した値をスローするフェッチャー。
  */
 export class SimpleThrower<
-  E,
   Properties extends FetcherProperties = FetcherProperties,
-> extends SimpleFetcher<any, Properties> {
+> extends SimpleFetcher<never, Properties> {
   constructor(
-    error: E,
-    parameters: ConstructorParameters<typeof SimpleFetcher<any, Properties>>[1] = {},
+    error: unknown,
+    parameters: ConstructorParameters<typeof SimpleFetcher<never, Properties>>[1] = {},
   ) {
     super(async function () {
       throw error;
