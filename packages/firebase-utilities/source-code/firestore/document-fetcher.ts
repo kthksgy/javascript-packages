@@ -7,13 +7,13 @@ import {
 } from "@kthksgy/firebase/firestore";
 import { Fetcher, FetcherProperties, FetcherResult } from "@kthksgy/utilities";
 
-/** Firestoreシングルレトリーバー */
-export class FirestoreSingleRetriever<
-  TData extends NonNullable<any>,
-  TAttributes extends FetcherProperties = undefined,
-> extends Fetcher<TData, TAttributes> {
+/** ドキュメントフェッチャー */
+export class DocumentFetcher<
+  Data extends NonNullable<any>,
+  Properties extends FetcherProperties = FetcherProperties,
+> extends Fetcher<Data, Properties> {
   /** コンバーター */
-  converter: { (documentSnapshot: DocumentSnapshot): TData };
+  converter: { (documentSnapshot: DocumentSnapshot): Data };
   /** エラーハンドラー */
   errorHandler?: { (error: any): never };
   /** ドキュメントインスタンス */
@@ -23,11 +23,11 @@ export class FirestoreSingleRetriever<
 
   constructor(
     parameters: {
-      converter: FirestoreSingleRetriever<TData, TAttributes>["converter"];
-      errorHandler?: FirestoreSingleRetriever<TData, TAttributes>["errorHandler"];
-      reference: FirestoreSingleRetriever<TData, TAttributes>["reference"];
-      transaction?: FirestoreSingleRetriever<TData, TAttributes>["transaction"];
-    } & ConstructorParameters<typeof Fetcher<TData, TAttributes>>[0],
+      converter: DocumentFetcher<Data, Properties>["converter"];
+      errorHandler?: DocumentFetcher<Data, Properties>["errorHandler"];
+      reference: DocumentFetcher<Data, Properties>["reference"];
+      transaction?: DocumentFetcher<Data, Properties>["transaction"];
+    } & ConstructorParameters<typeof Fetcher<Data, Properties>>[0],
   ) {
     super(parameters);
 
@@ -40,14 +40,12 @@ export class FirestoreSingleRetriever<
   }
 
   copy(
-    parameters: Partial<
-      ConstructorParameters<typeof FirestoreSingleRetriever<TData, TAttributes>>[0]
-    > = {},
+    parameters: Partial<ConstructorParameters<typeof DocumentFetcher<Data, Properties>>[0]> = {},
   ) {
-    return new FirestoreSingleRetriever<TData, TAttributes>({ ...this, ...parameters });
+    return new DocumentFetcher<Data, Properties>({ ...this, ...parameters });
   }
 
-  async retrieve(): Promise<FirestoreSingleRetrieverResult<TData, TAttributes>> {
+  async fetch(): Promise<DocumentFetcherResult<Data, Properties>> {
     try {
       /** ドキュメントスナップショット */
       const documentSnapshot = await fetchDocument(this.reference, this.transaction);
@@ -72,18 +70,18 @@ export class FirestoreSingleRetriever<
     }
   }
 
-  setTransaction(transaction: FirestoreSingleRetriever<TData, TAttributes>["transaction"]) {
+  setTransaction(transaction: DocumentFetcher<Data, Properties>["transaction"]) {
     return this.copy({ transaction });
   }
 }
 
-export type FirestoreSingleRetrieverResult<
-  TData extends NonNullable<any>,
-  TAttributes extends FetcherProperties = undefined,
-> = FetcherResult<TData, TAttributes>;
+export type DocumentFetcherResult<
+  Data extends NonNullable<any>,
+  Properties extends FetcherProperties = FetcherProperties,
+> = FetcherResult<Data, Properties>;
 
 /**
- * Firestoreレトリーバーエラー
+ * ドキュメントフェッチャーエラー
  * `FirestoreError`が`firebase`と`firebase-admin`の両方に存在しないため、用意している。
  * @see https://github.com/firebase/firebase-js-sdk/blob/master/packages/firestore/src/util/error.ts#L213
  */

@@ -16,13 +16,13 @@ import {
 } from "@kthksgy/firebase/firestore";
 import { FetcherProperties, ListFetcher, ListFetcherResult } from "@kthksgy/utilities";
 
-/** Firestoreクエリレトリーバー */
-export class FirestoreQueryRetriever<
-  TData extends NonNullable<any>,
-  TAttributes extends FetcherProperties = undefined,
-> extends ListFetcher<TData, TAttributes> {
+/** ドキュメント群フェッチャー */
+export class DocumentsFetcher<
+  Data extends NonNullable<any>,
+  Properties extends FetcherProperties = FetcherProperties,
+> extends ListFetcher<Data, Properties> {
   /** コンバーター */
-  converter: { (documentSnapshot: DocumentSnapshot): TData };
+  converter: { (documentSnapshot: DocumentSnapshot): Data };
   /** エラーハンドラー */
   errorHandler?: { (error: any): never };
   /** フィルター制約 */
@@ -42,16 +42,16 @@ export class FirestoreQueryRetriever<
 
   constructor(
     parameters: {
-      converter: FirestoreQueryRetriever<TData, TAttributes>["converter"];
-      errorHandler?: FirestoreQueryRetriever<TData, TAttributes>["errorHandler"];
-      filters?: FirestoreQueryRetriever<TData, TAttributes>["filters"];
-      limits?: FirestoreQueryRetriever<TData, TAttributes>["limits"];
-      paginations?: FirestoreQueryRetriever<TData, TAttributes>["paginations"];
-      ranges?: FirestoreQueryRetriever<TData, TAttributes>["ranges"];
-      reference: FirestoreQueryRetriever<TData, TAttributes>["reference"];
-      sorts?: FirestoreQueryRetriever<TData, TAttributes>["sorts"];
-      transaction?: FirestoreQueryRetriever<TData, TAttributes>["transaction"];
-    } & ConstructorParameters<typeof ListFetcher<TData, TAttributes>>[0],
+      converter: DocumentsFetcher<Data, Properties>["converter"];
+      errorHandler?: DocumentsFetcher<Data, Properties>["errorHandler"];
+      filters?: DocumentsFetcher<Data, Properties>["filters"];
+      limits?: DocumentsFetcher<Data, Properties>["limits"];
+      paginations?: DocumentsFetcher<Data, Properties>["paginations"];
+      ranges?: DocumentsFetcher<Data, Properties>["ranges"];
+      reference: DocumentsFetcher<Data, Properties>["reference"];
+      sorts?: DocumentsFetcher<Data, Properties>["sorts"];
+      transaction?: DocumentsFetcher<Data, Properties>["transaction"];
+    } & ConstructorParameters<typeof ListFetcher<Data, Properties>>[0],
   ) {
     super(parameters);
 
@@ -69,14 +69,12 @@ export class FirestoreQueryRetriever<
   }
 
   copy(
-    parameters: Partial<
-      ConstructorParameters<typeof FirestoreQueryRetriever<TData, TAttributes>>[0]
-    > = {},
+    parameters: Partial<ConstructorParameters<typeof DocumentsFetcher<Data, Properties>>[0]> = {},
   ) {
-    return new FirestoreQueryRetriever<TData, TAttributes>({ ...this, ...parameters });
+    return new DocumentsFetcher<Data, Properties>({ ...this, ...parameters });
   }
 
-  async fetch(): Promise<FirestoreQueryRetrieverResult<TData, TAttributes>> {
+  async fetch(): Promise<DocumentsFetcherResult<Data, Properties>> {
     /** クエリスナップショット */
     const querySnapshot = await fetchDocuments(
       buildQuery(this.reference, {
@@ -92,8 +90,8 @@ export class FirestoreQueryRetriever<
       this.transaction,
     ).catch(this.errorHandler);
 
-    const data: Array<TData> = [];
-    const items = new Map<number, TData>();
+    const data: Array<Data> = [];
+    const items = new Map<number, Data>();
     const errors = new Map<number, any>();
 
     for (let i = 0; i < querySnapshot.size; i++) {
@@ -141,12 +139,12 @@ export class FirestoreQueryRetriever<
     };
   }
 
-  setTransaction(transaction: FirestoreQueryRetriever<TData, TAttributes>["transaction"]) {
+  setTransaction(transaction: DocumentsFetcher<Data, Properties>["transaction"]) {
     return this.copy({ transaction });
   }
 }
 
-export type FirestoreQueryRetrieverResult<
-  TData extends NonNullable<any>,
-  TAttributes extends FetcherProperties = undefined,
-> = ListFetcherResult<TData, TAttributes> & { querySnapshot: QuerySnapshot };
+export type DocumentsFetcherResult<
+  Data extends NonNullable<any>,
+  Properties extends FetcherProperties = FetcherProperties,
+> = ListFetcherResult<Data, Properties> & { querySnapshot: QuerySnapshot };
