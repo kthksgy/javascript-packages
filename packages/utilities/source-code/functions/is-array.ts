@@ -23,14 +23,14 @@
  * ```
  */
 export function isArray<T>(target: T): target is Extract<
-  T extends Array<any>
-    ? T
-    : T extends ReadonlyArray<any>
-      ? T
-      : 0 extends 1 & T // `any`は`Array<any>`に変換する。
-        ? Array<any>
-        : unknown extends T // `unknown`は`Array<unknown>`に変換する。
-          ? Array<unknown>
+  0 extends 1 & T // `any`は`Array<any>`に変換する。
+    ? Array<any>
+    : unknown extends T // `unknown`は`Array<unknown>`に変換する。
+      ? Array<unknown>
+      : T extends Array<any>
+        ? T
+        : T extends ReadonlyArray<any>
+          ? T
           : never,
   T
 > {
