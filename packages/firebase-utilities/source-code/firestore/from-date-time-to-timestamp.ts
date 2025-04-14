@@ -1,6 +1,5 @@
+import { Timestamp } from "@kthksgy/firebase/firestore";
 import { Temporal } from "temporal-polyfill";
-
-import { Timestamp } from "../reexports";
 
 export function fromDateTimeToTimestamp(dateTime: Temporal.ZonedDateTime) {
   return new Timestamp(
