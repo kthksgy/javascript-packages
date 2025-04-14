@@ -46,7 +46,7 @@
   "name": "@kthksgy/firebase-user",
   "peerDependencies": {
     "@kthksgy/firebase-common": "^0.1.0",
-    "@kthksgy/utilities": "^0.1.7",
+    "@kthksgy/utilities": "^0.1.8",
     "@standard-schema/spec": "^1.0.0",
     "firebase": "^11.6.0",
     "temporal-polyfill": "~0.3.0"

@@ -34,7 +34,7 @@
   "module": "./distributions/browser/index.js",
   "name": "@kthksgy/utilities-browser",
   "peerDependencies": {
-    "@kthksgy/utilities": "^0.1.7"
+    "@kthksgy/utilities": "^0.1.8"
   },
   "repository": {
     "directory": "packages/utilities-browser",
