@@ -51,8 +51,8 @@ importers:
         specifier: ^7.16.0
         version: 7.16.0
       '@kthksgy/firebase-common':
-        specifier: ^0.1.0
-        version: 0.1.0(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
+        specifier: ^0.1.1
+        version: 0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
       '@kthksgy/utilities':
         specifier: ^0.1.8
         version: 0.1.8(temporal-polyfill@0.3.0)
@@ -119,8 +119,8 @@ importers:
   packages/firebase-user:
     dependencies:
       '@kthksgy/firebase-common':
-        specifier: ^0.1.0
-        version: 0.1.0(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
+        specifier: ^0.1.1
+        version: 0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
       '@kthksgy/utilities':
         specifier: ^0.1.8
         version: 0.1.8(temporal-polyfill@0.3.0)
@@ -167,7 +167,7 @@ importers:
     devDependencies:
       '@kthksgy/firebase':
         specifier: npm:@kthksgy/firebase-user@^0.1.0
-        version: '@kthksgy/firebase-user@0.1.0(@kthksgy/firebase-common@0.1.0(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
+        version: '@kthksgy/firebase-user@0.1.0(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
       '@vitest/coverage-v8':
         specifier: ^3.1.1
         version: 3.1.1(@vitest/browser@3.1.1)(vitest@3.1.1)
@@ -802,10 +802,10 @@ packages:
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
 
-  '@kthksgy/firebase-common@0.1.0':
-    resolution: {integrity: sha512-f/ceKsBcjNAWfK8UNypI+lOKdrY8Xij0uskJobnHJY39oRbYQSFFVZtAHAj6pF23d37LaH80cd4hDRB6EGYMlA==}
+  '@kthksgy/firebase-common@0.1.1':
+    resolution: {integrity: sha512-4pWIUfZYTSaf39JPMVoDNwkHtnS8GGfW5I/JNnSxT78h5X17DtjOMpTGnXC8dgzKzru5u/InKXgipbR8DKNcdQ==}
     peerDependencies:
-      '@kthksgy/utilities': ^0.1.7
+      '@kthksgy/utilities': ^0.1.8
       '@standard-schema/spec': ^1.0.0
       temporal-polyfill: ~0.3.0
 
@@ -4021,15 +4021,15 @@ snapshots:
   '@js-sdsl/ordered-map@4.4.2':
     optional: true
 
-  '@kthksgy/firebase-common@0.1.0(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)':
+  '@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)':
     dependencies:
       '@kthksgy/utilities': 0.1.8(temporal-polyfill@0.3.0)
       '@standard-schema/spec': 1.0.0
       temporal-polyfill: 0.3.0
 
-  '@kthksgy/firebase-user@0.1.0(@kthksgy/firebase-common@0.1.0(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
+  '@kthksgy/firebase-user@0.1.0(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
     dependencies:
-      '@kthksgy/firebase-common': 0.1.0(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
+      '@kthksgy/firebase-common': 0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
       '@kthksgy/utilities': 0.1.8(temporal-polyfill@0.3.0)
       '@standard-schema/spec': 1.0.0
       firebase: 11.6.0
