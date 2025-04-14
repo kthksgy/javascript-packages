@@ -7,19 +7,21 @@
   "devDependencies": {
     "@types/node": "~22.14.1",
     "@vitest/coverage-v8": "^3.1.1",
+    "commander": "^13.1.0",
+    "esbuild": "0.25.2",
     "typescript": "~5.8.3",
-    "vite": "^6.2.6",
+    "valibot": "^1.0.0",
     "vitest": "^3.1.1"
   },
   "exports": {
     ".": {
-      "import": "./lib/index.js",
-      "require": "./lib/index.umd.cjs",
-      "types": "./lib/index.d.ts"
+      "import": "./distributions/browser/index.js",
+      "require": "./distributions/node/index.js",
+      "types": "./distributions/types/index.d.ts"
     }
   },
   "files": [
-    "lib"
+    "distributions"
   ],
   "homepage": "https://github.com/kthksgy/packages-node/tree/main/packages/utilities-node",
   "keywords": [
@@ -27,8 +29,8 @@
     "utils"
   ],
   "license": "MIT",
-  "main": "./lib/index.umd.cjs",
-  "module": "./lib/index.js",
+  "main": "./distributions/node/index.js",
+  "module": "./distributions/browser/index.js",
   "name": "@kthksgy/utilities-node",
   "peerDependencies": {
     "@kthksgy/utilities": "~0.1.3"
@@ -39,12 +41,12 @@
     "url": "git+https://github.com/kthksgy/packages-node.git"
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly --project tsconfig.build.json",
+    "build": "node --experimental-strip-types scripts/build.ts --clean && tsc --project tsconfig.build.json",
     "clean": "rm -rf coverage && rm -rf lib",
     "coverage": "vitest run --coverage",
     "test": "vitest --typecheck"
   },
   "type": "module",
   "types": "./lib/index.d.ts",
-  "version": "0.1.3"
+  "version": "0.1.4-alpha+0"
 }

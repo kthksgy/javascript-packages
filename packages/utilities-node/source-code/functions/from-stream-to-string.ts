@@ -1,4 +1,4 @@
-import Stream from "node:stream";
+import { Stream } from "node:stream";
 
 export async function fromStreamToString(
   stream: Stream.Readable | Stream.Writable | null | undefined,
