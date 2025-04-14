@@ -4,11 +4,11 @@
  * キーが存在しない場合は`null`を返す。
  */
 export type LastTextTemplateKey<T extends string> =
-  TextTemplateKeyTuple<T> extends [infer Key]
+  TextTemplateKeys<T> extends [infer Key]
     ? Key extends string
       ? Key
       : null
-    : TextTemplateKeyTuple<T> extends [...Array<string>, infer Key]
+    : TextTemplateKeys<T> extends [...Array<string>, infer Key]
       ? Key extends string
         ? Key
         : null
@@ -24,7 +24,7 @@ export type LastStringTemplateKey<T extends string> = LastTextTemplateKey<T>;
  * テキストに含まれる`{key}`の`key`を抽出する。
  * `key`は正規表現`[^{}]+`にマッチする必要がある。
  */
-export type TextTemplateKey<S extends string> = TextTemplateKeyTuple<S>[number];
+export type TextTemplateKey<S extends string> = TextTemplateKeys<S>[number];
 
 /**
  * @deprecated `TextTemplateKey`に置き換えられました。
@@ -36,19 +36,23 @@ export type StringTemplateKey<S extends string> = TextTemplateKey<S>;
  * テキストに含まれる`{key}`の`key`を抽出し、先頭から末尾への出現順でタプルにする。
  * `key`は正規表現`[^{}]+`にマッチする必要がある。
  */
-export type TextTemplateKeyTuple<T extends string> =
-  T extends `${string}{${infer Key}}${infer Suffix}`
-    ? Key extends ""
-      ? TextTemplateKeyTuple<Suffix>
-      : Key extends `${string}{${infer Key}`
-        ? [Key, ...TextTemplateKeyTuple<Suffix>]
-        : [Key, ...TextTemplateKeyTuple<Suffix>]
-    : [];
+export type TextTemplateKeys<T extends string> = T extends `${string}{${infer Key}}${infer Suffix}`
+  ? Key extends ""
+    ? TextTemplateKeys<Suffix>
+    : Key extends `${string}{${infer Key}`
+      ? [Key, ...TextTemplateKeys<Suffix>]
+      : [Key, ...TextTemplateKeys<Suffix>]
+  : [];
 
 /**
  * @deprecated `TextTemplateKeyTuple`に置き換えられました。
  */
-export type StringTemplateKeyTuple<T extends string> = TextTemplateKeyTuple<T>;
+export type TextTemplateKeyTuple<T extends string> = TextTemplateKeys<T>;
+
+/**
+ * @deprecated `TextTemplateKeyTuple`に置き換えられました。
+ */
+export type StringTemplateKeyTuple<T extends string> = TextTemplateKeys<T>;
 
 /**
  * テキストテンプレートパラメーター
@@ -180,13 +184,13 @@ export const getLastStringTemplateKey = getLastTextTemplateKey;
  * @param textTemplate テキストテンプレート
  * @returns キー配列(先頭から末尾への出現順)
  */
-export function getTextTemplateKeys<T extends string>(textTemplate: T): TextTemplateKeyTuple<T> {
+export function getTextTemplateKeys<T extends string>(textTemplate: T): TextTemplateKeys<T> {
   // TODO: 処理速度を改善する。
   return Array.from(textTemplate.matchAll(keyRegularExpression), function ([, key]) {
     return key;
   }).filter(function (key) {
     return key !== "";
-  }) as TextTemplateKeyTuple<T>;
+  }) as TextTemplateKeys<T>;
 }
 
 /**

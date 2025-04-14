@@ -3,14 +3,14 @@ import { expectTypeOf, test } from "vitest";
 import type {
   LastTextTemplateKey,
   TextTemplateKey,
-  TextTemplateKeyTuple,
+  TextTemplateKeys,
   TextTemplateParameters,
   TextTemplateType,
 } from "./main";
 
 test(`タイプテスト`, function () {
   type T0 = "";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -24,7 +24,7 @@ test(`タイプテスト`, function () {
 
 test("タイプテスト", function () {
   type T0 = "{}";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -38,7 +38,7 @@ test("タイプテスト", function () {
 
 test("タイプテスト", function () {
   type T0 = "{}{}";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -52,7 +52,7 @@ test("タイプテスト", function () {
 
 test("タイプテスト", function () {
   type T0 = "{a}";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -66,7 +66,7 @@ test("タイプテスト", function () {
 
 test("タイプテスト", function () {
   type T0 = "{a}{a}";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -80,7 +80,7 @@ test("タイプテスト", function () {
 
 test("タイプテスト", function () {
   type T0 = "{a}{b}{c}";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -95,8 +95,24 @@ test("タイプテスト", function () {
 });
 
 test("タイプテスト", function () {
+  type T0 = "{c}{b}{a}";
+  type T1 = TextTemplateKeys<T0>;
+  type T2 = TextTemplateKey<T0>;
+  type T3 = LastTextTemplateKey<T0>;
+  type T4 = TextTemplateParameters<T0>;
+  type T5 = TextTemplateType<T0>;
+  expectTypeOf(["c", "b", "a"] satisfies T1).toMatchTypeOf<T1>();
+  "a" satisfies T2;
+  "b" satisfies T2;
+  "c" satisfies T2;
+  "a" satisfies T3;
+  expectTypeOf({ a: "", b: "", c: "" } satisfies T4).toMatchTypeOf<T4>();
+  "abc" satisfies T5;
+});
+
+test("タイプテスト", function () {
   type T0 = "a{a}b{b}c{c}d";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -112,7 +128,7 @@ test("タイプテスト", function () {
 
 test("タイプテスト", function () {
   type T0 = "a{あ}b{い}c{う}d";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -128,7 +144,7 @@ test("タイプテスト", function () {
 
 test("タイプテスト", function () {
   type T0 = "{abc{abc}";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
@@ -142,7 +158,7 @@ test("タイプテスト", function () {
 
 test("タイプテスト", function () {
   type T0 = "{abc}abc}";
-  type T1 = TextTemplateKeyTuple<T0>;
+  type T1 = TextTemplateKeys<T0>;
   type T2 = TextTemplateKey<T0>;
   type T3 = LastTextTemplateKey<T0>;
   type T4 = TextTemplateParameters<T0>;
