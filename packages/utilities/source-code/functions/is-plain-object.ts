@@ -3,7 +3,9 @@
  * @param target オブジェクト
  * @returns オブジェクトがプレーンオブジェクトである場合、`true`
  */
-export function isPlainObject(target: unknown) {
+export function isPlainObject<T>(
+  target: T,
+): target is Extract<T extends Partial<Record<any, any>> ? T : Partial<Record<any, any>>, T> {
   if (target === null || typeof target !== "object") {
     return false;
   }
