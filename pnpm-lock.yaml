@@ -166,8 +166,8 @@ importers:
         version: 0.3.0
     devDependencies:
       '@kthksgy/firebase':
-        specifier: npm:@kthksgy/firebase-user@^0.1.1
-        version: '@kthksgy/firebase-user@0.1.1(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
+        specifier: npm:@kthksgy/firebase-user@^0.1.2
+        version: '@kthksgy/firebase-user@0.1.2(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
       '@vitest/coverage-v8':
         specifier: ^3.1.1
         version: 3.1.1(@vitest/browser@3.1.1)(vitest@3.1.1)
@@ -809,11 +809,11 @@ packages:
       '@standard-schema/spec': ^1.0.0
       temporal-polyfill: ~0.3.0
 
-  '@kthksgy/firebase-user@0.1.1':
-    resolution: {integrity: sha512-WE24oDXmHk1a23S4WO77B/USv1wooOzipzLkdoS9UGHjl8uoyrBjywYEBsZSIyqCHK6xcl40Zrui9ofr+tgyvw==}
+  '@kthksgy/firebase-user@0.1.2':
+    resolution: {integrity: sha512-fqHWim1UBYsUTHmE1zmsKhjEC4nfUD6lTMkPLWnyF12ZAgDQZwMh3z26ZuAB0N/Y+ayb4ia232iUXqZawvXu+A==}
     peerDependencies:
       '@kthksgy/firebase-common': ^0.1.1
-      '@kthksgy/utilities': ^0.1.8
+      '@kthksgy/utilities': ^0.1.9
       '@standard-schema/spec': ^1.0.0
       firebase: ^11.6.0
       temporal-polyfill: ~0.3.0
@@ -4027,7 +4027,7 @@ snapshots:
       '@standard-schema/spec': 1.0.0
       temporal-polyfill: 0.3.0
 
-  '@kthksgy/firebase-user@0.1.1(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
+  '@kthksgy/firebase-user@0.1.2(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
     dependencies:
       '@kthksgy/firebase-common': 0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
       '@kthksgy/utilities': 0.1.9(temporal-polyfill@0.3.0)
