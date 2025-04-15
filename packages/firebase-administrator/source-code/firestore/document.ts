@@ -35,14 +35,6 @@ export function getDocumentData<T extends DocumentSnapshot>(documentSnapshot: T)
   return documentSnapshot.data();
 }
 
-export function listenDocument(
-  reference: DocumentReference,
-  onNext: { (snapshot: DocumentSnapshot): void },
-  onError?: { (error: Error): void },
-) {
-  return reference.onSnapshot(onNext, onError);
-}
-
 export function setDocument<T extends object>(
   reference: DocumentReference,
   data: T,
@@ -57,4 +49,12 @@ export function setDocument<T extends object>(
 
 export function updateDocument(reference: DocumentReference, data: any) {
   return reference.update(data);
+}
+
+export function watchDocument(
+  reference: DocumentReference,
+  onNext: { (snapshot: DocumentSnapshot): void },
+  onError?: { (error: Error): void },
+) {
+  return reference.onSnapshot(onNext, onError);
 }
