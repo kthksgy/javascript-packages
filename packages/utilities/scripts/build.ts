@@ -3,6 +3,7 @@ import * as path from "node:path";
 
 import { Command } from "commander";
 import * as esbuild from "esbuild";
+import { globSync } from "glob";
 import * as v from "valibot";
 
 process.chdir(path.join(import.meta.dirname, ".."));
@@ -23,22 +24,11 @@ command
       options,
     );
 
-    const packageInformation = v.parse(
-      v.object({ peerDependencies: v.record(v.string(), v.string()) }),
-      JSON.parse(fs.readFileSync("package.json", "utf8")),
-    );
-
-    const externalPackageNames = Array.from(Object.keys(packageInformation.peerDependencies));
-
     const buildOptions = {
-      bundle: true,
-      entryPoints: [
-        {
-          in: path.join(SOURCE_CODE_DIRECTORY_NAME, "index.ts"),
-          out: "index",
-        },
-      ],
-      external: externalPackageNames,
+      bundle: false,
+      entryPoints: globSync(path.join(SOURCE_CODE_DIRECTORY_NAME, "**", "*.ts"), {
+        ignore: ["**/*.test.ts"],
+      }),
       logLevel: "info",
       minify: false,
       preserveSymlinks: true,
@@ -49,6 +39,7 @@ command
     const targets = [
       {
         format: "cjs",
+        outExtension: { ".js": ".cjs" },
         outdir: path.join(DISTRIBUTIONS_DIRECTORY_NAME, "node"),
         platform: "node",
         target: "node22",
