@@ -39,23 +39,23 @@ function doesHaveStack<T>(target: T): target is T & { stack: string } {
  * `Error`に情報を追加した独自のエラークラス。
  */
 export class ApplicationError<Code extends string = string> extends Error {
-  /**
-   * #### 属性
-   * このアプリケーションエラー固有の情報を持つためのフィールド。
-   * 一般ユーザーに対しても公開される可能性があるため、秘密情報は含めない。
-   */
-  attributes?: ApplicationErrorAttributes;
   /** コード */
   code: Code;
   /** 日時 */
   dateTime: Temporal.ZonedDateTime;
   /** `resolve()`された場合に解決される`Promise` */
   promise: Promise<void>;
+  /**
+   * #### プロパティ
+   * このアプリケーションエラー固有の情報を持つためのフィールド。
+   * 一般ユーザーに対しても公開される可能性があるため、秘密情報は含めない。
+   */
+  properties?: ApplicationErrorProperties;
 
   constructor(code: Code, options?: ApplicationErrorOptions) {
     super(options?.message, options);
 
-    this.attributes = options?.attributes;
+    this.properties = options?.properties;
     this.code = code;
     this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
 
@@ -95,10 +95,10 @@ export class ApplicationError<Code extends string = string> extends Error {
 
   toJSON() {
     return {
-      attributes: this.attributes,
       code: this.code,
       dateTime: this.dateTime.toString(), // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
       message: this.message,
+      properties: this.properties, // プロパティは存在しない場合がある。
     };
   }
 
@@ -110,7 +110,7 @@ export class ApplicationError<Code extends string = string> extends Error {
     return (
       this.name +
       (this.message ? ": " + this.message : "") +
-      (this.attributes ? " " + JSON.stringify(this.attributes) : "") +
+      (this.properties ? " " + JSON.stringify(this.properties) : "") +
       " @ " +
       this.dateTime.toString()
     );
@@ -127,19 +127,13 @@ export class ApplicationError<Code extends string = string> extends Error {
       });
     }
 
-    let attributes;
+    let dateTime;
     try {
-      attributes = JSON.parse(JSON.stringify(target.attributes));
+      dateTime = Temporal.ZonedDateTime.from(target.dateTime);
     } catch (error) {
       return new ApplicationError(ApplicationError.DEFAULT_CODE, {
         cause: error,
-        message: `${JSON.stringify(target.attributes)} is not a valid JSON.`,
-      });
-    }
-    if (attributes === null || typeof attributes !== "object") {
-      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
-        cause: target.attributes,
-        message: `${JSON.stringify(target.attributes)} is not an object.`,
+        message: `${JSON.stringify(target.dateTime)} is not a valid date.`,
       });
     }
 
@@ -151,17 +145,25 @@ export class ApplicationError<Code extends string = string> extends Error {
       });
     }
 
-    let dateTime;
-    try {
-      dateTime = Temporal.ZonedDateTime.from(target.dateTime);
-    } catch (error) {
-      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
-        cause: error,
-        message: `${JSON.stringify(target.dateTime)} is not a valid date.`,
-      });
+    let properties;
+    if (Object.hasOwn(target, "properties")) {
+      try {
+        properties = JSON.parse(JSON.stringify(target.properties));
+      } catch (error) {
+        return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+          cause: error,
+          message: `${JSON.stringify(target.properties)} is not a valid JSON.`,
+        });
+      }
+      if (properties === null || typeof properties !== "object") {
+        return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+          cause: target.properties,
+          message: `${JSON.stringify(target.properties)} is not an object.`,
+        });
+      }
     }
 
-    return new ApplicationError(target.code, { attributes, dateTime, message });
+    return new ApplicationError(target.code, { dateTime, message, properties });
   }
 }
 
@@ -170,16 +172,16 @@ type A = Array<V> | ReadonlyArray<V>;
 type V = string | number | boolean | A | O | null;
 
 /** アプリケーションエラー属性 */
-export type ApplicationErrorAttributes = Partial<Record<string, V>>;
+export type ApplicationErrorProperties = Partial<Record<string, V>>;
 
 /**
  * アプリケーションエラーオプション
  */
 export interface ApplicationErrorOptions extends ErrorOptions {
-  /** 属性 */
-  attributes?: ApplicationErrorAttributes;
   /** 日時 */
   dateTime?: Temporal.ZonedDateTime;
   /** メッセージ */
   message?: string;
+  /** プロパティ */
+  properties?: ApplicationErrorProperties;
 }
