@@ -1,40 +1,40 @@
-import { DocumentReference } from "@kthksgy/firebase/firestore";
+import { DocumentReference, SetOptions } from "@kthksgy/firebase/firestore";
 
-export type AbstractQueue = {
-  create: { (reference: DocumentReference, data: any): AbstractQueue };
-  delete: { (reference: DocumentReference): AbstractQueue };
-  set: { (reference: DocumentReference, data: any, options?: SetOptions): AbstractQueue };
-  update: { (reference: DocumentReference, data: any): AbstractQueue };
+export type Batch = {
+  create: { (reference: DocumentReference, data: any): Batch };
+  delete: { (reference: DocumentReference): Batch };
+  set: { (reference: DocumentReference, data: any, options?: SetOptions): Batch };
+  update: { (reference: DocumentReference, data: any): Batch };
 };
 
-export function queueDocumentToCreate<Queue extends Pick<AbstractQueue, "create">>(
-  queue: Queue,
+export function queueDocumentToCreate<B extends Pick<Batch, "create">>(
+  batch: B,
   reference: DocumentReference,
   data: any,
-): Queue {
-  return queue.create(reference, data) as unknown as Queue;
+): B {
+  return batch.create(reference, data) as unknown as B;
 }
 
-export function queueDocumentToDelete<Queue extends Pick<AbstractQueue, "delete">>(
-  queue: Queue,
+export function queueDocumentToDelete<B extends Pick<Batch, "delete">>(
+  batch: B,
   reference: DocumentReference,
-): Queue {
-  return queue.delete(reference) as unknown as Queue;
+): B {
+  return batch.delete(reference) as unknown as B;
 }
 
-export function queueDocumentToSet<Queue extends Pick<AbstractQueue, "set">>(
-  queue: Queue,
+export function queueDocumentToSet<B extends Pick<Batch, "set">>(
+  batch: B,
   reference: DocumentReference,
   data: any,
   options?: SetOptions,
-): Queue {
-  return queue.set(reference, data, options) as unknown as Queue;
+): B {
+  return batch.set(reference, data, options) as unknown as B;
 }
 
-export function queueDocumentToUpdate<Queue extends Pick<AbstractQueue, "update">>(
-  queue: Queue,
+export function queueDocumentToUpdate<B extends Pick<Batch, "update">>(
+  batch: B,
   reference: DocumentReference,
   data: any,
-): Queue {
-  return queue.update(reference, data) as unknown as Queue;
+): B {
+  return batch.update(reference, data) as unknown as B;
 }
