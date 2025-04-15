@@ -40,7 +40,7 @@ command
       ],
       external: externalPackageNames,
       logLevel: "info",
-      minify: true,
+      minify: false,
       preserveSymlinks: true,
       sourcemap: true,
       treeShaking: true,
