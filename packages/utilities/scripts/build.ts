@@ -24,11 +24,17 @@ command
       options,
     );
 
+    const packageInformation = v.parse(
+      v.object({ peerDependencies: v.record(v.string(), v.string()) }),
+      JSON.parse(fs.readFileSync("package.json", "utf8")),
+    );
+
+    const externalPackageNames = Array.from(Object.keys(packageInformation.peerDependencies));
+
     const buildOptions = {
-      bundle: false,
-      entryPoints: globSync(path.join(SOURCE_CODE_DIRECTORY_NAME, "**", "*.ts"), {
-        ignore: ["**/*.test.ts"],
-      }),
+      bundle: true,
+      entryPoints: [path.join(SOURCE_CODE_DIRECTORY_NAME, "index.ts")],
+      external: externalPackageNames,
       logLevel: "info",
       minify: false,
       preserveSymlinks: true,
