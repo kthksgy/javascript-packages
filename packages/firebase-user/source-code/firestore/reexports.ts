@@ -25,8 +25,6 @@ import {
   writeBatch,
 } from "firebase/firestore";
 
-export * from "@kthksgy/firebase-common/firestore";
-
 export {
   CollectionReference,
   DocumentReference,

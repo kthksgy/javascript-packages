@@ -52,10 +52,10 @@ importers:
         version: 7.16.0
       '@kthksgy/firebase-common':
         specifier: ^0.1.1
-        version: 0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
+        version: 0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
       '@kthksgy/utilities':
-        specifier: ^0.1.8
-        version: 0.1.8(temporal-polyfill@0.3.0)
+        specifier: ^0.1.9
+        version: 0.1.9(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
@@ -88,8 +88,8 @@ importers:
   packages/firebase-common:
     dependencies:
       '@kthksgy/utilities':
-        specifier: ^0.1.8
-        version: 0.1.8(temporal-polyfill@0.3.0)
+        specifier: ^0.1.9
+        version: 0.1.9(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
@@ -120,10 +120,10 @@ importers:
     dependencies:
       '@kthksgy/firebase-common':
         specifier: ^0.1.1
-        version: 0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
+        version: 0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
       '@kthksgy/utilities':
-        specifier: ^0.1.8
-        version: 0.1.8(temporal-polyfill@0.3.0)
+        specifier: ^0.1.9
+        version: 0.1.9(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
@@ -156,8 +156,8 @@ importers:
   packages/firebase-utilities:
     dependencies:
       '@kthksgy/utilities':
-        specifier: ^0.1.8
-        version: 0.1.8(temporal-polyfill@0.3.0)
+        specifier: ^0.1.9
+        version: 0.1.9(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
@@ -167,7 +167,7 @@ importers:
     devDependencies:
       '@kthksgy/firebase':
         specifier: npm:@kthksgy/firebase-user@^0.1.1
-        version: '@kthksgy/firebase-user@0.1.1(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
+        version: '@kthksgy/firebase-user@0.1.1(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
       '@vitest/coverage-v8':
         specifier: ^3.1.1
         version: 3.1.1(@vitest/browser@3.1.1)(vitest@3.1.1)
@@ -215,8 +215,8 @@ importers:
   packages/utilities-browser:
     dependencies:
       '@kthksgy/utilities':
-        specifier: ^0.1.8
-        version: 0.1.8(temporal-polyfill@0.3.0)
+        specifier: ^0.1.9
+        version: 0.1.9(temporal-polyfill@0.3.0)
     devDependencies:
       '@vitest/browser':
         specifier: ^3.1.1
@@ -246,8 +246,8 @@ importers:
   packages/utilities-node:
     dependencies:
       '@kthksgy/utilities':
-        specifier: ^0.1.8
-        version: 0.1.8(temporal-polyfill@0.3.0)
+        specifier: ^0.1.9
+        version: 0.1.9(temporal-polyfill@0.3.0)
     devDependencies:
       '@types/node':
         specifier: ~22.14.1
@@ -818,8 +818,8 @@ packages:
       firebase: ^11.6.0
       temporal-polyfill: ~0.3.0
 
-  '@kthksgy/utilities@0.1.8':
-    resolution: {integrity: sha512-Rp7NuJ/VdJ1QkDm8uXD8ev77Z6DshTt/Ug6Yzv8WzbTB64fltSpKyq1ZjXqvQK6I2WCXyR3pGv0xlgTZCsOsVQ==}
+  '@kthksgy/utilities@0.1.9':
+    resolution: {integrity: sha512-vrFGf5oN54eaa8hJuv0jfB91vjPtuM5BUy0ruVv72GUoRMm8nUPCJll9lT+/hkqnjQPTOw8P4XKO/5Mi7NGdJw==}
     peerDependencies:
       temporal-polyfill: ~0.3.0
 
@@ -4021,21 +4021,21 @@ snapshots:
   '@js-sdsl/ordered-map@4.4.2':
     optional: true
 
-  '@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)':
+  '@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)':
     dependencies:
-      '@kthksgy/utilities': 0.1.8(temporal-polyfill@0.3.0)
+      '@kthksgy/utilities': 0.1.9(temporal-polyfill@0.3.0)
       '@standard-schema/spec': 1.0.0
       temporal-polyfill: 0.3.0
 
-  '@kthksgy/firebase-user@0.1.1(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
+  '@kthksgy/firebase-user@0.1.1(@kthksgy/firebase-common@0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0))(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
     dependencies:
-      '@kthksgy/firebase-common': 0.1.1(@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
-      '@kthksgy/utilities': 0.1.8(temporal-polyfill@0.3.0)
+      '@kthksgy/firebase-common': 0.1.1(@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)
+      '@kthksgy/utilities': 0.1.9(temporal-polyfill@0.3.0)
       '@standard-schema/spec': 1.0.0
       firebase: 11.6.0
       temporal-polyfill: 0.3.0
 
-  '@kthksgy/utilities@0.1.8(temporal-polyfill@0.3.0)':
+  '@kthksgy/utilities@0.1.9(temporal-polyfill@0.3.0)':
     dependencies:
       temporal-polyfill: 0.3.0
 
