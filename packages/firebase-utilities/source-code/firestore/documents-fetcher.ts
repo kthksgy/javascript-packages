@@ -119,6 +119,18 @@ export class DocumentsFetcher<
       data,
       errors,
       items,
+      previous: this.copy({
+        orders:
+          this.orders.length > 0
+            ? this.orders.map(function (order) {
+                return new OrderQueryParameter(
+                  order.path,
+                  order.direction === "descending" ? "ascending" : "descending",
+                );
+              })
+            : [new OrderQueryParameter("__name__", "descending")],
+        pages: [createPageQueryParameter("exclusive", "before", querySnapshot.docs[0])],
+      }),
       ...(typeof this.limit === "number" &&
         Number.isFinite(this.limit) &&
         this.limit > 0 &&
@@ -132,8 +144,6 @@ export class DocumentsFetcher<
               ),
             ],
           }),
-          // TODO: 実装する。
-          previous: undefined as this | undefined,
         }),
       querySnapshot,
     };
