@@ -17,7 +17,7 @@ import {
 import { FetcherProperties, ListFetcher, ListFetcherResult } from "@kthksgy/utilities";
 
 /** ドキュメント群フェッチャー */
-export class DocumentsFetcher<
+export class QueryFetcher<
   Data extends NonNullable<any>,
   Properties extends FetcherProperties = FetcherProperties,
 > extends ListFetcher<Data, Properties> {
@@ -42,15 +42,15 @@ export class DocumentsFetcher<
 
   constructor(
     parameters: {
-      converter: DocumentsFetcher<Data, Properties>["converter"];
-      errorHandler?: DocumentsFetcher<Data, Properties>["errorHandler"];
-      filters?: DocumentsFetcher<Data, Properties>["filters"];
-      limits?: DocumentsFetcher<Data, Properties>["limits"];
-      orders?: DocumentsFetcher<Data, Properties>["orders"];
-      pages?: DocumentsFetcher<Data, Properties>["pages"];
-      ranges?: DocumentsFetcher<Data, Properties>["ranges"];
-      reference: DocumentsFetcher<Data, Properties>["reference"];
-      transaction?: DocumentsFetcher<Data, Properties>["transaction"];
+      converter: QueryFetcher<Data, Properties>["converter"];
+      errorHandler?: QueryFetcher<Data, Properties>["errorHandler"];
+      filters?: QueryFetcher<Data, Properties>["filters"];
+      limits?: QueryFetcher<Data, Properties>["limits"];
+      orders?: QueryFetcher<Data, Properties>["orders"];
+      pages?: QueryFetcher<Data, Properties>["pages"];
+      ranges?: QueryFetcher<Data, Properties>["ranges"];
+      reference: QueryFetcher<Data, Properties>["reference"];
+      transaction?: QueryFetcher<Data, Properties>["transaction"];
     } & ConstructorParameters<typeof ListFetcher<Data, Properties>>[0],
   ) {
     super(parameters);
@@ -68,13 +68,11 @@ export class DocumentsFetcher<
     this.setTransaction = this.setTransaction.bind(this);
   }
 
-  copy(
-    parameters: Partial<ConstructorParameters<typeof DocumentsFetcher<Data, Properties>>[0]> = {},
-  ) {
-    return new DocumentsFetcher<Data, Properties>({ ...this, ...parameters });
+  copy(parameters: Partial<ConstructorParameters<typeof QueryFetcher<Data, Properties>>[0]> = {}) {
+    return new QueryFetcher<Data, Properties>({ ...this, ...parameters });
   }
 
-  async fetch(): Promise<DocumentsFetcherResult<Data, Properties>> {
+  async fetch(): Promise<QueryFetcherResult<Data, Properties>> {
     /** クエリスナップショット */
     const querySnapshot = await fetchDocuments(
       buildQuery(this.reference, {
@@ -149,12 +147,12 @@ export class DocumentsFetcher<
     };
   }
 
-  setTransaction(transaction: DocumentsFetcher<Data, Properties>["transaction"]) {
+  setTransaction(transaction: QueryFetcher<Data, Properties>["transaction"]) {
     return this.copy({ transaction });
   }
 }
 
-export type DocumentsFetcherResult<
+export type QueryFetcherResult<
   Data extends NonNullable<any>,
   Properties extends FetcherProperties = FetcherProperties,
 > = ListFetcherResult<Data, Properties> & { querySnapshot: QuerySnapshot };
