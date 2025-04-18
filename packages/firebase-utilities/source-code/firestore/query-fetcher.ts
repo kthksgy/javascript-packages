@@ -16,7 +16,7 @@ import {
 } from "@kthksgy/firebase/firestore";
 import { FetcherProperties, ListFetcher, ListFetcherResult } from "@kthksgy/utilities";
 
-/** ドキュメント群フェッチャー */
+/** クエリフェッチャー */
 export class QueryFetcher<
   Data extends NonNullable<any>,
   Properties extends FetcherProperties = FetcherProperties,
