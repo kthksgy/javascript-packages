@@ -12,7 +12,7 @@ export class Fetcher<TData, Properties extends FetcherProperties = FetcherProper
   /** プロパティ */
   properties?: Properties;
 
-  constructor(parameters: Pick<Fetcher<TData, Properties>, "index" | "key" | "properties">) {
+  constructor(parameters: { index?: number; key?: number; properties?: Properties }) {
     this.index = parameters.index;
     this.key = parameters.key ?? key++;
     this.properties = parameters.properties;

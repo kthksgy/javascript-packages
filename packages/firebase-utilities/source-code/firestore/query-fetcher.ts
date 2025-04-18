@@ -42,15 +42,15 @@ export class QueryFetcher<
 
   constructor(
     parameters: {
-      converter: QueryFetcher<Data, Properties>["converter"];
-      errorHandler?: QueryFetcher<Data, Properties>["errorHandler"];
-      filters?: QueryFetcher<Data, Properties>["filters"];
-      limits?: QueryFetcher<Data, Properties>["limits"];
-      orders?: QueryFetcher<Data, Properties>["orders"];
-      pages?: QueryFetcher<Data, Properties>["pages"];
-      ranges?: QueryFetcher<Data, Properties>["ranges"];
-      reference: QueryFetcher<Data, Properties>["reference"];
-      transaction?: QueryFetcher<Data, Properties>["transaction"];
+      converter: { (documentSnapshot: DocumentSnapshot): Data };
+      errorHandler?: { (error: any): never };
+      filters?: Array<FilterQueryParameter>;
+      limits?: Array<LimitQueryParameter>;
+      orders?: Array<OrderQueryParameter>;
+      pages?: Array<PageQueryParameter>;
+      ranges?: Array<RangeQueryParameter>;
+      reference: CollectionReference | Query;
+      transaction?: Transaction;
     } & ConstructorParameters<typeof ListFetcher<Data, Properties>>[0],
   ) {
     super(parameters);

@@ -11,8 +11,9 @@ export class ListFetcher<
   limit?: number;
 
   constructor(
-    parameters: Pick<ListFetcher<Item, Properties>, "limit"> &
-      ConstructorParameters<typeof Fetcher<Array<Item>, Properties>>[0],
+    parameters: { limit?: number } & ConstructorParameters<
+      typeof Fetcher<Array<Item>, Properties>
+    >[0],
   ) {
     super(parameters);
 

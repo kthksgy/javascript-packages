@@ -23,10 +23,10 @@ export class DocumentFetcher<
 
   constructor(
     parameters: {
-      converter: DocumentFetcher<Data, Properties>["converter"];
-      errorHandler?: DocumentFetcher<Data, Properties>["errorHandler"];
-      reference: DocumentFetcher<Data, Properties>["reference"];
-      transaction?: DocumentFetcher<Data, Properties>["transaction"];
+      converter: { (documentSnapshot: DocumentSnapshot): Data };
+      errorHandler?: { (error: any): never };
+      reference: DocumentReference;
+      transaction?: Transaction;
     } & ConstructorParameters<typeof Fetcher<Data, Properties>>[0],
   ) {
     super(parameters);
