@@ -12,7 +12,7 @@ export class DocumentFetcher<
   Data extends NonNullable<any>,
   Properties extends FetcherProperties = FetcherProperties,
   E = any,
-> extends Fetcher<Data, Properties> {
+> extends Fetcher<Data | null, Properties> {
   /** ドキュメントインスタンス */
   reference: DocumentReference;
   /** ドキュメントスナップショットをデータに変換する関数 */
@@ -28,7 +28,7 @@ export class DocumentFetcher<
       toData: { (documentSnapshot: DocumentSnapshot): Data };
       toError?: { (error: any): E };
       transaction?: Transaction;
-    } & ConstructorParameters<typeof Fetcher<Data, Properties>>[0],
+    } & ConstructorParameters<typeof Fetcher<Data | null, Properties>>[0],
   ) {
     super(parameters);
 
@@ -49,14 +49,11 @@ export class DocumentFetcher<
   async fetch(): Promise<DocumentFetcherResult<Data, Properties, E>> {
     try {
       const documentSnapshot = await fetchDocument(this.reference, this.transaction);
-      if (getDocumentData(documentSnapshot) === undefined) {
-        throw new DocumentFetcherError(
-          "not-found",
-          `There is no document corresponding to path "${documentSnapshot.ref.path}".`,
-        );
+      if (!getDocumentData(documentSnapshot)) {
+        return { current: this, data: null };
+      } else {
+        return { current: this, data: this.toData(documentSnapshot) };
       }
-      const data = this.toData(documentSnapshot);
-      return { current: this, data };
     } catch (error) {
       throw typeof this.toError === "function" ? this.toError(error) : error;
     }
@@ -75,27 +72,5 @@ export type DocumentFetcherResult<
   /** 現在のフェッチャー */
   current: DocumentFetcher<Data, Properties, E>;
   /** データ */
-  data: Data;
+  data: Data | null;
 };
-
-export type DocumentFetcherErrorCode = "not-found";
-/**
- * ドキュメントフェッチャーエラー
- * `FirestoreError`が`firebase`と`firebase-admin`の両方に存在しないため、用意している。
- * @see https://github.com/firebase/firebase-js-sdk/blob/master/packages/firestore/src/util/error.ts#L213
- */
-export class DocumentFetcherError extends Error {
-  code: DocumentFetcherErrorCode;
-
-  constructor(code: DocumentFetcherErrorCode, message: string) {
-    super(message);
-    this.code = code;
-
-    // バインドする。
-    this.toJSON = this.toJSON.bind(this);
-  }
-
-  toJSON() {
-    return JSON.parse(JSON.stringify(this));
-  }
-}
