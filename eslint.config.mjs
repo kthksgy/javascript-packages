@@ -29,8 +29,8 @@ $ npm i -D \
   '@eslint/js@~9.23.0' \
   'confusing-browser-globals@~1.0.11' \
   'eslint-config-prettier@~10.1.1' \
-  'eslint-import-resolver-typescript@~4.3.1' \
-  'eslint-plugin-import-x@~4.10.0' \
+  'eslint-import-resolver-typescript@~4.3.3' \
+  'eslint-plugin-import-x@~4.10.6' \
   'eslint-plugin-prettier@~5.2.6' \
   'eslint-plugin-react@~7.37.5' \
   'eslint-plugin-react-hooks@~5.2.0' \
