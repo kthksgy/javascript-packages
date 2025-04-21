@@ -77,7 +77,7 @@ export function createFieldFilterQueryParameter<
   Type extends FieldFilterQueryParameterType,
   V extends Type extends "in" | "not-in"
     ? ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>
-    : Type extends "array-contains-any"
+    : Type extends "array-contains"
       ? Value<ObjectUnionIntersection<DocumentData<S>>, P> extends ReadonlyArray<any>
         ? Value<ObjectUnionIntersection<DocumentData<S>>, P>[number]
         : never
