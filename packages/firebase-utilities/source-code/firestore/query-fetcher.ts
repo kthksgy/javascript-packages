@@ -89,8 +89,8 @@ export class QueryFetcher<
     ).catch(this.errorHandler);
 
     const data: Array<Data> = [];
-    const items = new Map<number, Data>();
     const errors = new Map<number, any>();
+    const items = new Map<number, Data>();
 
     for (let i = 0; i < querySnapshot.size; i++) {
       /** ドキュメントスナップショット */
@@ -112,28 +112,12 @@ export class QueryFetcher<
       }
     }
 
-    return {
-      current: this,
-      data,
-      errors,
-      items,
-      previous: this.copy({
-        orders:
-          this.orders.length > 0
-            ? this.orders.map(function (order) {
-                return new OrderQueryParameter(
-                  order.path,
-                  order.direction === "descending" ? "ascending" : "descending",
-                );
-              })
-            : [new OrderQueryParameter("__name__", "descending")],
-        pages: [createPageQueryParameter("exclusive", "before", querySnapshot.docs[0])],
-      }),
-      ...(typeof this.limit === "number" &&
-        Number.isFinite(this.limit) &&
-        this.limit > 0 &&
-        querySnapshot.size >= this.limit && {
-          next: this.copy({
+    const next =
+      typeof this.limit === "number" &&
+      Number.isFinite(this.limit) &&
+      this.limit > 0 &&
+      querySnapshot.size >= this.limit
+        ? this.copy({
             pages: [
               createPageQueryParameter(
                 "exclusive",
@@ -141,8 +125,23 @@ export class QueryFetcher<
                 querySnapshot.docs[querySnapshot.size - 1],
               ),
             ],
-          }),
-        }),
+          })
+        : undefined;
+
+    const previous =
+      querySnapshot.size > 0
+        ? this.copy({
+            pages: [createPageQueryParameter("exclusive", "before", querySnapshot.docs[0])],
+          })
+        : undefined;
+
+    return {
+      current: this,
+      data,
+      errors,
+      items,
+      ...(next && { next }),
+      ...(previous && { previous }),
       querySnapshot,
     };
   }
