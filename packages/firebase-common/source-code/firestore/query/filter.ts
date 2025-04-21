@@ -75,9 +75,13 @@ export function createFieldFilterQueryParameter<
   S extends DocumentDataSchema,
   P extends Path<DocumentData<S>>,
   Type extends FieldFilterQueryParameterType,
-  V extends Type extends "array-contains-any" | "in" | "not-in"
+  V extends Type extends "in" | "not-in"
     ? ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>
-    : Value<ObjectUnionIntersection<DocumentData<S>>, P>,
+    : Type extends "array-contains-any"
+      ? Value<ObjectUnionIntersection<DocumentData<S>>, P> extends ReadonlyArray<any>
+        ? Value<ObjectUnionIntersection<DocumentData<S>>, P>[number]
+        : never
+      : Value<ObjectUnionIntersection<DocumentData<S>>, P>,
 >(_: S | { (..._: Array<any>): S }, path: P, type: Type, value: V) {
   return new FieldFilterQueryParameter(path, type, value);
 }
@@ -93,7 +97,7 @@ export function or<Filters extends ReadonlyArray<FilterQueryParameter>>(...filte
 export function where<Type extends FieldFilterQueryParameterType>(
   path: string | ReadonlyArray<string>,
   type: FieldFilterQueryParameterType,
-  value: Type extends "array-contains-any" | "in" | "not-in" ? ReadonlyArray<any> : any,
+  value: Type extends "in" | "not-in" ? ReadonlyArray<any> : any,
 ) {
   return new FieldFilterQueryParameter(path, type, value);
 }
