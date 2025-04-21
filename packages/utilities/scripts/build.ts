@@ -3,7 +3,6 @@ import * as path from "node:path";
 
 import { Command } from "commander";
 import * as esbuild from "esbuild";
-import { globSync } from "glob";
 import * as v from "valibot";
 
 process.chdir(path.join(import.meta.dirname, ".."));
