@@ -4,7 +4,7 @@ let key = 0;
  * フェッチャー
  * データの取得を共通化する。
  */
-export class Fetcher<TData, Properties extends FetcherProperties = FetcherProperties> {
+export class Fetcher<Data, Properties extends FetcherProperties = FetcherProperties> {
   /** インデックス */
   index?: number;
   /** キー */
@@ -37,11 +37,11 @@ export class Fetcher<TData, Properties extends FetcherProperties = FetcherProper
   }
 
   /** このフェッチャーが指定したフェッチャーから連続している場合、`true`を返す。 */
-  doesHaveSameKey(other?: Fetcher<TData, Properties> | null) {
+  doesHaveSameKey(other?: Fetcher<Data, Properties> | null) {
     return other !== null && other !== undefined && other?.key === this.key;
   }
 
-  async fetch(): Promise<FetcherResult<TData, Properties>> {
+  async fetch(): Promise<FetcherResult<Data, Properties>> {
     throw new Error("実装されていません。");
   }
 }
@@ -60,3 +60,14 @@ export type FetcherResult<Data, Properties extends FetcherProperties = FetcherPr
   /** 前のフェッチャー */
   previous?: Fetcher<Data, Properties>;
 };
+
+/**
+ * フェッチャーのデータを取得する。
+ * @param fetcher フェッチャー
+ * @returns フェッチャーのデータ
+ */
+export async function fetchData<Data>(fetcher: Fetcher<Data>) {
+  return await fetcher.fetch().then(function ({ data }) {
+    return data;
+  });
+}
