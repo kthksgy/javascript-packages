@@ -33,29 +33,32 @@ function doesHaveStack<T>(target: T): target is T & { stack: string } {
 }
 
 /**
- * アプリケーションエラー
+ * ユニバーサルエラー
  * `Error`に情報を追加した独自のエラークラス。
  */
-export class ApplicationError<Code extends string = string> extends Error {
+export class UniversalError<Code extends string = string> extends Error {
   /** コード */
   code: Code;
   /** 日時 */
   dateTime: Temporal.ZonedDateTime;
+  /** メモランダム(共有可能なメッセージ) */
+  memorandum?: string;
   /**
    * #### プロパティ
-   * このアプリケーションエラー固有の情報を持つためのフィールド。
+   * このユニバーサルエラー固有の情報を持つためのフィールド。
    * 一般ユーザーに対しても公開される可能性があるため、秘密情報は含めない。
    */
-  properties?: ApplicationErrorProperties;
+  properties?: UniversalErrorProperties;
 
-  constructor(code: Code, options?: ApplicationErrorOptions) {
-    super(options?.message, options);
+  constructor(code: Code, options?: UniversalErrorOptions) {
+    super(options?.message ?? options?.memorandum, options);
 
-    this.properties = options?.properties;
     this.code = code;
     this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
+    this.memorandum = options?.memorandum;
+    this.properties = options?.properties;
 
-    this.name = "ApplicationError[" + this.code + "]";
+    this.name = "UniversalError[" + this.code + "]";
     this.stack = concatenateStacks(this, options?.cause);
   }
 
@@ -87,7 +90,7 @@ export class ApplicationError<Code extends string = string> extends Error {
     return {
       code: this.code,
       dateTime: this.dateTime.toString(), // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
-      message: this.message,
+      memorandum: this.memorandum, // メモランダムは存在しない場合がある。
       properties: this.properties, // プロパティは存在しない場合がある。
     };
   }
@@ -100,6 +103,7 @@ export class ApplicationError<Code extends string = string> extends Error {
     return (
       this.name +
       (this.message ? ": " + this.message : "") +
+      (this.memorandum ? " " + this.memorandum : "") +
       (this.properties ? " " + JSON.stringify(this.properties) : "") +
       " @ " +
       this.dateTime.toString()
@@ -107,71 +111,84 @@ export class ApplicationError<Code extends string = string> extends Error {
   }
 
   /** 既定のコード */
-  static readonly DEFAULT_CODE = "APPLICATION_ERROR";
+  static readonly DEFAULT_CODE = "ERROR";
 
-  static fromObject(target: ReturnType<ApplicationError["toObject"]>) {
-    if (target === null || typeof target !== "object") {
-      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
-        cause: target,
-        message: `${JSON.stringify(target)} is not an object.`,
+  static fromObject(object: ReturnType<UniversalError["toObject"]>) {
+    if (object === null || typeof object !== "object") {
+      return new UniversalError(UniversalError.DEFAULT_CODE, {
+        cause: object,
+        message: `オブジェクト"${JSON.stringify(object)}"がオブジェクトではありません。`,
+      });
+    }
+
+    const code = object.code;
+    if (typeof code !== "string") {
+      return new UniversalError(UniversalError.DEFAULT_CODE, {
+        cause: object.code,
+        message: `コード"${JSON.stringify(object.code)}"が文字列ではありません。`,
       });
     }
 
     let dateTime;
     try {
-      dateTime = Temporal.ZonedDateTime.from(target.dateTime);
+      dateTime = Temporal.ZonedDateTime.from(object.dateTime);
     } catch (error) {
-      return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+      return new UniversalError(UniversalError.DEFAULT_CODE, {
         cause: error,
-        message: `${JSON.stringify(target.dateTime)} is not a valid date.`,
+        message: `日時"${JSON.stringify(object.dateTime)}"が不正です。`,
       });
     }
 
-    const message = target.message;
-    if (typeof message !== "string") {
-      throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
-        cause: target.message,
-        message: `${JSON.stringify(target.message)} is not a string.`,
-      });
+    let memorandum;
+    if (Object.hasOwn(object, "memorandum")) {
+      memorandum = object.memorandum;
+      if (typeof memorandum !== "string") {
+        throw new UniversalError(UniversalError.DEFAULT_CODE, {
+          cause: object.memorandum,
+          message: `メモランダム"${JSON.stringify(object.memorandum)}"が文字列ではありません。`,
+        });
+      }
     }
 
     let properties;
-    if (Object.hasOwn(target, "properties")) {
+    if (Object.hasOwn(object, "properties")) {
       try {
-        properties = JSON.parse(JSON.stringify(target.properties));
+        properties = JSON.parse(JSON.stringify(object.properties));
       } catch (error) {
-        return new ApplicationError(ApplicationError.DEFAULT_CODE, {
+        return new UniversalError(UniversalError.DEFAULT_CODE, {
           cause: error,
-          message: `${JSON.stringify(target.properties)} is not a valid JSON.`,
+          message: `プロパティ"${JSON.stringify(object.properties)}"が不正です。`,
         });
       }
       if (properties === null || typeof properties !== "object") {
-        return new ApplicationError(ApplicationError.DEFAULT_CODE, {
-          cause: target.properties,
-          message: `${JSON.stringify(target.properties)} is not an object.`,
+        return new UniversalError(UniversalError.DEFAULT_CODE, {
+          cause: object.properties,
+          message: `プロパティ"${JSON.stringify(object.properties)}"がオブジェクトではありません。`,
         });
       }
     }
 
-    return new ApplicationError(target.code, { dateTime, message, properties });
+    return new UniversalError(code, { dateTime, memorandum, properties });
   }
+}
+
+/**
+ * ユニバーサルエラーオプション
+ */
+export interface UniversalErrorOptions extends ErrorOptions {
+  /** 日時 */
+  dateTime?: Temporal.ZonedDateTime;
+  /** メモランダム(共有可能なメッセージ) */
+  memorandum?: string;
+  /** メッセージ */
+  message?: string;
+  /** プロパティ */
+  properties?: UniversalErrorProperties;
 }
 
 type O = Partial<{ [K in string]: V }>;
 type A = Array<V> | ReadonlyArray<V>;
 type V = string | number | boolean | A | O | null;
 
-/** アプリケーションエラー属性 */
-export type ApplicationErrorProperties = Partial<Record<string, V>>;
-
-/**
- * アプリケーションエラーオプション
- */
-export interface ApplicationErrorOptions extends ErrorOptions {
-  /** 日時 */
-  dateTime?: Temporal.ZonedDateTime;
-  /** メッセージ */
-  message?: string;
-  /** プロパティ */
-  properties?: ApplicationErrorProperties;
-}
+/** ユニバーサルエラープロパティ */
+export type UniversalErrorProperties = Partial<Record<string, V>>;
