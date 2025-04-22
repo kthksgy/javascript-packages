@@ -123,10 +123,10 @@ importers:
     dependencies:
       '@kthksgy/firebase-common':
         specifier: ^0.1.4
-        version: 0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)
+        version: 0.1.4(@kthksgy/utilities@0.1.14(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)
       '@kthksgy/utilities':
-        specifier: ^0.1.13
-        version: 0.1.13(temporal-polyfill@0.3.0)
+        specifier: ^0.1.14
+        version: 0.1.14(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
@@ -824,6 +824,11 @@ packages:
 
   '@kthksgy/utilities@0.1.13':
     resolution: {integrity: sha512-SRLCZM/sdApKgvaDMblAsj2PpDggpiW6C25Zxch1O6izXDSek3oVPaAtysO30phWVKZ+DrCjt1VxJpCrFaWvqg==}
+    peerDependencies:
+      temporal-polyfill: ~0.3.0
+
+  '@kthksgy/utilities@0.1.14':
+    resolution: {integrity: sha512-PF5YhW8g9xcDFo6ZPLBtzr2AZp+GjDe2RUBvpewJ17KXKtqBFSD8gpuGPuymyiAo/cA7qGcnBuehjsskiy8gYQ==}
     peerDependencies:
       temporal-polyfill: ~0.3.0
 
@@ -4065,6 +4070,13 @@ snapshots:
       temporal-polyfill: 0.3.0
       type-fest: 4.40.0
 
+  '@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.14(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)':
+    dependencies:
+      '@kthksgy/utilities': 0.1.14(temporal-polyfill@0.3.0)
+      '@standard-schema/spec': 1.0.0
+      temporal-polyfill: 0.3.0
+      type-fest: 4.40.0
+
   '@kthksgy/firebase-user@0.1.3(@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0))(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
     dependencies:
       '@kthksgy/firebase-common': 0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)
@@ -4074,6 +4086,10 @@ snapshots:
       temporal-polyfill: 0.3.0
 
   '@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0)':
+    dependencies:
+      temporal-polyfill: 0.3.0
+
+  '@kthksgy/utilities@0.1.14(temporal-polyfill@0.3.0)':
     dependencies:
       temporal-polyfill: 0.3.0
 

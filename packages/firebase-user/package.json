@@ -46,7 +46,7 @@
   "name": "@kthksgy/firebase-user",
   "peerDependencies": {
     "@kthksgy/firebase-common": "^0.1.4",
-    "@kthksgy/utilities": "^0.1.13",
+    "@kthksgy/utilities": "^0.1.14",
     "@standard-schema/spec": "^1.0.0",
     "firebase": "^11.6.0",
     "temporal-polyfill": "~0.3.0"
@@ -63,5 +63,5 @@
     "test": "vitest --typecheck"
   },
   "type": "module",
-  "version": "0.1.4-alpha+0"
+  "version": "0.1.4-alpha+1"
 }
