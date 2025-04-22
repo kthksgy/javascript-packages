@@ -1,4 +1,3 @@
-export * from "./application-error";
 export * from "./constants";
 export * from "./fetcher";
 export * from "./functions";
@@ -7,6 +6,7 @@ export * from "./naming-convention";
 export * from "./temporal";
 export * from "./text-template";
 export * from "./types";
+export * from "./universal-error";
 
 export * from "./compare-versions";
 export * from "./count-graphemes";
