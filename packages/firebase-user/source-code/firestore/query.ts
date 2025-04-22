@@ -7,7 +7,6 @@ import {
   PageQueryParameter,
   RangeQueryParameter,
 } from "@kthksgy/firebase-common/firestore";
-import { ApplicationError } from "@kthksgy/utilities";
 import {
   DocumentSnapshot,
   FieldPath,
@@ -180,9 +179,7 @@ export const query = buildQuery;
 
 export async function fetchDocumentCount(query: Query, transaction?: Transaction) {
   if (transaction) {
-    throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
-      message: "この機能は`firebase`パッケージでは利用できません。",
-    });
+    throw new TypeError("この機能は`firebase`パッケージでは利用できません。");
   } else {
     return (await getCountFromServer(query)).data().count;
   }
@@ -190,9 +187,7 @@ export async function fetchDocumentCount(query: Query, transaction?: Transaction
 
 export async function fetchDocuments(query: Query, transaction?: Transaction) {
   if (transaction) {
-    throw new ApplicationError(ApplicationError.DEFAULT_CODE, {
-      message: "この機能は`firebase`パッケージでは利用できません。",
-    });
+    throw new TypeError("この機能は`firebase`パッケージでは利用できません。");
   } else {
     return getDocs(query);
   }
