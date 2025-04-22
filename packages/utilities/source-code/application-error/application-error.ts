@@ -1,7 +1,5 @@
 import { Temporal } from "temporal-polyfill";
 
-import { createPromise } from "../create-promise";
-
 /**
  * エラーオブジェクトのスタック文字列を結合する。
  * @param a エラーオブジェクトA
@@ -43,8 +41,6 @@ export class ApplicationError<Code extends string = string> extends Error {
   code: Code;
   /** 日時 */
   dateTime: Temporal.ZonedDateTime;
-  /** `resolve()`された場合に解決される`Promise` */
-  promise: Promise<void>;
   /**
    * #### プロパティ
    * このアプリケーションエラー固有の情報を持つためのフィールド。
@@ -58,10 +54,6 @@ export class ApplicationError<Code extends string = string> extends Error {
     this.properties = options?.properties;
     this.code = code;
     this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
-
-    const { promise, resolve } = createPromise<void>();
-    this.promise = promise;
-    this.resolve = resolve;
 
     this.name = "ApplicationError[" + this.code + "]";
     this.stack = concatenateStacks(this, options?.cause);
@@ -90,8 +82,6 @@ export class ApplicationError<Code extends string = string> extends Error {
 
     return Array.from(causes).reverse();
   }
-
-  resolve: { (): void };
 
   toJSON() {
     return {
