@@ -190,6 +190,31 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2(@types/node@22.14.1)(@vitest/browser@3.1.2)
 
+  packages/react-utilities:
+    dependencies:
+      temporal-polyfill:
+        specifier: ~0.3.0
+        version: 0.3.0
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: ^3.1.2
+        version: 3.1.2(@vitest/browser@3.1.2)(vitest@3.1.2)
+      commander:
+        specifier: ^13.1.0
+        version: 13.1.0
+      esbuild:
+        specifier: 0.25.2
+        version: 0.25.2
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      valibot:
+        specifier: ^1.0.0
+        version: 1.0.0(typescript@5.8.3)
+      vitest:
+        specifier: ^3.1.2
+        version: 3.1.2(@types/node@22.14.1)(@vitest/browser@3.1.2)
+
   packages/utilities:
     dependencies:
       temporal-polyfill:

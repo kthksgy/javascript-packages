@@ -1,0 +1,52 @@
+{
+  "author": {
+    "name": "kthksgy",
+    "url": "https://github.com/kthksgy"
+  },
+  "description": "Utilities",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.1.2",
+    "commander": "^13.1.0",
+    "esbuild": "0.25.2",
+    "typescript": "~5.8.3",
+    "valibot": "^1.0.0",
+    "vitest": "^3.1.2"
+  },
+  "exports": {
+    ".": {
+      "import": "./distributions/browser/index.js",
+      "require": "./distributions/node/index.cjs",
+      "types": "./distributions/types/index.d.ts"
+    }
+  },
+  "files": [
+    "distributions"
+  ],
+  "homepage": "https://github.com/kthksgy/packages-node/tree/main/packages/react-utilities",
+  "keywords": [
+    "react",
+    "utilities",
+    "utils"
+  ],
+  "license": "MIT",
+  "main": "./distributions/node/index.cjs",
+  "module": "./distributions/browser/index.js",
+  "name": "@kthksgy/react-utilities",
+  "peerDependencies": {
+    "temporal-polyfill": "~0.3.0"
+  },
+  "repository": {
+    "directory": "packages/react-utilities",
+    "type": "git",
+    "url": "git+https://github.com/kthksgy/packages-node.git"
+  },
+  "scripts": {
+    "build": "node --experimental-strip-types scripts/build.ts --clean && tsc --project tsconfig.build.json",
+    "clean": "rm -rf coverage && rm -rf distributions",
+    "coverage": "vitest run --coverage",
+    "test": "vitest --typecheck"
+  },
+  "type": "module",
+  "types": "./distributions/types/index.d.ts",
+  "version": "0.1.0-alpha+0"
+}
