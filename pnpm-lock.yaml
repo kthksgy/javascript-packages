@@ -192,9 +192,6 @@ importers:
 
   packages/react-utilities:
     dependencies:
-      '@kthksgy/utilities':
-        specifier: ^0.1.14
-        version: 0.1.14(temporal-polyfill@0.3.0)
       react:
         specifier: '>=18.3.1'
         version: 19.1.0
