@@ -1,6 +1,16 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 
-export type ExecutorError = Error;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ExecutorModuleAugmentation {}
+
+type ExecutorModule = Omit<
+  {
+    Error: Error;
+  },
+  keyof ExecutorModuleAugmentation
+>;
+
+export type ExecutorError = ExecutorModule["Error"];
 
 export type ExecutorSettings = {
   /**

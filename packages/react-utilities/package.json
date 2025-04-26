@@ -37,7 +37,7 @@
   "peerDependencies": {
     "react": ">=18.3.1",
     "react-dom": ">=18.3.1",
-    "temporal-polyfill": "~0.3.0"
+    "temporal-polyfill": "^0.3.0"
   },
   "repository": {
     "directory": "packages/react-utilities",
@@ -52,5 +52,5 @@
   },
   "type": "module",
   "types": "./distributions/types/index.d.ts",
-  "version": "0.1.0"
+  "version": "0.1.1-alpha+0"
 }
