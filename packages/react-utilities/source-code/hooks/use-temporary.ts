@@ -31,7 +31,7 @@ export function useTemporary<Data>(
         return isSameReference.current(temporary, authoritative) ? temporary : authoritative;
       });
     },
-    [authoritative, temporary],
+    [authoritative],
   );
 
   return [temporary, setTemporary, !isSameReference.current(temporary, authoritative)];
