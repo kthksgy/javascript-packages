@@ -31,13 +31,15 @@ export function useDebounced<Data>(
 
   useEffect(
     function () {
+      if (timer.current !== undefined) {
+        clearTimeout(timer.current);
+      }
       if (!isSameReference.current(previous, next)) {
-        if (timer.current !== undefined) {
-          clearTimeout(timer.current);
-        }
         timer.current = setTimeout(function () {
           setPrevious(next);
         }, delay);
+      } else {
+        timer.current = undefined;
       }
     },
     [delay, next, previous],
