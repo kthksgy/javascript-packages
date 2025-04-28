@@ -1,3 +1,4 @@
+export * from "./chunk";
 export * from "./from-bytes-to-binary-string";
 export * from "./from-date-number";
 export * from "./from-percent-encoded";
