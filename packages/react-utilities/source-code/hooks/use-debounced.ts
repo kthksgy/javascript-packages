@@ -23,12 +23,15 @@ export function useDebounced<Data>(
   delay: number,
   isSame: { (previous: Data, next: Data): boolean } = Object.is,
 ) {
+  const isSameReference = useRef(isSame);
+  isSameReference.current = isSame;
+
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const [previous, setPrevious] = useState(next);
 
   useEffect(
     function () {
-      if (!isSame(previous, next)) {
+      if (!isSameReference.current(previous, next)) {
         if (timer.current !== undefined) {
           clearTimeout(timer.current);
         }
@@ -37,7 +40,7 @@ export function useDebounced<Data>(
         }, delay);
       }
     },
-    [delay, isSame, next, previous],
+    [delay, next, previous],
   );
 
   return previous;

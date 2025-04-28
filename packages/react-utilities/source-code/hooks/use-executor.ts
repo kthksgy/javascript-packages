@@ -153,8 +153,8 @@ export function useExecutor(settings?: Partial<ExecutorSettings>) {
 
     if (throttleTimer.current !== undefined) {
       clearTimeout(throttleTimer.current);
+      throttleTimer.current = undefined;
     }
-    throttleTimer.current = undefined;
     setThrottling(false);
   }, []);
 

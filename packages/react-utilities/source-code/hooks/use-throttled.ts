@@ -12,9 +12,9 @@ import { useEffect, useRef, useState } from "react";
  * const y = useThrottled(
  *   x + 1,
  *   3000,
- *   useCallback(function (previous, next) {
+ *   function (previous, next) {
  *     return previous === next;
- *   }, []),
+ *   },
  * );
  * ```
  */
@@ -23,13 +23,16 @@ export function useThrottled<Data>(
   delay: number,
   isSame: { (previous: Data, next: Data): boolean } = Object.is,
 ) {
+  const isSameReference = useRef(isSame);
+  isSameReference.current = isSame;
+
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const [previous, setPrevious] = useState(next);
   const [throttling, setThrottling] = useState(false);
 
   useEffect(
     function () {
-      if (!throttling && !isSame(previous, next)) {
+      if (!throttling && !isSameReference.current(previous, next)) {
         setPrevious(next);
         setThrottling(true);
         timer.current = setTimeout(function () {
@@ -37,7 +40,7 @@ export function useThrottled<Data>(
         }, delay);
       }
     },
-    [delay, isSame, next, previous, throttling],
+    [delay, next, previous, throttling],
   );
 
   return previous;
