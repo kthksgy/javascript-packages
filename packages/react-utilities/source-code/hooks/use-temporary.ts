@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 /**
  * 楽観的な更新を行うために一時的な値を取得する。
@@ -34,5 +34,10 @@ export function useTemporary<Data>(
     [authoritative],
   );
 
-  return [temporary, setTemporary, !isSameReference.current(temporary, authoritative)];
+  return useMemo(
+    function () {
+      return [temporary, setTemporary, !isSameReference.current(temporary, authoritative)] as const;
+    },
+    [authoritative, temporary],
+  );
 }
