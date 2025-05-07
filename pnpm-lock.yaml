@@ -52,16 +52,16 @@ importers:
         version: 7.16.0
       '@kthksgy/firebase-common':
         specifier: ^0.1.4
-        version: 0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)
+        version: 0.1.4(@kthksgy/utilities@0.1.15(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.41.0)
       '@kthksgy/utilities':
-        specifier: ^0.1.13
-        version: 0.1.13(temporal-polyfill@0.3.0)
+        specifier: ^0.1.15
+        version: 0.1.15(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
       firebase-admin:
-        specifier: ^13.2.0
-        version: 13.2.0
+        specifier: ^13.3.0
+        version: 13.3.0
       temporal-polyfill:
         specifier: ~0.3.0
         version: 0.3.0
@@ -88,8 +88,8 @@ importers:
   packages/firebase-common:
     dependencies:
       '@kthksgy/utilities':
-        specifier: ^0.1.13
-        version: 0.1.13(temporal-polyfill@0.3.0)
+        specifier: ^0.1.15
+        version: 0.1.15(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
@@ -97,8 +97,8 @@ importers:
         specifier: ~0.3.0
         version: 0.3.0
       type-fest:
-        specifier: ^4.40.0
-        version: 4.40.0
+        specifier: ^4.41.0
+        version: 4.41.0
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^3.1.3
@@ -123,10 +123,10 @@ importers:
     dependencies:
       '@kthksgy/firebase-common':
         specifier: ^0.1.4
-        version: 0.1.4(@kthksgy/utilities@0.1.14(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)
+        version: 0.1.4(@kthksgy/utilities@0.1.15(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.41.0)
       '@kthksgy/utilities':
-        specifier: ^0.1.14
-        version: 0.1.14(temporal-polyfill@0.3.0)
+        specifier: ^0.1.15
+        version: 0.1.15(temporal-polyfill@0.3.0)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
@@ -170,7 +170,7 @@ importers:
     devDependencies:
       '@kthksgy/firebase':
         specifier: npm:@kthksgy/firebase-user@^0.1.4
-        version: '@kthksgy/firebase-user@0.1.4(@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0))(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
+        version: '@kthksgy/firebase-user@0.1.4(@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.41.0))(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)'
       '@vitest/coverage-v8':
         specifier: ^3.1.3
         version: 3.1.3(@vitest/browser@3.1.3)(vitest@3.1.3)
@@ -874,8 +874,8 @@ packages:
     peerDependencies:
       temporal-polyfill: ~0.3.0
 
-  '@kthksgy/utilities@0.1.14':
-    resolution: {integrity: sha512-PF5YhW8g9xcDFo6ZPLBtzr2AZp+GjDe2RUBvpewJ17KXKtqBFSD8gpuGPuymyiAo/cA7qGcnBuehjsskiy8gYQ==}
+  '@kthksgy/utilities@0.1.15':
+    resolution: {integrity: sha512-r7EiEL/toZV08kSl4ZFvfzZHtOxndHsQjO4oRuJ8i3rxCQkCfaoE7zNFfI2v9nOp0X/PBFwz0yquwopt7CiJqw==}
     peerDependencies:
       temporal-polyfill: ~0.3.0
 
@@ -1111,9 +1111,6 @@ packages:
 
   '@types/node@20.17.30':
     resolution: {integrity: sha512-7zf4YyHA+jvBNfVrk2Gtvs6x7E8V+YDW05bNfG2XkWDJfYRXrTiP/DsB2zSYTaHX0bGIujTBQdMVAhb+j7mwpg==}
-
-  '@types/node@22.14.1':
-    resolution: {integrity: sha512-u0HuPQwe/dHrItgHHpmw3N2fYCR6x4ivMNbPHRkBVP4CvN+kiRrKHWk3i8tXiO/joPwXLMYvF9TTF0eqgHIuOw==}
 
   '@types/node@22.15.14':
     resolution: {integrity: sha512-BL1eyu/XWsFGTtDWOYULQEs4KR0qdtYfCxYAUYRoB7JP7h9ETYLgQTww6kH8Sj2C0pFGgrpM0XKv6/kbIzYJ1g==}
@@ -2148,8 +2145,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  firebase-admin@13.2.0:
-    resolution: {integrity: sha512-qQBTKo0QWCDaWwISry989pr8YfZSSk00rNCKaucjOgltEm3cCYzEe4rODqBd1uUwma+Iu5jtAzg89Nfsjr3fGg==}
+  firebase-admin@13.3.0:
+    resolution: {integrity: sha512-MFxv86Aw2rjM/TpKwU86jN7YUFfN1jy6mREYZTLL1aW1rCpZFi4c70b9U12J9Xa4RbJkiXpWBAwth9IVSqR91A==}
     engines: {node: '>=18'}
 
   firebase@11.6.0:
@@ -3342,8 +3339,8 @@ packages:
     resolution: {integrity: sha512-OduNjVJsFbifKb57UqZ2EMP1i4u64Xwow3NYXUtBbD4vIwJdQd4+xl8YDou1dlm4DVrtwT/7Ky8z8WyCULVfxw==}
     engines: {node: '>=16'}
 
-  type-fest@4.40.0:
-    resolution: {integrity: sha512-ABHZ2/tS2JkvH1PEjxFDTUWC8dB5OsIGZP4IFLhR293GqT5Y5qB1WwL2kMPYhQW9DVgVD8Hd7I8gjwPIf5GFkw==}
+  type-fest@4.41.0:
+    resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
 
   typed-array-buffer@1.0.3:
@@ -4233,23 +4230,23 @@ snapshots:
   '@js-sdsl/ordered-map@4.4.2':
     optional: true
 
-  '@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)':
+  '@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.41.0)':
     dependencies:
       '@kthksgy/utilities': 0.1.13(temporal-polyfill@0.3.0)
       '@standard-schema/spec': 1.0.0
       temporal-polyfill: 0.3.0
-      type-fest: 4.40.0
+      type-fest: 4.41.0
 
-  '@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.14(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)':
+  '@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.15(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.41.0)':
     dependencies:
-      '@kthksgy/utilities': 0.1.14(temporal-polyfill@0.3.0)
+      '@kthksgy/utilities': 0.1.15(temporal-polyfill@0.3.0)
       '@standard-schema/spec': 1.0.0
       temporal-polyfill: 0.3.0
-      type-fest: 4.40.0
+      type-fest: 4.41.0
 
-  '@kthksgy/firebase-user@0.1.4(@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0))(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
+  '@kthksgy/firebase-user@0.1.4(@kthksgy/firebase-common@0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.41.0))(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(firebase@11.6.0)(temporal-polyfill@0.3.0)':
     dependencies:
-      '@kthksgy/firebase-common': 0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.40.0)
+      '@kthksgy/firebase-common': 0.1.4(@kthksgy/utilities@0.1.13(temporal-polyfill@0.3.0))(@standard-schema/spec@1.0.0)(temporal-polyfill@0.3.0)(type-fest@4.41.0)
       '@kthksgy/utilities': 0.1.13(temporal-polyfill@0.3.0)
       '@standard-schema/spec': 1.0.0
       firebase: 11.6.0
@@ -4259,7 +4256,7 @@ snapshots:
     dependencies:
       temporal-polyfill: 0.3.0
 
-  '@kthksgy/utilities@0.1.14(temporal-polyfill@0.3.0)':
+  '@kthksgy/utilities@0.1.15(temporal-polyfill@0.3.0)':
     dependencies:
       temporal-polyfill: 0.3.0
 
@@ -4466,10 +4463,6 @@ snapshots:
   '@types/node@20.17.30':
     dependencies:
       undici-types: 6.19.8
-
-  '@types/node@22.14.1':
-    dependencies:
-      undici-types: 6.21.0
 
   '@types/node@22.15.14':
     dependencies:
@@ -5562,7 +5555,7 @@ snapshots:
 
   eslint@9.24.0:
     dependencies:
-      '@eslint-community/eslint-utils': 4.6.1(eslint@9.24.0)
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.24.0)
       '@eslint-community/regexpp': 4.12.1
       '@eslint/config-array': 0.20.0
       '@eslint/config-helpers': 0.2.1
@@ -5702,12 +5695,12 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  firebase-admin@13.2.0:
+  firebase-admin@13.3.0:
     dependencies:
       '@fastify/busboy': 3.1.1
       '@firebase/database-compat': 2.0.5
       '@firebase/database-types': 1.0.10
-      '@types/node': 22.14.1
+      '@types/node': 22.15.14
       farmhash-modern: 1.1.0
       google-auth-library: 9.15.1
       jsonwebtoken: 9.0.2
@@ -7111,7 +7104,7 @@ snapshots:
 
   type-fest@4.26.0: {}
 
-  type-fest@4.40.0: {}
+  type-fest@4.41.0: {}
 
   typed-array-buffer@1.0.3:
     dependencies:
