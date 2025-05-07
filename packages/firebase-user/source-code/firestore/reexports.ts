@@ -1,5 +1,6 @@
 import {
   CollectionReference,
+  type DocumentData,
   DocumentReference,
   DocumentSnapshot,
   FieldPath,
@@ -11,6 +12,7 @@ import {
   Timestamp,
   Transaction,
   type TransactionOptions,
+  type Unsubscribe,
   WriteBatch,
   addDoc,
   collection,
@@ -28,6 +30,7 @@ import {
 
 export {
   CollectionReference,
+  type DocumentData,
   DocumentReference,
   DocumentSnapshot,
   FieldPath,
@@ -39,6 +42,7 @@ export {
   Timestamp,
   Transaction,
   type TransactionOptions,
+  type Unsubscribe,
   WriteBatch as Batch,
   addDoc as addDocument,
   collection as createCollectionReference,

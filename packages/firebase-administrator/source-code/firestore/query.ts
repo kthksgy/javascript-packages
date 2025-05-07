@@ -19,6 +19,8 @@ import { Temporal } from "temporal-polyfill";
 import { FieldPath, Query, QuerySnapshot } from "./reexports";
 import { createCollectionGroupReference, createCollectionReference } from "./reference";
 
+export type Unsubscribe = { (): void };
+
 function getFilterConstraints(filters: ReadonlyArray<FilterQueryParameter>) {
   const constraints: Array<
     ReturnType<typeof Filter.and> | ReturnType<typeof Filter.or> | ReturnType<typeof Filter.where>

@@ -1,5 +1,6 @@
 import {
   CollectionReference,
+  type DocumentData,
   DocumentReference,
   DocumentSnapshot,
   FieldPath,
@@ -16,6 +17,7 @@ import {
 
 export {
   CollectionReference,
+  type DocumentData,
   DocumentReference,
   DocumentSnapshot,
   FieldPath,
