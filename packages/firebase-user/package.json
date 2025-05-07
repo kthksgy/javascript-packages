@@ -63,5 +63,5 @@
     "test": "vitest --typecheck"
   },
   "type": "module",
-  "version": "0.1.4-alpha+0"
+  "version": "0.1.5"
 }
