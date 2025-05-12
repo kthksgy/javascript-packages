@@ -26,7 +26,7 @@ export function useDebounced<Data>(
   const isSameReference = useRef(isSame);
   isSameReference.current = isSame;
 
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [previous, setPrevious] = useState(next);
 
   useEffect(

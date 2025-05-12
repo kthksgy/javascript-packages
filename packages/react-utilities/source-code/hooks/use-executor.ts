@@ -47,9 +47,9 @@ export class ExecutorAbort {}
  * @returns ユーティリティオブジェクト
  */
 export function useExecutor(settings?: Partial<ExecutorSettings>) {
-  const debounceTimer = useRef<ReturnType<typeof setTimeout>>();
-  const debounceResolver = useRef<{ resolve: { (value: ExecutorAbort): void } }>();
-  const throttleTimer = useRef<ReturnType<typeof setTimeout>>();
+  const debounceTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const debounceResolver = useRef<{ resolve: { (value: ExecutorAbort): void } }>(undefined);
+  const throttleTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [numberOfExecutions, setNumberOfExecutions] = useState(0);
   const [debouncing, setDebouncing] = useState(false);
   const [throttling, setThrottling] = useState(false);
