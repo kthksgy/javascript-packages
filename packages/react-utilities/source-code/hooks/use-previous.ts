@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * 一つ前の値を取得する。
  * @param next 現在の値
- * @param isSame `authoritative`と`temporary`が等しい場合は`true`を返す比較関数
+ * @param isSame `current`と`next`が等しい場合は`true`を返す比較関数
  * @returns `[temporary, setTemporary, transitioning]`
  *
  * @example
@@ -20,27 +20,18 @@ export function usePrevious<Data>(
   next: Data,
   isSame: { (current: Data, next: Data): boolean } = Object.is,
 ) {
-  const initializedReference = useRef(false);
-  useEffect(function () {
-    initializedReference.current = true;
-  }, []);
-  const initialized = initializedReference.current;
-
   const isSameReference = useRef(isSame);
   isSameReference.current = isSame;
-  const [[previous], setPrevious] = useState<readonly [Data | undefined, Data]>([undefined, next]);
+  const [[previous], setData] = useState<readonly [Data | undefined, Data]>([undefined, next]);
 
   useEffect(
     function () {
-      if (initialized) {
-        return;
-      }
-
-      setPrevious(function ([previous, current]) {
-        return isSameReference.current(current, next) ? [previous, current] : [current, next];
+      setData(function (data) {
+        const [, current] = data;
+        return isSameReference.current(current, next) ? data : [current, next];
       });
     },
-    [next, initialized, previous],
+    [next],
   );
 
   return previous;
