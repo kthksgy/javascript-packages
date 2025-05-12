@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 /**
  * 一つ前の値を取得する。
@@ -20,19 +20,12 @@ export function usePrevious<Data>(
   next: Data,
   isSame: { (current: Data, next: Data): boolean } = Object.is,
 ) {
-  const isSameReference = useRef(isSame);
-  isSameReference.current = isSame;
-  const [[previous], setData] = useState<readonly [Data | undefined, Data]>([undefined, next]);
+  const reference = useRef<readonly [Data | undefined, Data]>([undefined, next]);
 
-  useEffect(
-    function () {
-      setData(function (data) {
-        const [, current] = data;
-        return isSameReference.current(current, next) ? data : [current, next];
-      });
-    },
-    [next],
-  );
+  const current = reference.current[1];
+  if (!isSame(current, next)) {
+    reference.current = [current, next];
+  }
 
-  return previous;
+  return reference.current[0];
 }
