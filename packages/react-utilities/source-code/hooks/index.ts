@@ -10,5 +10,6 @@ export * from "./use-previous";
 export * from "./use-temporary";
 export * from "./use-throttled";
 export * from "./use-now";
+export * from "./use-window-focus";
 export * from "./use-window-height";
 export * from "./use-window-width";
