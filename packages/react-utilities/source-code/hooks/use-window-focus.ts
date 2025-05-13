@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-function getInitialFocus() {
-  return [typeof document !== "undefined" && document.hasFocus(), Date.now()] as const;
+function getFocus() {
+  return typeof document !== "undefined" && document.hasFocus();
 }
 
 /**
@@ -9,18 +9,14 @@ function getInitialFocus() {
  * @returns ウィンドウがフォーカスされている場合、`true`
  */
 export function useWindowFocus() {
-  const [[focus], setFocus] = useState(getInitialFocus);
+  const [focus, setFocus] = useState(getFocus);
 
   useEffect(function () {
-    function blur(event: UIEvent) {
-      setFocus(function (data) {
-        return event.timeStamp >= data[1] ? [false, event.timeStamp] : data;
-      });
+    function blur() {
+      setFocus(false);
     }
-    function focus(event: UIEvent) {
-      setFocus(function (data) {
-        return event.timeStamp >= data[1] ? [true, event.timeStamp] : data;
-      });
+    function focus() {
+      setFocus(true);
     }
 
     window.addEventListener("blur", blur);
