@@ -36,8 +36,7 @@
   "peerDependencies": {
     "@kthksgy/utilities": "^0.1.15",
     "@standard-schema/spec": "^1.0.0",
-    "temporal-polyfill": "~0.3.0",
-    "type-fest": "^4.41.0"
+    "temporal-polyfill": "~0.3.0"
   },
   "repository": {
     "directory": "packages/firebase-common",
@@ -51,5 +50,5 @@
     "test": "vitest --typecheck"
   },
   "type": "module",
-  "version": "0.1.6"
+  "version": "0.1.7-alpha+0"
 }

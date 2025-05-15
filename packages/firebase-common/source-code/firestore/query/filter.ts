@@ -1,5 +1,4 @@
 import { type ObjectUnionIntersection } from "@kthksgy/utilities";
-import { ReadonlyDeep } from "type-fest";
 
 import { QueryParameter } from "./base";
 import { type DocumentData, type DocumentDataSchema, type Path, type Value } from "./types";
@@ -76,15 +75,13 @@ export function createFieldFilterQueryParameter<
   S extends DocumentDataSchema,
   P extends Path<DocumentData<S>>,
   Type extends FieldFilterQueryParameterType,
-  V extends ReadonlyDeep<
-    Type extends "in" | "not-in"
-      ? ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>
-      : Type extends "array-contains"
-        ? Value<ObjectUnionIntersection<DocumentData<S>>, P> extends ReadonlyArray<any>
-          ? Value<ObjectUnionIntersection<DocumentData<S>>, P>[number]
-          : never
-        : Value<ObjectUnionIntersection<DocumentData<S>>, P>
-  >,
+  V extends Type extends "in" | "not-in"
+    ? ReadonlyArray<Value<ObjectUnionIntersection<DocumentData<S>>, P>>
+    : Type extends "array-contains"
+      ? Value<ObjectUnionIntersection<DocumentData<S>>, P> extends ReadonlyArray<any>
+        ? Value<ObjectUnionIntersection<DocumentData<S>>, P>[number]
+        : never
+      : Value<ObjectUnionIntersection<DocumentData<S>>, P>,
 >(_: S | { (..._: Array<any>): S }, path: P, type: Type, value: V) {
   return new FieldFilterQueryParameter(path, type, value);
 }
