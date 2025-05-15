@@ -1,3 +1,17 @@
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface FirestoreModuleAugmentation {}
+
+type FirestoreModule = Omit<
+  {
+    DateTime: Date;
+    Timestamp: Date;
+  },
+  keyof FirestoreModuleAugmentation
+>;
+
+export type DateTime = FirestoreModule["DateTime"];
+export type Timestamp = FirestoreModule["Timestamp"];
+
 /**
  * オブジェクトのプロパティにアクセスする。
  *
@@ -7,7 +21,9 @@
 export type Access<T, P> = P extends "__name__"
   ? string
   : P extends keyof T
-    ? T[P]
+    ? [Extract<T[P], DateTime>] extends [never]
+      ? T[P]
+      : T[P] | Timestamp
     : P extends `${infer K}.${infer R}`
       ? K extends keyof T
         ? Access<NonNullable<Extract<T[K], object>>, R>
