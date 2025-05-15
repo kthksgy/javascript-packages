@@ -240,7 +240,7 @@ function regulateValue<T>(value: T): any {
     return value;
   } else if (value instanceof Temporal.ZonedDateTime) {
     return new Timestamp(
-      value.epochMilliseconds / 1_000,
+      Math.floor(value.epochMilliseconds / 1_000),
       value.millisecond * 1_000_000 + value.microsecond * 1_000 + value.nanosecond,
     );
   } else if (Array.isArray(value)) {
