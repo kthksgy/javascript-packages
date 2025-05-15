@@ -9,8 +9,8 @@ type FirestoreModule = Omit<
   keyof FirestoreModuleAugmentation
 >;
 
-export type DateTime = FirestoreModule["DateTime"];
-export type Timestamp = FirestoreModule["Timestamp"];
+type DateTime = FirestoreModule["DateTime"];
+type Timestamp = FirestoreModule["Timestamp"];
 
 /**
  * オブジェクトのプロパティにアクセスする。
