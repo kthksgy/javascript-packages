@@ -7,6 +7,7 @@ import {
   PageQueryParameter,
   RangeQueryParameter,
 } from "@kthksgy/firebase-common/firestore";
+import { isPlainObject } from "@kthksgy/utilities";
 import {
   DocumentSnapshot,
   FieldPath,
@@ -244,7 +245,7 @@ function regulateValue<T>(value: T): any {
     );
   } else if (Array.isArray(value)) {
     return value.map(regulateValue);
-  } else if (value !== null && typeof value === "object") {
+  } else if (isPlainObject(value)) {
     return Object.fromEntries(
       Object.entries(value).map(function ([key, value]) {
         return [key, regulateValue(value)];
