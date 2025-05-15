@@ -27,6 +27,7 @@ import {
   updateDoc,
   writeBatch,
 } from "firebase/firestore";
+import { Temporal } from "temporal-polyfill";
 
 export {
   CollectionReference,
@@ -58,3 +59,10 @@ export {
   updateDoc as updateDocument,
   writeBatch as createBatch,
 };
+
+declare module "@kthksgy/firebase-common/firestore" {
+  export interface FirestoreModuleAugmentation {
+    DateTime: Temporal.ZonedDateTime;
+    Timestamp: Timestamp;
+  }
+}

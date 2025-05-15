@@ -46,7 +46,7 @@
   "name": "@kthksgy/firebase-administrator",
   "peerDependencies": {
     "@google-cloud/storage": "^7.16.0",
-    "@kthksgy/firebase-common": "^0.1.4",
+    "@kthksgy/firebase-common": "^0.1.5",
     "@kthksgy/utilities": "^0.1.15",
     "@standard-schema/spec": "^1.0.0",
     "firebase-admin": "^13.3.0",
@@ -64,5 +64,5 @@
     "test": "vitest --typecheck"
   },
   "type": "module",
-  "version": "0.1.4"
+  "version": "0.1.5-alpha+0"
 }
