@@ -23,7 +23,7 @@ export type Access<T, P> = P extends "__name__"
   : P extends keyof T
     ? [Extract<T[P], DateTime>] extends [never]
       ? T[P]
-      : T[P] | Timestamp
+      : T[P] | Timestamp // TODO: `DateTime`は除いて`Timestamp`にした方が良いかも。
     : P extends `${infer K}.${infer R}`
       ? K extends keyof T
         ? Access<NonNullable<Extract<T[K], object>>, R>
