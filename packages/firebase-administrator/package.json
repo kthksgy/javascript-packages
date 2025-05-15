@@ -46,10 +46,10 @@
   "name": "@kthksgy/firebase-administrator",
   "peerDependencies": {
     "@google-cloud/storage": "^7.16.0",
-    "@kthksgy/firebase-common": "^0.1.6",
+    "@kthksgy/firebase-common": "^0.1.7",
     "@kthksgy/utilities": "^0.1.15",
     "@standard-schema/spec": "^1.0.0",
-    "firebase-admin": "^13.3.0",
+    "firebase-admin": "^13.4.0",
     "temporal-polyfill": "~0.3.0"
   },
   "repository": {
@@ -64,5 +64,5 @@
     "test": "vitest --typecheck"
   },
   "type": "module",
-  "version": "0.1.5"
+  "version": "0.1.6-alpha+0"
 }
