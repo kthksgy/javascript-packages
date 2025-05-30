@@ -19,6 +19,7 @@ export * from "./remove-prefix";
 export * from "./remove-suffix";
 export * from "./sleep";
 export * from "./to-date-number";
+export * from "./to-date-time-number";
 export * from "./to-duosexagesimal";
 export * from "./to-percent-encoded";
 export * from "./to-time-number";
