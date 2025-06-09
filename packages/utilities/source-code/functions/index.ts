@@ -1,6 +1,7 @@
 export * from "./chunk";
 export * from "./from-bytes-to-binary-string";
 export * from "./from-date-number";
+export * from "./from-date-time-number";
 export * from "./from-percent-encoded";
 export * from "./from-response-to-plain-object";
 export * from "./from-time-number";
