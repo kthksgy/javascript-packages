@@ -47,5 +47,5 @@
   },
   "type": "module",
   "types": "./distributions/types/index.d.ts",
-  "version": "0.1.16-alpha+0"
+  "version": "0.1.16-alpha+1"
 }
