@@ -3,6 +3,7 @@ export * from "./from-bytes-to-binary-string";
 export * from "./from-date-number";
 export * from "./from-date-time-number";
 export * from "./from-duosexagesimal";
+export * from "./from-numbers-to-date-time";
 export * from "./from-percent-encoded";
 export * from "./from-response-to-plain-object";
 export * from "./from-time-number";
