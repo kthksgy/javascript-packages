@@ -1,3 +1,41 @@
+/** 日時番号のモードのビット数 */
+export const DATE_TIME_NUMBER_MODE_BIT_COUNT = 4n;
+/** 日時番号のモードのビットマスク */
+export const DATE_TIME_NUMBER_MODE_BIT_MASK = 0b1111n;
+
+/** 日時番号の年モードのビット */
+export const DATE_TIME_NUMBER_YEAR_MODE = 0;
+/** 日時番号の月モードのビット */
+export const DATE_TIME_NUMBER_MONTH_MODE = 1;
+/** 日時番号の日モードのビット */
+export const DATE_TIME_NUMBER_DAY_MODE = 2;
+/** 日時番号の時モードのビット */
+export const DATE_TIME_NUMBER_HOUR_MODE = 3;
+/** 日時番号の分モードのビット */
+export const DATE_TIME_NUMBER_MINUTE_MODE = 4;
+/** 日時番号の秒モードのビット */
+export const DATE_TIME_NUMBER_SECOND_MODE = 5;
+/** 日時番号のミリ秒モードのビット */
+export const DATE_TIME_NUMBER_MILLISECOND_MODE = 6;
+/** 日時番号のマイクロ秒モードのビット */
+export const DATE_TIME_NUMBER_MICROSECOND_MODE = 7;
+/** 日時番号のナノ秒モードのビット */
+export const DATE_TIME_NUMBER_NANOSECOND_MODE = 8;
+/** 日時番号のピコ秒モードのビット */
+export const DATE_TIME_NUMBER_PICOSECOND_MODE = 9;
+/** 日時番号のフェムト秒モードのビット */
+export const DATE_TIME_NUMBER_FEMTOSECOND_MODE = 10;
+/** 日時番号のアト秒モードのビット */
+export const DATE_TIME_NUMBER_ATTOSECOND_MODE = 11;
+/** 日時番号のゼプト秒モードのビット */
+export const DATE_TIME_NUMBER_ZEPTOSECOND_MODE = 12;
+/** 日時番号のヨクト秒モードのビット */
+export const DATE_TIME_NUMBER_YOCTOSECOND_MODE = 13;
+/** 日時番号のロント秒モードのビット */
+export const DATE_TIME_NUMBER_RONTOSECOND_MODE = 14;
+/** 日時番号のクエクト秒モードのビット */
+export const DATE_TIME_NUMBER_QUECTOSECOND_MODE = 15;
+
 /**
  * 年からクエクト秒までを一つの整数に埋め込み、日時番号を生成する。
  * それぞれを十分なビット数のみ切り出し、分解能が高い部分を下位ビットに割り当てるように結合する。
@@ -68,7 +106,7 @@ export function toDateTimeNumber(
   let n = BigInt(year);
 
   if (month === undefined) {
-    return (n << 4n) | 0n; // 年モード(`0`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_YEAR_MODE);
   }
 
   if (month < 1 || month > 12 || !Number.isSafeInteger(month)) {
@@ -78,7 +116,7 @@ export function toDateTimeNumber(
   n = (n << 4n) | BigInt(month);
 
   if (day === undefined) {
-    return (n << 4n) | 1n; // 月モード(`1`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MONTH_MODE);
   }
 
   if (day < 1 || day > 31 || !Number.isSafeInteger(day)) {
@@ -88,7 +126,7 @@ export function toDateTimeNumber(
   n = (n << 5n) | BigInt(day);
 
   if (hour === undefined) {
-    return (n << 4n) | 2n; // 日モード(`2`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_DAY_MODE);
   }
 
   if (hour < 0 || hour > 23 || !Number.isSafeInteger(hour)) {
@@ -98,7 +136,7 @@ export function toDateTimeNumber(
   n = (n << 5n) | BigInt(hour);
 
   if (minute === undefined) {
-    return (n << 4n) | 3n; // 時モード(`3`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_HOUR_MODE);
   }
 
   if (minute < 0 || minute > 59 || !Number.isSafeInteger(minute)) {
@@ -108,7 +146,7 @@ export function toDateTimeNumber(
   n = (n << 6n) | BigInt(minute);
 
   if (second === undefined) {
-    return (n << 4n) | 4n; // 分モード(`4`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MINUTE_MODE);
   }
 
   if (second < 0 || second > 59 || !Number.isSafeInteger(second)) {
@@ -118,7 +156,7 @@ export function toDateTimeNumber(
   n = (n << 6n) | BigInt(second);
 
   if (millisecond === undefined) {
-    return (n << 4n) | 5n; // 秒モード(`5`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_SECOND_MODE);
   }
 
   if (millisecond < 0 || millisecond > 999 || !Number.isSafeInteger(millisecond)) {
@@ -128,7 +166,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(millisecond);
 
   if (microsecond === undefined) {
-    return (n << 4n) | 6n; // ミリ秒モード(`6`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MILLISECOND_MODE);
   }
 
   if (microsecond < 0 || microsecond > 999 || !Number.isSafeInteger(microsecond)) {
@@ -138,7 +176,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(microsecond);
 
   if (nanosecond === undefined) {
-    return (n << 4n) | 7n; // マイクロ秒モード(`7`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MICROSECOND_MODE);
   }
 
   if (nanosecond < 0 || nanosecond > 999 || !Number.isSafeInteger(nanosecond)) {
@@ -148,7 +186,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(nanosecond);
 
   if (picosecond === undefined) {
-    return (n << 4n) | 8n; // ナノ秒モード(`8`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_NANOSECOND_MODE);
   }
 
   if (picosecond < 0 || picosecond > 999 || !Number.isSafeInteger(picosecond)) {
@@ -158,7 +196,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(picosecond);
 
   if (femtosecond === undefined) {
-    return (n << 4n) | 9n; // ピコ秒モード(`9`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_PICOSECOND_MODE);
   }
 
   if (femtosecond < 0 || femtosecond > 999 || !Number.isSafeInteger(femtosecond)) {
@@ -168,7 +206,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(femtosecond);
 
   if (attosecond === undefined) {
-    return (n << 4n) | 10n; // フェムト秒モード(`10`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_FEMTOSECOND_MODE);
   }
 
   if (attosecond < 0 || attosecond > 999 || !Number.isSafeInteger(attosecond)) {
@@ -178,7 +216,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(attosecond);
 
   if (zeptosecond === undefined) {
-    return (n << 4n) | 11n; // アト秒モード(`11`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_ATTOSECOND_MODE);
   }
 
   if (zeptosecond < 0 || zeptosecond > 999 || !Number.isSafeInteger(zeptosecond)) {
@@ -188,7 +226,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(zeptosecond);
 
   if (yoctosecond === undefined) {
-    return (n << 4n) | 12n; // ゼプト秒モード(`12`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_ZEPTOSECOND_MODE);
   }
 
   if (yoctosecond < 0 || yoctosecond > 999 || !Number.isSafeInteger(yoctosecond)) {
@@ -198,7 +236,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(yoctosecond);
 
   if (rontosecond === undefined) {
-    return (n << 4n) | 13n; // ヨクト秒モード(`13`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_YOCTOSECOND_MODE);
   }
 
   if (rontosecond < 0 || rontosecond > 999 || !Number.isSafeInteger(rontosecond)) {
@@ -208,7 +246,7 @@ export function toDateTimeNumber(
   n = (n << 10n) | BigInt(rontosecond);
 
   if (quectosecond === undefined) {
-    return (n << 4n) | 14n; // ロント秒モード(`14`)の値を返す。
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_RONTOSECOND_MODE);
   }
 
   if (quectosecond < 0 || quectosecond > 999 || !Number.isSafeInteger(quectosecond)) {
@@ -217,7 +255,7 @@ export function toDateTimeNumber(
 
   n = (n << 10n) | BigInt(quectosecond);
 
-  return (n << 4n) | 15n; // クエクト秒モード(`15`)の値を返す。
+  return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_QUECTOSECOND_MODE);
 
   // 分解能ビットが足りないため、これ以上の実装は不可能。
 }

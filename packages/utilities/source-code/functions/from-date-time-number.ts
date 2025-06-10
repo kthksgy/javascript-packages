@@ -1,78 +1,99 @@
-export function fromDateTimeNumber(n: bigint) {
-  const resolutionBits = Number(n & 0b1111n);
-  n = n >> 4n;
+import {
+  DATE_TIME_NUMBER_ATTOSECOND_MODE,
+  DATE_TIME_NUMBER_DAY_MODE,
+  DATE_TIME_NUMBER_FEMTOSECOND_MODE,
+  DATE_TIME_NUMBER_HOUR_MODE,
+  DATE_TIME_NUMBER_MICROSECOND_MODE,
+  DATE_TIME_NUMBER_MILLISECOND_MODE,
+  DATE_TIME_NUMBER_MINUTE_MODE,
+  DATE_TIME_NUMBER_MODE_BIT_COUNT,
+  DATE_TIME_NUMBER_MODE_BIT_MASK,
+  DATE_TIME_NUMBER_MONTH_MODE,
+  DATE_TIME_NUMBER_NANOSECOND_MODE,
+  DATE_TIME_NUMBER_PICOSECOND_MODE,
+  DATE_TIME_NUMBER_QUECTOSECOND_MODE,
+  DATE_TIME_NUMBER_RONTOSECOND_MODE,
+  DATE_TIME_NUMBER_SECOND_MODE,
+  DATE_TIME_NUMBER_YEAR_MODE,
+  DATE_TIME_NUMBER_YOCTOSECOND_MODE,
+  DATE_TIME_NUMBER_ZEPTOSECOND_MODE,
+} from "./to-date-time-number";
 
-  switch (resolutionBits) {
-    case 0: {
-      const year = Number(n);
+export function fromDateTimeNumber(dateTimeNumber: bigint) {
+  const mode = Number(dateTimeNumber & DATE_TIME_NUMBER_MODE_BIT_MASK);
+  dateTimeNumber = dateTimeNumber >> DATE_TIME_NUMBER_MODE_BIT_COUNT;
+
+  switch (mode) {
+    case DATE_TIME_NUMBER_YEAR_MODE: {
+      const year = Number(dateTimeNumber);
       return [year] as const;
     }
-    case 1: {
-      const year = Number(n >> 4n);
-      const month = Number(n & 0b1111n);
+    case DATE_TIME_NUMBER_MONTH_MODE: {
+      const year = Number(dateTimeNumber >> 4n);
+      const month = Number(dateTimeNumber & 0b1111n);
       return [year, month] as const;
     }
-    case 2: {
-      const year = Number(n >> 9n);
-      const month = Number((n >> 5n) & 0b1111n);
-      const day = Number(n & 0b11111n);
+    case DATE_TIME_NUMBER_DAY_MODE: {
+      const year = Number(dateTimeNumber >> 9n);
+      const month = Number((dateTimeNumber >> 5n) & 0b1111n);
+      const day = Number(dateTimeNumber & 0b11111n);
       return [year, month, day] as const;
     }
-    case 3: {
-      const year = Number(n >> 14n);
-      const month = Number((n >> 10n) & 0b1111n);
-      const day = Number((n >> 5n) & 0b11111n);
-      const hour = Number(n & 0b11111n);
+    case DATE_TIME_NUMBER_HOUR_MODE: {
+      const year = Number(dateTimeNumber >> 14n);
+      const month = Number((dateTimeNumber >> 10n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 5n) & 0b11111n);
+      const hour = Number(dateTimeNumber & 0b11111n);
       return [year, month, day, hour] as const;
     }
-    case 4: {
-      const year = Number(n >> 20n);
-      const month = Number((n >> 16n) & 0b1111n);
-      const day = Number((n >> 11n) & 0b11111n);
-      const hour = Number((n >> 6n) & 0b11111n);
-      const minute = Number(n & 0b111111n);
+    case DATE_TIME_NUMBER_MINUTE_MODE: {
+      const year = Number(dateTimeNumber >> 20n);
+      const month = Number((dateTimeNumber >> 16n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 11n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 6n) & 0b11111n);
+      const minute = Number(dateTimeNumber & 0b111111n);
       return [year, month, day, hour, minute] as const;
     }
-    case 5: {
-      const year = Number(n >> 26n);
-      const month = Number((n >> 22n) & 0b1111n);
-      const day = Number((n >> 17n) & 0b11111n);
-      const hour = Number((n >> 12n) & 0b11111n);
-      const minute = Number((n >> 6n) & 0b111111n);
-      const second = Number(n & 0b111111n);
+    case DATE_TIME_NUMBER_SECOND_MODE: {
+      const year = Number(dateTimeNumber >> 26n);
+      const month = Number((dateTimeNumber >> 22n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 17n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 12n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 6n) & 0b111111n);
+      const second = Number(dateTimeNumber & 0b111111n);
       return [year, month, day, hour, minute, second] as const;
     }
-    case 6: {
-      const year = Number(n >> 36n);
-      const month = Number((n >> 32n) & 0b1111n);
-      const day = Number((n >> 27n) & 0b11111n);
-      const hour = Number((n >> 22n) & 0b11111n);
-      const minute = Number((n >> 16n) & 0b111111n);
-      const second = Number((n >> 10n) & 0b111111n);
-      const millisecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_MILLISECOND_MODE: {
+      const year = Number(dateTimeNumber >> 36n);
+      const month = Number((dateTimeNumber >> 32n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 27n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 22n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 16n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 10n) & 0b111111n);
+      const millisecond = Number(dateTimeNumber & 0b1111111111n);
       return [year, month, day, hour, minute, second, millisecond] as const;
     }
-    case 7: {
-      const year = Number(n >> 46n);
-      const month = Number((n >> 42n) & 0b1111n);
-      const day = Number((n >> 37n) & 0b11111n);
-      const hour = Number((n >> 32n) & 0b11111n);
-      const minute = Number((n >> 26n) & 0b111111n);
-      const second = Number((n >> 20n) & 0b111111n);
-      const millisecond = Number((n >> 10n) & 0b1111111111n);
-      const microsecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_MICROSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 46n);
+      const month = Number((dateTimeNumber >> 42n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 37n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 32n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 26n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 20n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const microsecond = Number(dateTimeNumber & 0b1111111111n);
       return [year, month, day, hour, minute, second, millisecond, microsecond] as const;
     }
-    case 8: {
-      const year = Number(n >> 56n);
-      const month = Number((n >> 52n) & 0b1111n);
-      const day = Number((n >> 47n) & 0b11111n);
-      const hour = Number((n >> 42n) & 0b11111n);
-      const minute = Number((n >> 36n) & 0b111111n);
-      const second = Number((n >> 30n) & 0b111111n);
-      const millisecond = Number((n >> 20n) & 0b1111111111n);
-      const microsecond = Number((n >> 10n) & 0b1111111111n);
-      const nanosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_NANOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 56n);
+      const month = Number((dateTimeNumber >> 52n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 47n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 42n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 36n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 30n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const nanosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -85,17 +106,17 @@ export function fromDateTimeNumber(n: bigint) {
         nanosecond,
       ] as const;
     }
-    case 9: {
-      const year = Number(n >> 66n);
-      const month = Number((n >> 62n) & 0b1111n);
-      const day = Number((n >> 57n) & 0b11111n);
-      const hour = Number((n >> 52n) & 0b11111n);
-      const minute = Number((n >> 46n) & 0b111111n);
-      const second = Number((n >> 40n) & 0b111111n);
-      const millisecond = Number((n >> 30n) & 0b1111111111n);
-      const microsecond = Number((n >> 20n) & 0b1111111111n);
-      const nanosecond = Number((n >> 10n) & 0b1111111111n);
-      const picosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_PICOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 66n);
+      const month = Number((dateTimeNumber >> 62n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 57n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 52n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 46n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 40n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 30n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const nanosecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const picosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -109,18 +130,18 @@ export function fromDateTimeNumber(n: bigint) {
         picosecond,
       ] as const;
     }
-    case 10: {
-      const year = Number(n >> 76n);
-      const month = Number((n >> 72n) & 0b1111n);
-      const day = Number((n >> 67n) & 0b11111n);
-      const hour = Number((n >> 62n) & 0b11111n);
-      const minute = Number((n >> 56n) & 0b111111n);
-      const second = Number((n >> 50n) & 0b111111n);
-      const millisecond = Number((n >> 40n) & 0b1111111111n);
-      const microsecond = Number((n >> 30n) & 0b1111111111n);
-      const nanosecond = Number((n >> 20n) & 0b1111111111n);
-      const picosecond = Number((n >> 10n) & 0b1111111111n);
-      const femtosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_FEMTOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 76n);
+      const month = Number((dateTimeNumber >> 72n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 67n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 62n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 56n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 50n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 40n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 30n) & 0b1111111111n);
+      const nanosecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const picosecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const femtosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -135,19 +156,19 @@ export function fromDateTimeNumber(n: bigint) {
         femtosecond,
       ] as const;
     }
-    case 11: {
-      const year = Number(n >> 86n);
-      const month = Number((n >> 82n) & 0b1111n);
-      const day = Number((n >> 77n) & 0b11111n);
-      const hour = Number((n >> 72n) & 0b11111n);
-      const minute = Number((n >> 66n) & 0b111111n);
-      const second = Number((n >> 60n) & 0b111111n);
-      const millisecond = Number((n >> 50n) & 0b1111111111n);
-      const microsecond = Number((n >> 40n) & 0b1111111111n);
-      const nanosecond = Number((n >> 30n) & 0b1111111111n);
-      const picosecond = Number((n >> 20n) & 0b1111111111n);
-      const femtosecond = Number((n >> 10n) & 0b1111111111n);
-      const attosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_ATTOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 86n);
+      const month = Number((dateTimeNumber >> 82n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 77n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 72n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 66n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 60n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 50n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 40n) & 0b1111111111n);
+      const nanosecond = Number((dateTimeNumber >> 30n) & 0b1111111111n);
+      const picosecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const femtosecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const attosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -163,20 +184,20 @@ export function fromDateTimeNumber(n: bigint) {
         attosecond,
       ] as const;
     }
-    case 12: {
-      const year = Number(n >> 96n);
-      const month = Number((n >> 92n) & 0b1111n);
-      const day = Number((n >> 87n) & 0b11111n);
-      const hour = Number((n >> 82n) & 0b11111n);
-      const minute = Number((n >> 76n) & 0b111111n);
-      const second = Number((n >> 70n) & 0b111111n);
-      const millisecond = Number((n >> 60n) & 0b1111111111n);
-      const microsecond = Number((n >> 50n) & 0b1111111111n);
-      const nanosecond = Number((n >> 40n) & 0b1111111111n);
-      const picosecond = Number((n >> 30n) & 0b1111111111n);
-      const femtosecond = Number((n >> 20n) & 0b1111111111n);
-      const attosecond = Number((n >> 10n) & 0b1111111111n);
-      const zeptosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_ZEPTOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 96n);
+      const month = Number((dateTimeNumber >> 92n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 87n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 82n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 76n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 70n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 60n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 50n) & 0b1111111111n);
+      const nanosecond = Number((dateTimeNumber >> 40n) & 0b1111111111n);
+      const picosecond = Number((dateTimeNumber >> 30n) & 0b1111111111n);
+      const femtosecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const attosecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const zeptosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -193,21 +214,21 @@ export function fromDateTimeNumber(n: bigint) {
         zeptosecond,
       ] as const;
     }
-    case 13: {
-      const year = Number(n >> 106n);
-      const month = Number((n >> 102n) & 0b1111n);
-      const day = Number((n >> 97n) & 0b11111n);
-      const hour = Number((n >> 92n) & 0b11111n);
-      const minute = Number((n >> 86n) & 0b111111n);
-      const second = Number((n >> 80n) & 0b111111n);
-      const millisecond = Number((n >> 70n) & 0b1111111111n);
-      const microsecond = Number((n >> 60n) & 0b1111111111n);
-      const nanosecond = Number((n >> 50n) & 0b1111111111n);
-      const picosecond = Number((n >> 40n) & 0b1111111111n);
-      const femtosecond = Number((n >> 30n) & 0b1111111111n);
-      const attosecond = Number((n >> 20n) & 0b1111111111n);
-      const zeptosecond = Number((n >> 10n) & 0b1111111111n);
-      const yoctosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_YOCTOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 106n);
+      const month = Number((dateTimeNumber >> 102n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 97n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 92n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 86n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 80n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 70n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 60n) & 0b1111111111n);
+      const nanosecond = Number((dateTimeNumber >> 50n) & 0b1111111111n);
+      const picosecond = Number((dateTimeNumber >> 40n) & 0b1111111111n);
+      const femtosecond = Number((dateTimeNumber >> 30n) & 0b1111111111n);
+      const attosecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const zeptosecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const yoctosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -225,22 +246,22 @@ export function fromDateTimeNumber(n: bigint) {
         yoctosecond,
       ] as const;
     }
-    case 14: {
-      const year = Number(n >> 116n);
-      const month = Number((n >> 112n) & 0b1111n);
-      const day = Number((n >> 107n) & 0b11111n);
-      const hour = Number((n >> 102n) & 0b11111n);
-      const minute = Number((n >> 96n) & 0b111111n);
-      const second = Number((n >> 90n) & 0b111111n);
-      const millisecond = Number((n >> 80n) & 0b1111111111n);
-      const microsecond = Number((n >> 70n) & 0b1111111111n);
-      const nanosecond = Number((n >> 60n) & 0b1111111111n);
-      const picosecond = Number((n >> 50n) & 0b1111111111n);
-      const femtosecond = Number((n >> 40n) & 0b1111111111n);
-      const attosecond = Number((n >> 30n) & 0b1111111111n);
-      const zeptosecond = Number((n >> 20n) & 0b1111111111n);
-      const yoctosecond = Number((n >> 10n) & 0b1111111111n);
-      const rontosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_RONTOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 116n);
+      const month = Number((dateTimeNumber >> 112n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 107n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 102n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 96n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 90n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 80n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 70n) & 0b1111111111n);
+      const nanosecond = Number((dateTimeNumber >> 60n) & 0b1111111111n);
+      const picosecond = Number((dateTimeNumber >> 50n) & 0b1111111111n);
+      const femtosecond = Number((dateTimeNumber >> 40n) & 0b1111111111n);
+      const attosecond = Number((dateTimeNumber >> 30n) & 0b1111111111n);
+      const zeptosecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const yoctosecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const rontosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -259,23 +280,23 @@ export function fromDateTimeNumber(n: bigint) {
         rontosecond,
       ] as const;
     }
-    case 15: {
-      const year = Number(n >> 126n);
-      const month = Number((n >> 122n) & 0b1111n);
-      const day = Number((n >> 117n) & 0b11111n);
-      const hour = Number((n >> 112n) & 0b11111n);
-      const minute = Number((n >> 106n) & 0b111111n);
-      const second = Number((n >> 100n) & 0b111111n);
-      const millisecond = Number((n >> 90n) & 0b1111111111n);
-      const microsecond = Number((n >> 80n) & 0b1111111111n);
-      const nanosecond = Number((n >> 70n) & 0b1111111111n);
-      const picosecond = Number((n >> 60n) & 0b1111111111n);
-      const femtosecond = Number((n >> 50n) & 0b1111111111n);
-      const attosecond = Number((n >> 40n) & 0b1111111111n);
-      const zeptosecond = Number((n >> 30n) & 0b1111111111n);
-      const yoctosecond = Number((n >> 20n) & 0b1111111111n);
-      const rontosecond = Number((n >> 10n) & 0b1111111111n);
-      const quectosecond = Number(n & 0b1111111111n);
+    case DATE_TIME_NUMBER_QUECTOSECOND_MODE: {
+      const year = Number(dateTimeNumber >> 126n);
+      const month = Number((dateTimeNumber >> 122n) & 0b1111n);
+      const day = Number((dateTimeNumber >> 117n) & 0b11111n);
+      const hour = Number((dateTimeNumber >> 112n) & 0b11111n);
+      const minute = Number((dateTimeNumber >> 106n) & 0b111111n);
+      const second = Number((dateTimeNumber >> 100n) & 0b111111n);
+      const millisecond = Number((dateTimeNumber >> 90n) & 0b1111111111n);
+      const microsecond = Number((dateTimeNumber >> 80n) & 0b1111111111n);
+      const nanosecond = Number((dateTimeNumber >> 70n) & 0b1111111111n);
+      const picosecond = Number((dateTimeNumber >> 60n) & 0b1111111111n);
+      const femtosecond = Number((dateTimeNumber >> 50n) & 0b1111111111n);
+      const attosecond = Number((dateTimeNumber >> 40n) & 0b1111111111n);
+      const zeptosecond = Number((dateTimeNumber >> 30n) & 0b1111111111n);
+      const yoctosecond = Number((dateTimeNumber >> 20n) & 0b1111111111n);
+      const rontosecond = Number((dateTimeNumber >> 10n) & 0b1111111111n);
+      const quectosecond = Number(dateTimeNumber & 0b1111111111n);
       return [
         year,
         month,
@@ -296,7 +317,7 @@ export function fromDateTimeNumber(n: bigint) {
       ] as const;
     }
     default: {
-      throw new TypeError(`解像度ビット『${resolutionBits.toString(2)}』は無効です。`);
+      throw new TypeError(`日時番号のモード『${mode}(${mode.toString(2)})』は無効です。`);
     }
   }
 }
