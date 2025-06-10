@@ -19,7 +19,7 @@ import { toTimeNumber } from "./to-time-number";
  *
  * 先頭はランダム文字列であるため、シャーディングするデータベースのキーとしても使用出来る。
  * @param randomStringLength ランダム文字列の長さ
- * @returns ユニーク文字列(`randomStringLength` + `8`+ `2~`文字)
+ * @returns ユニーク文字列(`randomStringLength` + `8` + `2~`文字)
  */
 export function generateUniqueString(randomStringLength = 14) {
   /** 現在の日時(協定世界時) */
