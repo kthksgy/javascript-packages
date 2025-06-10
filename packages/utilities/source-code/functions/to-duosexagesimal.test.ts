@@ -22,6 +22,15 @@ describe(`${toDuosexagesimal.name}()`, function () {
     [3521614606208, "10000000"],
     [218340105584895, "zzzzzzzz"],
     [218340105584896, "100000000"],
+  ])("[%#] number型の範囲の`%d`を`%s`に変換できる", function (decimal, duosexagesimal) {
+    const result1 = toDuosexagesimal(decimal);
+    const result2 = toDuosexagesimal(BigInt(decimal));
+    expect(result1).toBe(duosexagesimal);
+    expect(result2).toBe(duosexagesimal);
+    expect(result1).toBe(result2);
+  });
+
+  test.each([
     [13537086546263551n, "zzzzzzzzz"],
     [13537086546263552n, "1000000000"],
     [839299365868340223n, "zzzzzzzzzz"],
@@ -332,18 +341,8 @@ describe(`${toDuosexagesimal.name}()`, function () {
       5164973859965249179065154939717494269947658426266553960878244596268481614842987330263563657801857314603738370932736n,
       "10000000000000000000000000000000000000000000000000000000000000000",
     ],
-  ])("[%#] `%d`を`%s`に変換できる", function (decimal, duosexagesimal) {
-    if (BigInt(decimal) > BigInt(Number.MAX_SAFE_INTEGER)) {
-      expect(toDuosexagesimal(decimal)).toBe(duosexagesimal);
-    } else {
-      // `number`型の範囲では`number`版と`bigint`版の結果が
-      // 同じになることも確認する。
-      const result1 = toDuosexagesimal(decimal);
-      const result2 = toDuosexagesimal(BigInt(decimal));
-      expect(result1).toBe(duosexagesimal);
-      expect(result2).toBe(duosexagesimal);
-      expect(result1).toBe(result2);
-    }
+  ])("[%#] bigint型の`%d`を`%s`に変換できる", function (decimal, duosexagesimal) {
+    expect(toDuosexagesimal(decimal)).toBe(duosexagesimal);
   });
 
   test("`Number.MAX_SAFE_INTEGER(9007199254740991)`を入力できる", function () {

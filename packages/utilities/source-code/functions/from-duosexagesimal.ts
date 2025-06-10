@@ -4,7 +4,7 @@
  * @returns 10進数
  */
 export function fromDuosexagesimal(duosexagesimal: string) {
-  if (duosexagesimal.length < 9 || duosexagesimal <= "fFgnDxSe7") {
+  if (duosexagesimal.length < 9 || (duosexagesimal.length === 9 && duosexagesimal <= "fFgnDxSe7")) {
     let decimal = 0;
     for (let i = 0; i < duosexagesimal.length; i++) {
       const character = duosexagesimal.charCodeAt(i);
