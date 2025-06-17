@@ -19,9 +19,17 @@ import {
   DATE_TIME_NUMBER_ZEPTOSECOND_MODE,
 } from "./to-date-time-number";
 
-export function fromDateTimeNumber(dateTimeNumber: bigint) {
-  const mode = Number(dateTimeNumber & DATE_TIME_NUMBER_MODE_BIT_MASK);
-  dateTimeNumber = dateTimeNumber >> DATE_TIME_NUMBER_MODE_BIT_COUNT;
+/**
+ * 日時番号を日時の要素に分解する。
+ * @param dateTimeNumber 日時番号
+ * @param mode `toDateTimeNumber`で最後の引数に`null`を指定した場合は日時番号のモードを明示的に指定する。
+ * @returns 日時の要素のタプル
+ */
+export function fromDateTimeNumber(dateTimeNumber: bigint, mode?: number) {
+  if (mode === undefined) {
+    mode = Number(dateTimeNumber & DATE_TIME_NUMBER_MODE_BIT_MASK);
+    dateTimeNumber = dateTimeNumber >> DATE_TIME_NUMBER_MODE_BIT_COUNT;
+  }
 
   switch (mode) {
     case DATE_TIME_NUMBER_YEAR_MODE: {

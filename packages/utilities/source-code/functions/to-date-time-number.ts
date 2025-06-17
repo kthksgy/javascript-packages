@@ -40,6 +40,7 @@ export const DATE_TIME_NUMBER_QUECTOSECOND_MODE = 15;
  * 年からクエクト秒までを一つの整数に埋め込み、日時番号を生成する。
  * それぞれを十分なビット数のみ切り出し、分解能が高い部分を下位ビットに割り当てるように結合する。
  * 可変長となるため、最下位ビットを含む4ビットに日時の分解能を埋め込む。
+ * 最後の引数として`null`を指定すると、分解能の埋め込みを省略する。
  * @param year 年`[0, ]`(1bit以上)
  * @param month 月`[1, 12]`(4bit)
  * @param day 日`[1, 31]`(5bit)
@@ -56,6 +57,7 @@ export const DATE_TIME_NUMBER_QUECTOSECOND_MODE = 15;
  * @param yoctosecond ヨクト秒`[0, 999]`(10bit)
  * @param rontosecond ロント秒`[0, 999]`(10bit)
  * @param quectosecond クエクト秒`[0, 999]`(10bit)
+ * @param _ 予約パラメーター
  * @returns 日時番号
  *
  * @example
@@ -83,21 +85,22 @@ export const DATE_TIME_NUMBER_QUECTOSECOND_MODE = 15;
  */
 export function toDateTimeNumber(
   year: number,
-  month?: number,
-  day?: number,
-  hour?: number,
-  minute?: number,
-  second?: number,
-  millisecond?: number,
-  microsecond?: number,
-  nanosecond?: number,
-  picosecond?: number,
-  femtosecond?: number,
-  attosecond?: number,
-  zeptosecond?: number,
-  yoctosecond?: number,
-  rontosecond?: number,
-  quectosecond?: number,
+  month?: number | null,
+  day?: number | null,
+  hour?: number | null,
+  minute?: number | null,
+  second?: number | null,
+  millisecond?: number | null,
+  microsecond?: number | null,
+  nanosecond?: number | null,
+  picosecond?: number | null,
+  femtosecond?: number | null,
+  attosecond?: number | null,
+  zeptosecond?: number | null,
+  yoctosecond?: number | null,
+  rontosecond?: number | null,
+  quectosecond?: number | null,
+  _?: null,
 ) {
   if (year < 0 || !Number.isSafeInteger(year)) {
     throw new TypeError(`'year = ${year}'は'0'以上の整数ではありません。`);
@@ -107,9 +110,9 @@ export function toDateTimeNumber(
 
   if (month === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_YEAR_MODE);
-  }
-
-  if (month < 1 || month > 12 || !Number.isSafeInteger(month)) {
+  } else if (month === null) {
+    return n;
+  } else if (month < 1 || month > 12 || !Number.isSafeInteger(month)) {
     throw new TypeError(`'month = ${month}'は'1'以上'12'以下の整数ではありません。`);
   }
 
@@ -117,9 +120,9 @@ export function toDateTimeNumber(
 
   if (day === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MONTH_MODE);
-  }
-
-  if (day < 1 || day > 31 || !Number.isSafeInteger(day)) {
+  } else if (day === null) {
+    return n;
+  } else if (day < 1 || day > 31 || !Number.isSafeInteger(day)) {
     throw new TypeError(`'day = ${day}'は'1'以上'31'以下の整数ではありません。`);
   }
 
@@ -127,9 +130,9 @@ export function toDateTimeNumber(
 
   if (hour === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_DAY_MODE);
-  }
-
-  if (hour < 0 || hour > 23 || !Number.isSafeInteger(hour)) {
+  } else if (hour === null) {
+    return n;
+  } else if (hour < 0 || hour > 23 || !Number.isSafeInteger(hour)) {
     throw new TypeError(`'hour = ${hour}'は'0'以上'23'以下の整数ではありません。`);
   }
 
@@ -137,9 +140,9 @@ export function toDateTimeNumber(
 
   if (minute === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_HOUR_MODE);
-  }
-
-  if (minute < 0 || minute > 59 || !Number.isSafeInteger(minute)) {
+  } else if (minute === null) {
+    return n;
+  } else if (minute < 0 || minute > 59 || !Number.isSafeInteger(minute)) {
     throw new TypeError(`'minute = ${minute}'は'0'以上'59'以下の整数ではありません。`);
   }
 
@@ -147,9 +150,9 @@ export function toDateTimeNumber(
 
   if (second === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MINUTE_MODE);
-  }
-
-  if (second < 0 || second > 59 || !Number.isSafeInteger(second)) {
+  } else if (second === null) {
+    return n;
+  } else if (second < 0 || second > 59 || !Number.isSafeInteger(second)) {
     throw new TypeError(`'second = ${second}'は'0'以上'59'以下の整数ではありません。`);
   }
 
@@ -157,9 +160,9 @@ export function toDateTimeNumber(
 
   if (millisecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_SECOND_MODE);
-  }
-
-  if (millisecond < 0 || millisecond > 999 || !Number.isSafeInteger(millisecond)) {
+  } else if (millisecond === null) {
+    return n;
+  } else if (millisecond < 0 || millisecond > 999 || !Number.isSafeInteger(millisecond)) {
     throw new TypeError(`'millisecond = ${millisecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -167,9 +170,9 @@ export function toDateTimeNumber(
 
   if (microsecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MILLISECOND_MODE);
-  }
-
-  if (microsecond < 0 || microsecond > 999 || !Number.isSafeInteger(microsecond)) {
+  } else if (microsecond === null) {
+    return n;
+  } else if (microsecond < 0 || microsecond > 999 || !Number.isSafeInteger(microsecond)) {
     throw new TypeError(`'microsecond = ${microsecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -177,9 +180,9 @@ export function toDateTimeNumber(
 
   if (nanosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_MICROSECOND_MODE);
-  }
-
-  if (nanosecond < 0 || nanosecond > 999 || !Number.isSafeInteger(nanosecond)) {
+  } else if (nanosecond === null) {
+    return n;
+  } else if (nanosecond < 0 || nanosecond > 999 || !Number.isSafeInteger(nanosecond)) {
     throw new TypeError(`'nanosecond = ${nanosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -187,9 +190,9 @@ export function toDateTimeNumber(
 
   if (picosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_NANOSECOND_MODE);
-  }
-
-  if (picosecond < 0 || picosecond > 999 || !Number.isSafeInteger(picosecond)) {
+  } else if (picosecond === null) {
+    return n;
+  } else if (picosecond < 0 || picosecond > 999 || !Number.isSafeInteger(picosecond)) {
     throw new TypeError(`'picosecond = ${picosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -197,9 +200,9 @@ export function toDateTimeNumber(
 
   if (femtosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_PICOSECOND_MODE);
-  }
-
-  if (femtosecond < 0 || femtosecond > 999 || !Number.isSafeInteger(femtosecond)) {
+  } else if (femtosecond === null) {
+    return n;
+  } else if (femtosecond < 0 || femtosecond > 999 || !Number.isSafeInteger(femtosecond)) {
     throw new TypeError(`'femtosecond = ${femtosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -207,9 +210,9 @@ export function toDateTimeNumber(
 
   if (attosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_FEMTOSECOND_MODE);
-  }
-
-  if (attosecond < 0 || attosecond > 999 || !Number.isSafeInteger(attosecond)) {
+  } else if (attosecond === null) {
+    return n;
+  } else if (attosecond < 0 || attosecond > 999 || !Number.isSafeInteger(attosecond)) {
     throw new TypeError(`'attosecond = ${attosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -217,9 +220,9 @@ export function toDateTimeNumber(
 
   if (zeptosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_ATTOSECOND_MODE);
-  }
-
-  if (zeptosecond < 0 || zeptosecond > 999 || !Number.isSafeInteger(zeptosecond)) {
+  } else if (zeptosecond === null) {
+    return n;
+  } else if (zeptosecond < 0 || zeptosecond > 999 || !Number.isSafeInteger(zeptosecond)) {
     throw new TypeError(`'zeptosecond = ${zeptosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -227,9 +230,9 @@ export function toDateTimeNumber(
 
   if (yoctosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_ZEPTOSECOND_MODE);
-  }
-
-  if (yoctosecond < 0 || yoctosecond > 999 || !Number.isSafeInteger(yoctosecond)) {
+  } else if (yoctosecond === null) {
+    return n;
+  } else if (yoctosecond < 0 || yoctosecond > 999 || !Number.isSafeInteger(yoctosecond)) {
     throw new TypeError(`'yoctosecond = ${yoctosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -237,9 +240,9 @@ export function toDateTimeNumber(
 
   if (rontosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_YOCTOSECOND_MODE);
-  }
-
-  if (rontosecond < 0 || rontosecond > 999 || !Number.isSafeInteger(rontosecond)) {
+  } else if (rontosecond === null) {
+    return n;
+  } else if (rontosecond < 0 || rontosecond > 999 || !Number.isSafeInteger(rontosecond)) {
     throw new TypeError(`'rontosecond = ${rontosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
@@ -247,15 +250,19 @@ export function toDateTimeNumber(
 
   if (quectosecond === undefined) {
     return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_RONTOSECOND_MODE);
-  }
-
-  if (quectosecond < 0 || quectosecond > 999 || !Number.isSafeInteger(quectosecond)) {
+  } else if (quectosecond === null) {
+    return n;
+  } else if (quectosecond < 0 || quectosecond > 999 || !Number.isSafeInteger(quectosecond)) {
     throw new TypeError(`'quectosecond = ${quectosecond}'は'0'以上'999'以下の整数ではありません。`);
   }
 
   n = (n << 10n) | BigInt(quectosecond);
 
-  return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_QUECTOSECOND_MODE);
+  if (_ === null) {
+    return n;
+  } else {
+    return (n << DATE_TIME_NUMBER_MODE_BIT_COUNT) | BigInt(DATE_TIME_NUMBER_QUECTOSECOND_MODE);
+  }
 
   // 分解能ビットが足りないため、これ以上の実装は不可能。
 }
