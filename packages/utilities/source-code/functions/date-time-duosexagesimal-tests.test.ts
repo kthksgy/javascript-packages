@@ -36,6 +36,16 @@ describe("日時六十二進数のテスト", function () {
     expect(toDuosexagesimal(toDateTimeNumber(52476, 2, 11, 7, 0, 0, null)).length).toEqual(8);
   });
 
+  test("モードビットを省略した分までの日時六十二進数の6文字の上限値", function () {
+    expect(toDuosexagesimal(toDateTimeNumber(54168, 12, 31, 23, 59, null)).length).toEqual(6);
+    expect(toDuosexagesimal(toDateTimeNumber(54169, 1, 1, 0, 0, null)).length).toEqual(7);
+  });
+
+  test("モードビットを省略した時までの日時六十二進数の5文字の上限値", function () {
+    expect(toDuosexagesimal(toDateTimeNumber(55916, 4, 30, 23, null)).length).toEqual(5);
+    expect(toDuosexagesimal(toDateTimeNumber(55916, 5, 1, 0, null)).length).toEqual(6);
+  });
+
   test("モードビットを省略した日までの日時六十二進数の4文字の上限値", function () {
     expect(toDuosexagesimal(toDateTimeNumber(28859, 12, 31, null)).length).toEqual(4);
     expect(toDuosexagesimal(toDateTimeNumber(28860, 1, 1, null)).length).toEqual(5);
