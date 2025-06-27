@@ -196,8 +196,6 @@ export class UniversalError<Code extends string = string> extends Error {
 export interface UniversalErrorOptions extends ErrorOptions {
   /** 日時 */
   dateTime?: Temporal.ZonedDateTime;
-  /** メモランダム(共有可能なメッセージ) */
-  memorandum?: string;
   /**
    * **メッセージ**
    * 指定されていない場合、自動で`message1`または`message2`が代わりに指定される。
