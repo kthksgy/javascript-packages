@@ -6,9 +6,9 @@ export * from "./naming-convention";
 export * from "./temporal";
 export * from "./text-template";
 export * from "./types";
-export * from "./universal-error";
 
 export * from "./compare-versions";
+export * from "./container";
 export * from "./count-graphemes";
 export * from "./create-promise";
 export * from "./filter-iterator";
@@ -21,3 +21,4 @@ export * from "./parse-version-string";
 export * from "./pull-from-and-push-to-map";
 export * from "./pull-from-and-push-to-set";
 export * from "./semaphore";
+export * from "./universal-error";

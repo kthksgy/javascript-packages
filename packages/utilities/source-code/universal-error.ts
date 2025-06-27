@@ -41,8 +41,12 @@ export class UniversalError<Code extends string = string> extends Error {
   code: Code;
   /** 日時 */
   dateTime: Temporal.ZonedDateTime;
-  /** メモランダム(共有可能なメッセージ) */
-  memorandum?: string;
+  /**
+   * **メッセージ2**
+   * 用途は決まっていないが、`message1`には開発者向けのメッセージを、
+   * `message2`には利用者向けのメッセージを指定するような使い方を想定している。
+   */
+  message2?: string;
   /**
    * #### プロパティ
    * このユニバーサルエラー固有の情報を持つためのフィールド。
@@ -51,11 +55,11 @@ export class UniversalError<Code extends string = string> extends Error {
   properties?: UniversalErrorProperties;
 
   constructor(code: Code, options?: UniversalErrorOptions) {
-    super(options?.message ?? options?.memorandum, options);
+    super(options?.message ?? options?.message1 ?? options?.message2, options);
 
     this.code = code;
     this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
-    this.memorandum = options?.memorandum;
+    this.message2 = options?.message2;
     this.properties = options?.properties;
 
     this.name = "UniversalError[" + this.code + "]";
@@ -86,24 +90,38 @@ export class UniversalError<Code extends string = string> extends Error {
     return Array.from(causes).reverse();
   }
 
+  /**
+   * **メッセージ1**
+   * 通常のエラーメッセージ。`this.message`と同じ。
+   * `message2`と違い、開発者向けのメッセージを想定している。
+   */
+  get message1() {
+    return this.message;
+  }
+  set message1(message: string) {
+    this.message = message;
+  }
+
   toJSON() {
     return {
       code: this.code,
       dateTime: this.dateTime.toString(), // `Temporal.ZonedDateTime`は`.toJSON()`が実装されている。
-      memorandum: this.memorandum, // メモランダムは存在しない場合がある。
+      // `message1`には秘匿情報が含まれる可能性があるため、標準のJSON化処理には含めない。
+      // message1: this.message1,
+      message2: this.message2, // メモランダムは存在しない場合がある。
       properties: this.properties, // プロパティは存在しない場合がある。
     };
   }
 
-  toObject() {
-    return this.toJSON();
+  toObject(secure = false) {
+    return secure ? { ...this.toJSON(), message1: this.message1 } : this.toJSON();
   }
 
   toString() {
     return (
       this.name +
-      (this.message ? ": " + this.message : "") +
-      (this.memorandum ? " " + this.memorandum : "") +
+      (this.message1 ? ": " + this.message1 : "") +
+      (this.message2 && this.message2 !== this.message1 ? " " + this.message2 : "") +
       (this.properties ? " " + JSON.stringify(this.properties) : "") +
       " @ " +
       this.dateTime.toString()
@@ -139,13 +157,13 @@ export class UniversalError<Code extends string = string> extends Error {
       });
     }
 
-    let memorandum;
-    if (Object.hasOwn(object, "memorandum")) {
-      memorandum = object.memorandum;
-      if (typeof memorandum !== "string") {
+    let message2;
+    if (Object.hasOwn(object, "message2")) {
+      message2 = object.message2;
+      if (typeof message2 !== "string") {
         throw new UniversalError(UniversalError.DEFAULT_CODE, {
-          cause: object.memorandum,
-          message: `メモランダム"${JSON.stringify(object.memorandum)}"が文字列ではありません。`,
+          cause: object.message2,
+          message: `メモランダム"${JSON.stringify(object.message2)}"が文字列ではありません。`,
         });
       }
     }
@@ -168,7 +186,7 @@ export class UniversalError<Code extends string = string> extends Error {
       }
     }
 
-    return new UniversalError(code, { dateTime, memorandum, properties });
+    return new UniversalError(code, { dateTime, message2, properties });
   }
 }
 
@@ -180,8 +198,20 @@ export interface UniversalErrorOptions extends ErrorOptions {
   dateTime?: Temporal.ZonedDateTime;
   /** メモランダム(共有可能なメッセージ) */
   memorandum?: string;
-  /** メッセージ */
+  /**
+   * **メッセージ**
+   * 指定されていない場合、自動で`message1`または`message2`が代わりに指定される。
+   */
   message?: string;
+  /**
+   * **メッセージ1**
+   * 標準のエラーメッセージ(`Error.message`)と同じ。
+   * `message`が指定されている場合、無視される。
+   * 指定されていない場合、自動で`message2`が代わりに指定される。
+   */
+  message1?: string;
+  /** メッセージ2 */
+  message2?: string;
   /** プロパティ */
   properties?: UniversalErrorProperties;
 }
