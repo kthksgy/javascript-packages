@@ -48,11 +48,16 @@ export class UniversalError<Code extends string = string> extends Error {
    */
   message2?: string;
   /**
-   * #### プロパティ
+   * **プロパティ1**
+   * このユニバーサルエラー固有の情報を持つためのフィールド。
+   */
+  properties1?: UniversalErrorProperties;
+  /**
+   * **プロパティ2**
    * このユニバーサルエラー固有の情報を持つためのフィールド。
    * 一般ユーザーに対しても公開される可能性があるため、秘密情報は含めない。
    */
-  properties?: UniversalErrorProperties;
+  properties2?: UniversalErrorProperties;
 
   constructor(code: Code, options?: UniversalErrorOptions) {
     super(options?.message ?? options?.message1 ?? options?.message2, options);
@@ -60,7 +65,8 @@ export class UniversalError<Code extends string = string> extends Error {
     this.code = code;
     this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
     this.message2 = options?.message2;
-    this.properties = options?.properties;
+    this.properties1 = options?.properties1 ?? options?.properties2;
+    this.properties2 = options?.properties2;
 
     this.name = "UniversalError[" + this.code + "]";
     this.stack = concatenateStacks(this, options?.cause);
@@ -109,12 +115,16 @@ export class UniversalError<Code extends string = string> extends Error {
       // `message1`には秘匿情報が含まれる可能性があるため、標準のJSON化処理には含めない。
       // message1: this.message1,
       message2: this.message2, // メモランダムは存在しない場合がある。
-      properties: this.properties, // プロパティは存在しない場合がある。
+      // `properties1`には秘匿情報が含まれる可能性があるため、標準のJSON化処理には含めない。
+      // properties1: this.properties1,
+      properties2: this.properties2, // プロパティは存在しない場合がある。
     };
   }
 
   toObject(secure = false) {
-    return secure ? { ...this.toJSON(), message1: this.message1 } : this.toJSON();
+    return secure
+      ? { ...this.toJSON(), message1: this.message1, properties1: this.properties1 }
+      : this.toJSON();
   }
 
   toString() {
@@ -122,7 +132,10 @@ export class UniversalError<Code extends string = string> extends Error {
       this.name +
       (this.message1 ? ": " + this.message1 : "") +
       (this.message2 && this.message2 !== this.message1 ? " " + this.message2 : "") +
-      (this.properties ? " " + JSON.stringify(this.properties) : "") +
+      (this.properties1 ? " " + JSON.stringify(this.properties1) : "") +
+      (this.properties2 && this.properties2 !== this.properties1
+        ? " " + JSON.stringify(this.properties2)
+        : "") +
       " @ " +
       this.dateTime.toString()
     );
@@ -157,36 +170,65 @@ export class UniversalError<Code extends string = string> extends Error {
       });
     }
 
+    let message1;
+    if ("message1" in object) {
+      message1 = object.message1;
+      if (typeof message1 !== "string") {
+        return new UniversalError(UniversalError.DEFAULT_CODE, {
+          cause: object.message1,
+          message: `メッセージ1"${JSON.stringify(object.message1)}"が文字列ではありません。`,
+        });
+      }
+    }
+
     let message2;
     if (Object.hasOwn(object, "message2")) {
       message2 = object.message2;
       if (typeof message2 !== "string") {
         throw new UniversalError(UniversalError.DEFAULT_CODE, {
           cause: object.message2,
-          message: `メモランダム"${JSON.stringify(object.message2)}"が文字列ではありません。`,
+          message: `メッセージ2"${JSON.stringify(object.message2)}"が文字列ではありません。`,
         });
       }
     }
 
-    let properties;
-    if (Object.hasOwn(object, "properties")) {
+    let properties1;
+    if ("properties1" in object) {
       try {
-        properties = JSON.parse(JSON.stringify(object.properties));
+        properties1 = JSON.parse(JSON.stringify(object.properties1));
       } catch (error) {
         return new UniversalError(UniversalError.DEFAULT_CODE, {
           cause: error,
-          message: `プロパティ"${JSON.stringify(object.properties)}"が不正です。`,
+          message: `プロパティ"${JSON.stringify(object.properties1)}"が不正です。`,
         });
       }
-      if (properties === null || typeof properties !== "object") {
+      if (properties1 === null || typeof properties1 !== "object") {
         return new UniversalError(UniversalError.DEFAULT_CODE, {
-          cause: object.properties,
-          message: `プロパティ"${JSON.stringify(object.properties)}"がオブジェクトではありません。`,
+          cause: object.properties1,
+          message: `プロパティ"${JSON.stringify(object.properties1)}"がオブジェクトではありません。`,
         });
       }
     }
 
-    return new UniversalError(code, { dateTime, message2, properties });
+    let properties2;
+    if (Object.hasOwn(object, "properties2")) {
+      try {
+        properties2 = JSON.parse(JSON.stringify(object.properties2));
+      } catch (error) {
+        return new UniversalError(UniversalError.DEFAULT_CODE, {
+          cause: error,
+          message: `プロパティ"${JSON.stringify(object.properties2)}"が不正です。`,
+        });
+      }
+      if (properties2 === null || typeof properties2 !== "object") {
+        return new UniversalError(UniversalError.DEFAULT_CODE, {
+          cause: object.properties2,
+          message: `プロパティ"${JSON.stringify(object.properties2)}"がオブジェクトではありません。`,
+        });
+      }
+    }
+
+    return new UniversalError(code, { dateTime, message1, message2, properties1, properties2 });
   }
 }
 
@@ -210,8 +252,13 @@ export interface UniversalErrorOptions extends ErrorOptions {
   message1?: string;
   /** メッセージ2 */
   message2?: string;
-  /** プロパティ */
-  properties?: UniversalErrorProperties;
+  /**
+   * **プロパティ1**
+   * 指定されていない場合、自動で`properties2`が代わりに指定される。
+   */
+  properties1?: UniversalErrorProperties;
+  /** プロパティ2 */
+  properties2?: UniversalErrorProperties;
 }
 
 type O = Partial<{ [K in string]: V }>;
