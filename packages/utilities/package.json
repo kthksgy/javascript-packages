@@ -14,9 +14,9 @@
   },
   "exports": {
     ".": {
+      "types": "./distributions/types/index.d.ts",
       "import": "./distributions/browser/index.js",
-      "require": "./distributions/node/index.cjs",
-      "types": "./distributions/types/index.d.ts"
+      "require": "./distributions/node/index.cjs"
     }
   },
   "files": [
@@ -47,5 +47,5 @@
   },
   "type": "module",
   "types": "./distributions/types/index.d.ts",
-  "version": "0.1.19"
+  "version": "0.1.20-alpha+0"
 }

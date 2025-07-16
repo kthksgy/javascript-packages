@@ -15,16 +15,16 @@ export function mapEntries(
 ): any {
   if (Array.isArray(input)) {
     return input.map(function (value) {
-      return mapEntries(valueMapper(value), keyMapper, valueMapper);
+      return mapEntries(value, keyMapper, valueMapper);
     });
   } else if (isPlainObject(input)) {
     return Object.entries(input).reduce(function (output, [key, value]) {
       if (value !== undefined) {
-        output[keyMapper(key)] = mapEntries(valueMapper(value), keyMapper, valueMapper);
+        output[keyMapper(key)] = mapEntries(value, keyMapper, valueMapper);
       }
       return output;
     }, {} as any);
   } else {
-    return input;
+    return valueMapper(input);
   }
 }

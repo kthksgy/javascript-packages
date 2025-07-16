@@ -9,16 +9,16 @@ import { isPlainObject } from "./is-plain-object";
 export function mapValues(input: any, mapper: { (value: any): any }): any {
   if (Array.isArray(input)) {
     return input.map(function (value) {
-      return mapValues(mapper(value), mapper);
+      return mapValues(value, mapper);
     });
   } else if (isPlainObject(input)) {
     return Object.entries(input).reduce(function (output, [key, value]) {
       if (value !== undefined) {
-        output[key] = mapValues(mapper(value), mapper);
+        output[key] = mapValues(value, mapper);
       }
       return output;
     }, {} as any);
   } else {
-    return input;
+    return mapper(input);
   }
 }
