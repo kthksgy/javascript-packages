@@ -3,7 +3,8 @@ import { useCallback, useMemo, useRef, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ExecutorModuleAugmentation {}
 
-type ExecutorModule = Omit<{ Error: Error }, keyof ExecutorModuleAugmentation>;
+type ExecutorModule = Omit<{ Error: Error }, keyof ExecutorModuleAugmentation> &
+  ExecutorModuleAugmentation;
 
 export type ExecutorSettings = {
   /**
