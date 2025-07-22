@@ -3,31 +3,28 @@ import { useCallback, useMemo, useRef, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ExecutorModuleAugmentation {}
 
-type ExecutorModule = Omit<
-  {
-    Error: Error;
-  },
-  keyof ExecutorModuleAugmentation
->;
+type ExecutorModule = Omit<{ Error: Error }, keyof ExecutorModuleAugmentation>;
 
 export type ExecutorError = ExecutorModule["Error"];
 
 export type ExecutorSettings = {
   /**
-   * デバウンス遅延(デバウンス時に処理が実行されるまでの遅延時間)[ミリ秒]
+   * **デバウンス遅延[ミリ秒]**
+   * デバウンス時に処理が実行されるまでの遅延時間。
    */
   debounceDelay: number;
-  onError: { (error: any): { error: ExecutorError; promise: Promise<void> } };
+  onError: { (error: any): Promise<ExecutorError> };
   /**
-   * スロットル遅延(スロットル時に次の処理が実行可能になるまでの遅延時間)[ミリ秒]
+   * **スロットル遅延[ミリ秒]**
+   * スロットル時に次の処理が実行可能になるまでの遅延時間。
    */
   throttleDelay: number;
 };
 
 let defaultSettings: ExecutorSettings = {
   debounceDelay: 3000,
-  onError(error) {
-    return { error: new Error(undefined, { cause: error }), promise: Promise.resolve() };
+  async onError(error) {
+    return new Error(undefined, { cause: error });
   },
   throttleDelay: 3000,
 };
@@ -80,8 +77,7 @@ export function useExecutor(settings?: Partial<ExecutorSettings>) {
 
           resolve(await process());
         } catch (error) {
-          const { error: executorError, promise } = defaultSettings.onError(error);
-          await promise;
+          const executorError = await defaultSettings.onError(error);
           resolve(executorError);
         } finally {
           setNumberOfExecutions(function (numberOfExecutions) {
@@ -123,8 +119,7 @@ export function useExecutor(settings?: Partial<ExecutorSettings>) {
 
         return await process();
       } catch (error) {
-        const { error: executorError, promise } = defaultSettings.onError(error);
-        await promise;
+        const executorError = await defaultSettings.onError(error);
         return executorError;
       } finally {
         setNumberOfExecutions(function (numberOfExecutions) {
@@ -184,8 +179,7 @@ export function useExecutor(settings?: Partial<ExecutorSettings>) {
 
         return await process();
       } catch (error) {
-        const { error: executorError, promise } = defaultSettings.onError(error);
-        await promise;
+        const executorError = await defaultSettings.onError(error);
         return executorError;
       } finally {
         setNumberOfExecutions(function (numberOfExecutions) {
