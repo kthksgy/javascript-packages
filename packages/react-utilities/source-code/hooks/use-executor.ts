@@ -5,15 +5,13 @@ export interface ExecutorModuleAugmentation {}
 
 type ExecutorModule = Omit<{ Error: Error }, keyof ExecutorModuleAugmentation>;
 
-export type ExecutorError = ExecutorModule["Error"];
-
 export type ExecutorSettings = {
   /**
    * **デバウンス遅延[ミリ秒]**
    * デバウンス時に処理が実行されるまでの遅延時間。
    */
   debounceDelay: number;
-  onError: { (error: any): Promise<ExecutorError> };
+  onError: { (error: any): Promise<ExecutorModule["Error"]> };
   /**
    * **スロットル遅延[ミリ秒]**
    * スロットル時に次の処理が実行可能になるまでの遅延時間。
@@ -53,7 +51,9 @@ export function useExecutor(settings?: Partial<ExecutorSettings>) {
 
   const debounce = useCallback(
     async function <T>(process: { (): Promise<T> }) {
-      const { promise, resolve } = Promise.withResolvers<T | ExecutorAbort | ExecutorError>();
+      const { promise, resolve } = Promise.withResolvers<
+        T | ExecutorAbort | ExecutorModule["Error"]
+      >();
 
       if (debounceTimer.current !== undefined) {
         clearTimeout(debounceTimer.current);
