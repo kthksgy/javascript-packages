@@ -1,6 +1,7 @@
 import { KeyOfUnion } from "./key-of-union";
 
 /**
+ * @deprecated 代わりに`type-fest`の`DistributedPick`を使用する。
  * オブジェクトのユニオン型から指定したキー以外を除外する。
  * 通常の`Pick`では意図した結果にならない。
  *

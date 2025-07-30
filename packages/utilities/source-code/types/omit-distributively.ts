@@ -1,4 +1,5 @@
 /**
+ * @deprecated 代わりに`type-fest`の`DistributedOmit`を使用する。
  * オブジェクトのユニオン型から指定したキーを除外する。
  * 通常の`Omit`では意図した結果にならない。
  *

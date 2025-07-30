@@ -1,4 +1,5 @@
 /**
+ * @deprecated 代わりに`type-fest`の`SetFieldType`を使用する。
  * オブジェクトのキーの値を変更する。
  *
  * @example

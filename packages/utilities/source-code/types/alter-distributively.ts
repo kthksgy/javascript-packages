@@ -2,6 +2,7 @@ import { Alter } from "./alter";
 import { KeyOfUnion } from "./key-of-union";
 
 /**
+ * @deprecated 代わりに`type-fest`の`SetFieldType`を使用する。
  * オブジェクトのユニオン型から指定したキーの値を変更する。
  * 通常の`Alter`では意図した結果にならない。
  *

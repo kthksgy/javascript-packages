@@ -1,4 +1,5 @@
 /**
+ * @deprecated 代わりに`type-fest`の`KeysOfUnion`を使用する。
  * ユニオン型のキーを取得する。
  *
  * @example
