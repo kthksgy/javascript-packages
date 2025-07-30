@@ -1,7 +1,7 @@
 import { KeyOfUnion } from "./key-of-union";
 
 /**
- * @deprecated 代わりに`type-fest`の`UnionToIntersection`を使用する。
+ * @deprecated 代わりに`type-fest`の`AllUnionFields`を使用する。
  * オブジェクトのユニオンのインターセクションを作成する。
  * @template T オブジェクトのユニオン
  *
