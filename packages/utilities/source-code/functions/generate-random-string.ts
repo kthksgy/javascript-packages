@@ -1,4 +1,4 @@
-import { ALPHANUMERIC_CHARACTERS } from "../constants/alphanumeric-characters";
+import { ALPHANUMERIC_CHARACTERS } from "../constants";
 
 /**
  * 英字(大文字／小文字)と数字のみを含むランダム文字列を生成する。

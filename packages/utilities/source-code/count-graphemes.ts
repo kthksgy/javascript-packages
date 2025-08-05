@@ -1,4 +1,4 @@
-import { DEFAULT_GRAPHEME_SEGMENTER } from "./constants/default-grapheme-segmenter";
+import { DEFAULT_GRAPHEME_SEGMENTER } from "./constants";
 
 /**
  * 書記素を数える。

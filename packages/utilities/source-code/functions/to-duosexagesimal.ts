@@ -1,4 +1,4 @@
-import { ALPHANUMERIC_CHARACTERS } from "../constants/alphanumeric-characters";
+import { ALPHANUMERIC_CHARACTERS } from "../constants";
 
 /**
  * 10進数を62進数に変換する。
