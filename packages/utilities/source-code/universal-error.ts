@@ -230,6 +230,24 @@ export class UniversalError<Code extends string = string> extends Error {
 
     return new UniversalError(code, { dateTime, message1, message2, properties1, properties2 });
   }
+
+  /**
+   * このインスタンスを更新し、新しいインスタンスを返す。
+   * `options`を省略した場合、`this`を返す。
+   * @param options オプション
+   * @returns 新しいインスタンスまたは`this`
+   */
+  renew(options?: Readonly<Partial<{ code: string } & Omit<UniversalErrorOptions, "cause">>>) {
+    if (options === undefined) {
+      return this;
+    } else {
+      const error = new UniversalError(options?.code ?? this.code, { ...this, ...options });
+      if (this.stack !== undefined) {
+        error.stack = this.stack;
+      }
+      return error;
+    }
+  }
 }
 
 /**
