@@ -28,8 +28,8 @@ export class Container<T> {
     if (this.validate(this.instance)) {
       return this.instance;
     } else {
-      throw new UniversalError(UniversalError.DEFAULT_CODE, {
-        message2: "コンテナーが初期化されていません。",
+      throw new UniversalError(undefined, {
+        message: "コンテナーが初期化されていません。",
       });
     }
   }
@@ -42,8 +42,8 @@ export class Container<T> {
     if (this.validate(instance)) {
       this.instance = instance;
     } else {
-      throw new UniversalError(UniversalError.DEFAULT_CODE, {
-        message2: "インスタンスの検証に失敗しました。",
+      throw new UniversalError(undefined, {
+        message: "インスタンスの検証に失敗しました。",
       });
     }
   }
