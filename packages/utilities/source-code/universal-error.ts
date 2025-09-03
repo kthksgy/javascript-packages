@@ -15,7 +15,9 @@ function concatenateStacks2(a: string | undefined, b: string | undefined) {
         .filter(function (line) {
           return !lines.includes(line);
         })
-        .join("\n") + b
+        .join("\n") +
+      "\n" +
+      b
     );
   } else {
     return a || b;
