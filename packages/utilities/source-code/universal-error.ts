@@ -51,12 +51,27 @@ export class UniversalError<
   /** **データ** このエラーに関連するデータ。 */
   data?: UniversalErrorData;
 
-  constructor(code: Code = UniversalError.DEFAULT_CODE as Code, options?: UniversalErrorOptions) {
-    super(options?.message, options);
-
-    this.code = code;
-    this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
-    this.data = options?.data;
+  /**
+   * @param code エラーコード
+   * @param options エラーオプション
+   * 文字列を指定した場合、メッセージとして扱う。
+   */
+  constructor(
+    code: Code = UniversalError.DEFAULT_CODE as Code,
+    options?: string | UniversalErrorOptions,
+  ) {
+    if (typeof options === "string") {
+      super(options);
+      this.code = code;
+      this.dateTime = Temporal.Now.zonedDateTimeISO();
+    } else {
+      super(options?.message, options);
+      this.code = code;
+      this.dateTime = options?.dateTime ?? Temporal.Now.zonedDateTimeISO();
+      if (options?.data) {
+        this.data = options.data;
+      }
+    }
 
     Object.defineProperty(this, "name", {
       configurable: true,
@@ -67,7 +82,7 @@ export class UniversalError<
 
     if (Object.hasOwn(Error, "captureStackTrace")) {
       Error.captureStackTrace(this, this.constructor);
-      if (doesHaveStack(options?.cause)) {
+      if (typeof options !== "string" && doesHaveStack(options?.cause)) {
         this.stack = concatenateStacks2(this.stack, options.cause.stack);
       }
     }
