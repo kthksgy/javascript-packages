@@ -228,7 +228,7 @@ export interface UniversalErrorOptions extends ErrorOptions {
   message?: string;
 }
 
-type O = Partial<{ [K in string]: V }>;
+type O = Partial<{ [K in string]: V | undefined }>;
 type A = Array<V> | ReadonlyArray<V>;
 type V = string | number | boolean | A | O | null;
 
