@@ -228,9 +228,9 @@ export interface UniversalErrorOptions extends ErrorOptions {
   message?: string;
 }
 
-type O = Partial<{ [K in string]: V | undefined }>;
-type A = Array<V> | ReadonlyArray<V>;
-type V = string | number | boolean | A | O | null;
+type O = Partial<{ [K in string]: V }>;
+type A = ReadonlyArray<Exclude<V, undefined>>;
+type V = string | number | boolean | A | O | null | undefined;
 
 /** ユニバーサルエラーデータ */
 export type UniversalErrorData = Partial<Record<"private" | "public", Record<string, V>>>;
