@@ -22,3 +22,4 @@ export * from "./pull-from-and-push-to-map";
 export * from "./pull-from-and-push-to-set";
 export * from "./semaphore";
 export * from "./universal-error";
+export * from "./void";
