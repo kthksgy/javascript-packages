@@ -147,18 +147,17 @@ export class UniversalError<
 
   static fromObject(object: ReturnType<UniversalError["toObject"]>) {
     if (object === null || typeof object !== "object") {
-      return new UniversalError(UniversalError.DEFAULT_CODE, {
-        cause: object,
-        message: `オブジェクト"${JSON.stringify(object)}"がオブジェクトではありません。`,
-      });
+      return new UniversalError(
+        UniversalError.DEFAULT_CODE,
+        "object = " + JSON.stringify(object) + "がオブジェクトではありません。",
+      );
     }
 
-    const code = Object.hasOwn(object, "code") ? object.code : undefined;
-    if (code !== undefined && typeof code !== "string") {
-      return new UniversalError(UniversalError.DEFAULT_CODE, {
-        cause: object.code,
-        message: `コード"${JSON.stringify(object.code)}"が文字列ではありません。`,
-      });
+    if (object.code !== undefined && typeof object.code !== "string") {
+      return new UniversalError(
+        UniversalError.DEFAULT_CODE,
+        "object.code = " + JSON.stringify(object.code) + "が文字列ではありません。",
+      );
     }
 
     let dateTime;
@@ -169,27 +168,25 @@ export class UniversalError<
     } catch (error) {
       return new UniversalError(UniversalError.DEFAULT_CODE, {
         cause: error,
-        message: `日時"${JSON.stringify(object.dateTime)}"が不正です。`,
+        message: "object.dateTime = " + JSON.stringify(object.dateTime) + "が不正です。",
       });
     }
 
-    const message = Object.hasOwn(object, "message") ? object.message : undefined;
-    if (message !== undefined && typeof message !== "string") {
-      return new UniversalError(UniversalError.DEFAULT_CODE, {
-        cause: object.message,
-        message: `メッセージ"${JSON.stringify(object.message)}"が文字列ではありません。`,
-      });
+    if (object.message !== undefined && typeof object.message !== "string") {
+      return new UniversalError(
+        UniversalError.DEFAULT_CODE,
+        "object.message = " + JSON.stringify(object.message) + "が文字列ではありません。",
+      );
     }
 
-    const data = Object.hasOwn(object, "data") ? object.data : undefined;
-    if (data !== undefined && (data === null || typeof data !== "object")) {
-      return new UniversalError(UniversalError.DEFAULT_CODE, {
-        cause: object.data,
-        message: `data(${JSON.stringify(object.data)})がオブジェクトではありません。`,
-      });
+    if (object.data !== undefined && (object.data === null || typeof object.data !== "object")) {
+      return new UniversalError(
+        UniversalError.DEFAULT_CODE,
+        "object.data = " + JSON.stringify(object.data) + "がオブジェクトではありません。",
+      );
     }
 
-    return new UniversalError(code, { data, dateTime, message });
+    return new UniversalError(object.code, { ...object, dateTime });
   }
 
   /**
