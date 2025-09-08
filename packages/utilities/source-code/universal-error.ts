@@ -6,7 +6,7 @@ import { Temporal } from "temporal-polyfill";
  * @param b スタックB
  * @returns 新しいスタック
  */
-function concatenateStacks2(a: string | undefined, b: string | undefined) {
+function concatenateStacks(a: string | undefined, b: string | undefined) {
   if (a && b) {
     const lines = b.split("\n");
     return (
@@ -85,7 +85,7 @@ export class UniversalError<
     if (Object.hasOwn(Error, "captureStackTrace")) {
       Error.captureStackTrace(this, this.constructor);
       if (typeof options !== "string" && doesHaveStack(options?.cause)) {
-        this.stack = concatenateStacks2(this.stack, options.cause.stack);
+        this.stack = concatenateStacks(this.stack, options.cause.stack);
       }
     }
   }
