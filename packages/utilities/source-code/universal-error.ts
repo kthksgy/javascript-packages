@@ -182,7 +182,7 @@ export class UniversalError<
     }
 
     const data = Object.hasOwn(object, "data") ? object.data : undefined;
-    if (data === null || typeof data !== "object") {
+    if (data !== undefined && (data === null || typeof data !== "object")) {
       return new UniversalError(UniversalError.DEFAULT_CODE, {
         cause: object.data,
         message: `data(${JSON.stringify(object.data)})がオブジェクトではありません。`,
