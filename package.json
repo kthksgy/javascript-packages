@@ -17,10 +17,5 @@
   "scripts": {
     "lint": "./lint.sh"
   },
-  "type": "module",
-  "volta": {
-    "node": "22.17.1",
-    "npm": "11.4.2",
-    "pnpm": "10.13.1"
-  }
+  "type": "module"
 }
